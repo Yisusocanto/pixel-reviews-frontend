@@ -1,7 +1,8 @@
-import { Geist, Geist_Mono, Outfit, Merriweather } from "next/font/google"
+import { Geist_Mono, Outfit, Merriweather } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { SessionProvider } from "@/components/providers/session-provider"
 import { cn } from "@/lib/utils";
 
 const merriweatherHeading = Merriweather({subsets:['latin'],variable:'--font-heading'});
@@ -25,7 +26,9 @@ export default function RootLayout({
       className={cn("antialiased", fontMono.variable, "font-sans", outfit.variable, merriweatherHeading.variable)}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
