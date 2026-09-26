@@ -40,37 +40,38 @@
 }
 
 .dark {
-    --background: oklch(0.147 0.004 49.3);
-    --foreground: oklch(0.986 0.002 67.8);
-    --card: oklch(0.214 0.009 43.1);
-    --card-foreground: oklch(0.986 0.002 67.8);
-    --popover: oklch(0.214 0.009 43.1);
-    --popover-foreground: oklch(0.986 0.002 67.8);
-    --primary: oklch(0.47 0.157 37.304);
-    --primary-foreground: oklch(0.98 0.016 73.684);
-    --secondary: oklch(0.274 0.006 286.033);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.268 0.011 36.5);
-    --muted-foreground: oklch(0.714 0.014 41.2);
-    --accent: oklch(0.268 0.011 36.5);
-    --accent-foreground: oklch(0.986 0.002 67.8);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.547 0.021 43.1);
+    /* Figma: fondos negros neutros, sin tinte marrón */
+    --background: oklch(0.09 0 0);           /* ~#111111 – fondo principal */
+    --foreground: oklch(0.96 0 0);            /* ~#f5f5f5 – texto principal */
+    --card: oklch(0.13 0 0);                  /* ~#1a1a1a – superficie de tarjeta */
+    --card-foreground: oklch(0.96 0 0);
+    --popover: oklch(0.13 0 0);              /* mismo que card */
+    --popover-foreground: oklch(0.96 0 0);
+    --primary: oklch(0.62 0.22 35);           /* naranja vivo Figma ~#ff4d00 */
+    --primary-foreground: oklch(0.99 0 0);    /* texto sobre naranja: blanco */
+    --secondary: oklch(0.18 0 0);            /* superficie secundaria ~#252525 */
+    --secondary-foreground: oklch(0.90 0 0);
+    --muted: oklch(0.17 0 0);                /* fondo muted ~#222222 */
+    --muted-foreground: oklch(0.55 0 0);     /* texto secundario ~#7a7a7a */
+    --accent: oklch(0.17 0 0);               /* igual que muted */
+    --accent-foreground: oklch(0.96 0 0);
+    --destructive: oklch(0.65 0.22 27);
+    --border: oklch(1 0 0 / 8%);             /* bordes muy sutiles */
+    --input: oklch(1 0 0 / 12%);
+    --ring: oklch(0.62 0.22 35);             /* ring = primary */
     --chart-1: oklch(0.837 0.128 66.29);
     --chart-2: oklch(0.705 0.213 47.604);
     --chart-3: oklch(0.646 0.222 41.116);
     --chart-4: oklch(0.553 0.195 38.402);
     --chart-5: oklch(0.47 0.157 37.304);
-    --sidebar: oklch(0.214 0.009 43.1);
-    --sidebar-foreground: oklch(0.986 0.002 67.8);
-    --sidebar-primary: oklch(0.705 0.213 47.604);
-    --sidebar-primary-foreground: oklch(0.98 0.016 73.684);
-    --sidebar-accent: oklch(0.268 0.011 36.5);
-    --sidebar-accent-foreground: oklch(0.986 0.002 67.8);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.547 0.021 43.1);
+    --sidebar: oklch(0.11 0 0);              /* sidebar ~#161616, ligeramente más oscuro que card */
+    --sidebar-foreground: oklch(0.96 0 0);
+    --sidebar-primary: oklch(0.62 0.22 35);  /* naranja en sidebar */
+    --sidebar-primary-foreground: oklch(0.99 0 0);
+    --sidebar-accent: oklch(0.16 0 0);       /* hover en sidebar */
+    --sidebar-accent-foreground: oklch(0.96 0 0);
+    --sidebar-border: oklch(1 0 0 / 8%);
+    --sidebar-ring: oklch(0.62 0.22 35);
 }
 
 @theme inline {

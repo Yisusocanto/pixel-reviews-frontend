@@ -22,9 +22,7 @@ export type ActionState = {
 /**
  * Server Action to sign in with email and password credentials.
  */
-export async function loginAction(
-  values: LoginInput
-): Promise<ActionState> {
+export async function loginAction(values: LoginInput): Promise<ActionState> {
   const validated = loginSchema.safeParse(values)
   if (!validated.success) {
     return {
@@ -37,7 +35,7 @@ export async function loginAction(
     await signIn("credentials", {
       email: validated.data.email,
       password: validated.data.password,
-      redirectTo: "/",
+      redirect: false,
     })
     return { success: true }
   } catch (error) {
@@ -52,7 +50,6 @@ export async function loginAction(
           }
       }
     }
-    // IMPORTANT: Next.js throws an internal NEXT_REDIRECT error on successful navigation
     throw error
   }
 }
@@ -101,7 +98,7 @@ export async function registerAction(
     await signIn("credentials", {
       email: validated.data.email,
       password: validated.data.password,
-      redirectTo: "/",
+      redirect: false,
     })
 
     return { success: true }
@@ -109,7 +106,8 @@ export async function registerAction(
     if (error instanceof AuthError) {
       return {
         success: false,
-        error: "Account created successfully, but an error occurred while signing in.",
+        error:
+          "Account created successfully, but an error occurred while signing in.",
       }
     }
     throw error
@@ -120,5 +118,5 @@ export async function registerAction(
  * Server Action to sign out.
  */
 export async function logoutAction() {
-  await signOut({ redirectTo: "/auth/login" })
+  await signOut()
 }
