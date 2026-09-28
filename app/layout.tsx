@@ -6,6 +6,7 @@ import Providers from "@/components/providers/providers"
 import { SidebarInset } from "@/components/ui/sidebar"
 import AppSidebar from "@/components/app-sidebar"
 import NavBar from "@/components/nav-bar"
+import { Toaster } from "@/components/ui/toast"
 
 const merriweatherHeading = Merriweather({
   subsets: ["latin"],
@@ -40,8 +41,9 @@ export default function RootLayout({
         <Providers>
           <AppSidebar />
           <SidebarInset>
-            <main>
+            <main className="bg-secondary">
               <NavBar />
+              <Toaster />
               {children}
             </main>
           </SidebarInset>
