@@ -1,5 +1,8 @@
-import { getGameReviewsAction } from "@/features/games/actions"
-import { useInfiniteQuery } from "@tanstack/react-query"
+import {
+  getGameReviewsAction,
+  searchGamesAction,
+} from "@/features/games/actions"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 
 export const useGameReviews = (gameSlug: string) => {
   return useInfiniteQuery({
@@ -12,5 +15,13 @@ export const useGameReviews = (gameSlug: string) => {
       }
       return undefined
     },
+  })
+}
+
+export const useSearchGames = (title: string = "", enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ["searchGames", title],
+    queryFn: () => searchGamesAction(title),
+    enabled,
   })
 }

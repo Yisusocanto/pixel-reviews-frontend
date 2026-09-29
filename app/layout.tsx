@@ -37,15 +37,15 @@ export default function RootLayout({
         merriweatherHeading.variable
       )}
     >
-      <body>
+      <body className="bg-secondary">
         <Providers>
           <AppSidebar />
-          <SidebarInset>
-            <main className="bg-secondary">
-              <NavBar />
-              <Toaster />
+          <SidebarInset className="flex min-h-svh flex-1 flex-col bg-secondary">
+            <NavBar />
+            <Toaster />
+            <div className="flex flex-1 flex-col bg-secondary">
               {children}
-            </main>
+            </div>
           </SidebarInset>
         </Providers>
       </body>

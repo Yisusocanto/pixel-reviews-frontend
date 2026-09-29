@@ -1,6 +1,6 @@
 "use server"
 
-import { Game, GameStats } from "@/features/games/types"
+import { Game, GameSearch, GameStats } from "@/features/games/types"
 import { ReviewPagination } from "@/features/reviews/types"
 import { apiClient } from "@/lib/api/client"
 
@@ -25,5 +25,14 @@ export async function getGameReviewsAction(
 
 export async function getGameStatsAction(gameSlug: string) {
   const res = await apiClient.get<GameStats>(`/games/${gameSlug}/stats`)
+  return res
+}
+
+export async function searchGamesAction(title: string = ""): Promise<GameSearch[]> {
+  const res = await apiClient.get<GameSearch[]>("/games/search", {
+    params: {
+      title: title,
+    },
+  })
   return res
 }

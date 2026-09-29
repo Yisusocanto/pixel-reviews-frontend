@@ -15,6 +15,13 @@ export interface Game {
   publishers: Publisher[]
 }
 
+export interface GameSearch {
+  title: string
+  slug: string
+  releaseDate: string
+  backgroundImage: string
+}
+
 export interface GameStats {
   totalReviews: number
   avgRatings: number
