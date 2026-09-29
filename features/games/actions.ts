@@ -1,6 +1,6 @@
 "use server"
 
-import { Game } from "@/features/games/types"
+import { Game, GameStats } from "@/features/games/types"
 import { ReviewPagination } from "@/features/reviews/types"
 import { apiClient } from "@/lib/api/client"
 
@@ -20,5 +20,10 @@ export async function getGameReviewsAction(
       limit,
     },
   })
+  return res
+}
+
+export async function getGameStatsAction(gameSlug: string) {
+  const res = await apiClient.get<GameStats>(`/games/${gameSlug}/stats`)
   return res
 }

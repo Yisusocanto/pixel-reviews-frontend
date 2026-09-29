@@ -1,16 +1,17 @@
+import RatingDistribution from "@/components/ui/c-rating-6"
 import {
   CarouselItem,
   FramerThumbnailCarousel,
 } from "@/components/ui/framer-thumbnail-carousel"
-import { getGameAction } from "@/features/games/actions"
+import StarRating from "@/components/ui/star-rating"
+import { getGameAction, getGameStatsAction } from "@/features/games/actions"
 import GameCommunitySection from "@/features/games/components/game-community-section"
-import { Game } from "@/features/games/types"
+import { Game, GameStats } from "@/features/games/types"
 import { getUserGameReviewAction } from "@/features/reviews/actions"
 import ReviewDialog from "@/features/reviews/components/review-dialog"
 import { Review } from "@/features/reviews/types"
 import dayjs from "dayjs"
 import Image from "next/image"
-import React from "react"
 
 async function GameDetailPage({
   params,
@@ -19,9 +20,13 @@ async function GameDetailPage({
 }) {
   const { slug } = await params
   let game: Game
+  let gameStats: GameStats
   let review: Review | undefined = undefined
   try {
-    game = await getGameAction(slug)
+    ;[game, gameStats] = await Promise.all([
+      getGameAction(slug),
+      getGameStatsAction(slug),
+    ])
   } catch (error) {
     const err = error as Error
     return (
@@ -96,10 +101,10 @@ async function GameDetailPage({
 
       <div className="flex justify-between gap-20 p-12">
         {/* left */}
-        <div className="flex flex-2 flex-col gap-8">
+        <div className="flex flex-2 flex-col gap-16">
           {/* Description */}
           <section>
-            <h2 className="font-bold tracking-widest text-primary uppercase">
+            <h2 className="mb-4 font-bold tracking-widest text-primary uppercase">
               Description
             </h2>
             <p>{game.description}</p>
@@ -107,7 +112,7 @@ async function GameDetailPage({
           {/* Screenshots */}
           {game.screenshots.length > 0 && (
             <section>
-              <h2 className="font-heading font-bold tracking-widest text-primary uppercase">
+              <h2 className="mb-4 font-heading font-bold tracking-widest text-primary uppercase">
                 Screenshots and Art game
               </h2>
               <FramerThumbnailCarousel
@@ -117,6 +122,44 @@ async function GameDetailPage({
               />
             </section>
           )}
+          {/* Community Reception */}
+          <section>
+            <h2 className="mb-4 font-heading font-bold tracking-widest text-primary uppercase">
+              Community Reception
+            </h2>
+            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10 rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur-sm">
+              <div className="flex flex-col items-center justify-center shrink-0 sm:pr-8 sm:border-r border-border/40 min-w-44">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-heading text-5xl font-black tracking-tight text-foreground">
+                    {gameStats.avgRatings
+                      ? Number(gameStats.avgRatings).toFixed(1)
+                      : "0.0"}
+                  </span>
+                  <span className="text-xl font-semibold text-muted-foreground/70">
+                    / 5
+                  </span>
+                </div>
+                <div className="mt-2.5">
+                  <StarRating
+                    value={Number(gameStats.avgRatings) || 0}
+                    size="md"
+                    readOnly
+                  />
+                </div>
+                <span className="mt-2 text-xs font-medium text-muted-foreground">
+                  {gameStats.totalReviews === 1
+                    ? "1 review"
+                    : `${gameStats.totalReviews ?? 0} reviews`}
+                </span>
+              </div>
+              <div className="flex-1 w-full">
+                <RatingDistribution
+                  distribution={gameStats.ratingDistribution}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </section>
           {/* Community */}
           <section>
             <GameCommunitySection gameSlug={game.slug} />
@@ -127,7 +170,7 @@ async function GameDetailPage({
         <div className="flex-1">
           {/* Technical specifications */}
           <section>
-            <h2 className="font-bold tracking-widest text-primary uppercase">
+            <h2 className="mb-4 font-bold tracking-widest text-primary uppercase">
               Technical specifications
             </h2>
             <div className="flex justify-between gap-8 border-b border-b-border py-2">

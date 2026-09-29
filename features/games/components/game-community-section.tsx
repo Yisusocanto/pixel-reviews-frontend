@@ -14,7 +14,7 @@ function GameCommunitySection({ gameSlug }: Props) {
   const reviews = data?.pages.flatMap((page) => page.items)
   return (
     <div>
-      <h2 className="font-heading font-bold tracking-widest text-primary uppercase">
+      <h2 className="mb-4 font-heading font-bold tracking-widest text-primary uppercase">
         Community
       </h2>
       <Separator className={"my-2"} />

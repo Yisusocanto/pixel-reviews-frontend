@@ -1,3 +1,4 @@
+import { RatingDistributionRow } from "@/components/ui/c-rating-6"
 import { Developer } from "@/types/developer"
 import { Publisher } from "@/types/publisher"
 
@@ -12,4 +13,10 @@ export interface Game {
   screenshots: string[]
   developers: Developer[]
   publishers: Publisher[]
+}
+
+export interface GameStats {
+  totalReviews: number
+  avgRatings: number
+  ratingDistribution: RatingDistributionRow[]
 }

@@ -260,7 +260,7 @@ export function StarRating({
                   />
                   {fillPercent > 0 && (
                     <span
-                      className="absolute inset-0 text-amber-400"
+                      className="absolute inset-0 text-primary"
                       style={{
                         clipPath: `inset(0 ${100 - fillPercent}% 0 0)`,
                       }}
@@ -322,7 +322,7 @@ export function StarRating({
                   className="text-neutral-300 dark:text-neutral-700"
                 />
                 <motion.span
-                  className="absolute inset-0 text-amber-400"
+                  className="absolute inset-0 text-primary"
                   initial={false}
                   animate={{
                     scale: filled ? 1 : 0,
@@ -356,7 +356,7 @@ export function StarRating({
                       return (
                         <motion.span
                           key={`sparkle-${burstKey}-${sparkleIndex}`}
-                          className="absolute rounded-full bg-amber-400"
+                          className="absolute rounded-full bg-primary"
                           style={{ width: dotSize, height: dotSize }}
                           initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
                           animate={{
