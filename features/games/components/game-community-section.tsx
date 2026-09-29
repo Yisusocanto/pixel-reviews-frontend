@@ -10,10 +10,8 @@ interface Props {
 
 function GameCommunitySection({ gameSlug }: Props) {
   const { data } = useGameReviews(gameSlug)
-  console.log(data)
 
   const reviews = data?.pages.flatMap((page) => page.items)
-  console.log(reviews)
   return (
     <div>
       <h2 className="font-heading font-bold tracking-widest text-primary uppercase">

@@ -28,3 +28,9 @@ export interface CreateReview {
   content?: string
   gameId: string
 }
+
+export interface UpdateReviewData {
+  score?: number
+  title?: string | null
+  content?: string | null
+}

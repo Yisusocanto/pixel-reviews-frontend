@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -24,23 +25,31 @@ import { Spinner } from "@/components/ui/spinner"
 import StarRating from "@/components/ui/star-rating"
 import { Textarea } from "@/components/ui/textarea"
 import { Game } from "@/features/games/types"
-import { useCreateReview } from "@/features/reviews/hooks/use-reviews"
+import {
+  useCreateReview,
+  useUpdateReview,
+  useUserGameReview,
+} from "@/features/reviews/hooks/use-reviews"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Controller } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import z from "zod"
+import { Review } from "@/features/reviews/types"
 
 interface Props {
   game: Game
+  review?: Review | null
   isOpen?: boolean
   onOpenChange?: (v: boolean) => void
+  trigger?: React.ReactElement
 }
 
 const optionalString = () =>
-  z.preprocess(
-    (val) => (typeof val === "string" && val.trim() === "" ? undefined : val),
-    z.string().min(3, "Minimun 3 characters").optional()
-  )
+  z
+    .string()
+    .trim()
+    .min(3, "Minimum 3 characters")
+    .optional()
+    .or(z.literal("").transform(() => undefined))
 
 const schema = z
   .object({
@@ -65,61 +74,121 @@ const schema = z
     }
   )
 
+type ReviewFormValues = {
+  score: number
+  title?: string
+  content?: string
+}
+
 function ReviewDialog({
   game,
+  review: initialReview,
   isOpen: externalOpen,
   onOpenChange: externalOnOpenChange,
+  trigger,
 }: Props) {
   const [internalOpen, setInternalOpen] = useState(false)
   const isControlled = externalOpen !== undefined
   const open = isControlled ? externalOpen : internalOpen
+
+  const router = useRouter()
+  const { data: userReview } = useUserGameReview(game.id, initialReview)
+  const currentReview = userReview !== undefined ? userReview : initialReview
+  const isEditing = Boolean(currentReview?.id)
+
+  const defaultValues = useMemo(
+    () => ({
+      score: currentReview?.score ?? 0,
+      title: currentReview?.title ?? "",
+      content: currentReview?.content ?? "",
+    }),
+    [currentReview?.score, currentReview?.title, currentReview?.content]
+  )
+
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<ReviewFormValues>({
+    resolver: zodResolver(schema),
+    values: defaultValues,
+  })
+
   const setOpen = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      reset(defaultValues)
+    }
     if (!isControlled) {
       setInternalOpen(nextOpen)
     }
     externalOnOpenChange?.(nextOpen)
   }
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      score: 0,
-      title: "",
-      content: "",
-    },
-  })
-
-  const { mutate: createReview, isPending } = useCreateReview()
+  const { mutate: createReview, isPending: isCreating } = useCreateReview()
+  const { mutate: updateReview, isPending: isUpdating } = useUpdateReview()
+  const isPending = isCreating || isUpdating
 
   const onSubmit = handleSubmit((data) => {
-    createReview(
-      {
-        ...data,
-        gameId: game.id,
-      },
-      {
-        onSuccess: () => {
-          setOpen(false)
-          reset()
+    if (isEditing && currentReview) {
+      updateReview(
+        {
+          id: currentReview.id,
+          data: {
+            score: data.score,
+            title: data.title ? data.title.trim() : null,
+            content: data.content ? data.content.trim() : null,
+          },
         },
-      }
-    )
+        {
+          onSuccess: () => {
+            setOpen(false)
+            router.refresh()
+          },
+        }
+      )
+    } else {
+      createReview(
+        {
+          score: data.score,
+          title: data.title ? data.title.trim() : undefined,
+          content: data.content ? data.content.trim() : undefined,
+          gameId: game.id,
+        },
+        {
+          onSuccess: () => {
+            setOpen(false)
+            router.refresh()
+          },
+        }
+      )
+    }
   })
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button>Review it</Button>} />
+      {trigger !== null && (
+        <DialogTrigger
+          render={
+            trigger ?? (
+              <Button variant={isEditing ? "outline" : "default"}>
+                {isEditing ? "Edit review" : "Review it"}
+              </Button>
+            )
+          }
+        />
+      )}
       <DialogContent className={"border-t-2 border-t-primary"}>
         <DialogHeader>
-          <DialogTitle>Review {game.title}</DialogTitle>
+          <DialogTitle>
+            {isEditing
+              ? `Edit review for ${game.title}`
+              : `Review ${game.title}`}
+          </DialogTitle>
           <DialogDescription>
-            Share your opinion with the community and upgrade your status
+            {isEditing
+              ? "Update your review and rating for this game"
+              : "Share your opinion with the community and upgrade your status"}
           </DialogDescription>
         </DialogHeader>
         <div>
@@ -143,27 +212,50 @@ function ReviewDialog({
             </div>
             <Separator className={"my-4"} />
             <FieldGroup>
-              <Field data-invalid={!!errors.title}>
-                <FieldLabel>Title</FieldLabel>
-                <Input {...register("title")} placeholder="the review title" />
-                <FieldError>{errors.title?.message}</FieldError>
-              </Field>
-              <Field data-invalid={!!errors.content}>
-                <FieldLabel>Content</FieldLabel>
-                <Textarea
-                  {...register("content")}
-                  placeholder="Your amazing opinion"
-                />
-                <FieldError>{errors.content?.message}</FieldError>
-              </Field>
+              <Controller
+                control={control}
+                name="title"
+                render={({ field }) => (
+                  <Field data-invalid={!!errors.title}>
+                    <FieldLabel>Title</FieldLabel>
+                    <Input
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                      placeholder="the review title"
+                    />
+                    <FieldError>{errors.title?.message}</FieldError>
+                  </Field>
+                )}
+              />
+              <Controller
+                control={control}
+                name="content"
+                render={({ field }) => (
+                  <Field data-invalid={!!errors.content}>
+                    <FieldLabel>Content</FieldLabel>
+                    <Textarea
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                      placeholder="Your amazing opinion"
+                    />
+                    <FieldError>{errors.content?.message}</FieldError>
+                  </Field>
+                )}
+              />
             </FieldGroup>
           </form>
         </div>
         <DialogFooter>
           <DialogClose render={<Button variant={"outline"}>Cancel</Button>} />
-          <Button form="review-form" type="submit">
+          <Button form="review-form" type="submit" disabled={isPending}>
             {isPending && <Spinner />}
-            {isPending ? "Creating..." : "Create Review"}
+            {isPending
+              ? isEditing
+                ? "Updating..."
+                : "Creating..."
+              : isEditing
+                ? "Update Review"
+                : "Create Review"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -171,4 +263,5 @@ function ReviewDialog({
   )
 }
 
+export { ReviewDialog }
 export default ReviewDialog

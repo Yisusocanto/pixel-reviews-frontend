@@ -5,7 +5,9 @@ import {
 import { getGameAction } from "@/features/games/actions"
 import GameCommunitySection from "@/features/games/components/game-community-section"
 import { Game } from "@/features/games/types"
+import { getUserGameReviewAction } from "@/features/reviews/actions"
 import ReviewDialog from "@/features/reviews/components/review-dialog"
+import { Review } from "@/features/reviews/types"
 import dayjs from "dayjs"
 import Image from "next/image"
 import React from "react"
@@ -17,15 +19,26 @@ async function GameDetailPage({
 }) {
   const { slug } = await params
   let game: Game
+  let review: Review | undefined = undefined
   try {
     game = await getGameAction(slug)
-  } catch (error: any) {
+  } catch (error) {
+    const err = error as Error
     return (
       <div>
-        <h1>{error.message}</h1>
+        <h1>{err.message}</h1>
       </div>
     )
   }
+
+  try {
+    review = (await getUserGameReviewAction(game.id)) ?? undefined
+  } catch (error) {
+    console.log(error)
+    // nothing
+  }
+
+  console.log(review)
 
   const screenshots: CarouselItem[] = game.screenshots.map((s) => ({
     id: s,
@@ -75,7 +88,7 @@ async function GameDetailPage({
             </div>
 
             <div className="flex gap-2">
-              <ReviewDialog game={game} />
+              <ReviewDialog game={game} review={review} />
             </div>
           </div>
         </div>
