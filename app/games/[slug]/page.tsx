@@ -1,3 +1,6 @@
+import { auth } from "@/auth"
+import LoginModal from "@/components/auth/login-modal"
+import { Button } from "@/components/ui/button"
 import RatingDistribution from "@/components/ui/c-rating-6"
 import {
   CarouselItem,
@@ -10,6 +13,9 @@ import { Game, GameStats } from "@/features/games/types"
 import { getUserGameReviewAction } from "@/features/reviews/actions"
 import ReviewDialog from "@/features/reviews/components/review-dialog"
 import { Review } from "@/features/reviews/types"
+import { getUserGameWishlistAction } from "@/features/wishlists/actions"
+import WishlistButton from "@/features/wishlists/components/wishlist-button"
+import { InUserWishlist } from "@/features/wishlists/types"
 import dayjs from "dayjs"
 import Image from "next/image"
 
@@ -19,6 +25,7 @@ async function GameDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
+  const session = await auth()
   let game: Game
   let gameStats: GameStats
   let review: Review | undefined = undefined
@@ -36,14 +43,18 @@ async function GameDetailPage({
     )
   }
 
-  try {
-    review = (await getUserGameReviewAction(game.id)) ?? undefined
-  } catch (error) {
-    console.log(error)
-    // nothing
-  }
+  let wishlistStatus: InUserWishlist = { inWishlist: false }
 
-  console.log(review)
+  if (session) {
+    try {
+      ;[review, wishlistStatus] = await Promise.all([
+        getUserGameReviewAction(game.id).then((r) => r ?? undefined),
+        getUserGameWishlistAction(game.id),
+      ])
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const screenshots: CarouselItem[] = game.screenshots.map((s) => ({
     id: s,
@@ -57,9 +68,10 @@ async function GameDetailPage({
       <div className="relative h-96 w-full overflow-hidden border-b border-b-border">
         {game.imageUrl && (
           <>
-            <img
+            <Image
               src={game.imageUrl}
               alt={game.title}
+              fill
               className="absolute inset-0 h-full w-full object-cover opacity-25 blur-[1px] filter"
             />
             <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent" />
@@ -92,8 +104,23 @@ async function GameDetailPage({
               </span>
             </div>
 
-            <div className="flex gap-2">
-              <ReviewDialog game={game} review={review} />
+            <div className="flex items-center gap-3">
+              {session ? (
+                <>
+                  <ReviewDialog game={game} review={review} />
+                  <WishlistButton
+                    gameId={game.id}
+                    initialData={wishlistStatus}
+                  />
+                </>
+              ) : (
+                <>
+                  <LoginModal
+                    trigger={<Button>Sign in to write a review</Button>}
+                  />
+                  <WishlistButton gameId={game.id} />
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -127,8 +154,8 @@ async function GameDetailPage({
             <h2 className="mb-4 font-heading font-bold tracking-widest text-primary uppercase">
               Community Reception
             </h2>
-            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10 rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur-sm">
-              <div className="flex flex-col items-center justify-center shrink-0 sm:pr-8 sm:border-r border-border/40 min-w-44">
+            <div className="flex flex-col items-center gap-6 rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur-sm sm:flex-row sm:gap-10">
+              <div className="flex min-w-44 shrink-0 flex-col items-center justify-center border-border/40 sm:border-r sm:pr-8">
                 <div className="flex items-baseline gap-1.5">
                   <span className="font-heading text-5xl font-black tracking-tight text-foreground">
                     {gameStats.avgRatings
@@ -152,7 +179,7 @@ async function GameDetailPage({
                     : `${gameStats.totalReviews ?? 0} reviews`}
                 </span>
               </div>
-              <div className="flex-1 w-full">
+              <div className="w-full flex-1">
                 <RatingDistribution
                   distribution={gameStats.ratingDistribution}
                   className="w-full"
