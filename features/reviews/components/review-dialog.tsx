@@ -29,7 +29,7 @@ import {
   useCreateReview,
   useUpdateReview,
   useUserGameReview,
-} from "@/features/reviews/hooks/use-reviews"
+} from "@/features/reviews/hooks"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
@@ -171,7 +171,10 @@ function ReviewDialog({
         <DialogTrigger
           render={
             trigger ?? (
-              <Button variant={isEditing ? "outline" : "default"}>
+              <Button
+                className="w-fit"
+                variant={isEditing ? "outline" : "default"}
+              >
                 {isEditing ? "Edit review" : "Review it"}
               </Button>
             )

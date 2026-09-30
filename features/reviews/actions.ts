@@ -44,3 +44,8 @@ export async function getUserGameReviewAction(
     return null
   }
 }
+
+export async function deleteReviewAction(reviewId: string): Promise<Review> {
+  const res = await apiClient.delete<Review>(`/reviews/${reviewId}`)
+  return res
+}

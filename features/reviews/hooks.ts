@@ -1,11 +1,16 @@
 import { toast } from "@/components/ui/toast"
 import {
   createReviewAction,
+  deleteReviewAction,
   getAllReviewsAction,
   getUserGameReviewAction,
   updateReviewAction,
 } from "@/features/reviews/actions"
-import { CreateReview, Review, UpdateReviewData } from "@/features/reviews/types"
+import {
+  CreateReview,
+  Review,
+  UpdateReviewData,
+} from "@/features/reviews/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useReviews = (page: number = 1, limit: number = 10) => {
@@ -68,6 +73,31 @@ export const useUpdateReview = () => {
     onError: (error) => {
       toast.add({
         description: `Error updating the review: ${error.message}`,
+        type: "error",
+      })
+    },
+  })
+}
+
+export const useDeleteReview = () => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (reviewId: string) => deleteReviewAction(reviewId),
+    onSuccess: (review) => {
+      if (review?.gameId) {
+        qc.setQueryData(["userReview", review.gameId], null)
+      }
+      qc.invalidateQueries({ queryKey: ["reviews"] })
+      qc.invalidateQueries({ queryKey: ["gameReviews"] })
+      qc.invalidateQueries({ queryKey: ["userReview"] })
+      toast.add({
+        description: "Review deleted successfully",
+        type: "success",
+      })
+    },
+    onError: (error) => {
+      toast.add({
+        description: `Error deleting the review: ${error.message}`,
         type: "error",
       })
     },

@@ -2,7 +2,7 @@
 
 import { Separator } from "@/components/ui/separator"
 import ReviewCard from "@/features/reviews/components/review-card"
-import { useReviews } from "@/features/reviews/hooks/use-reviews"
+import { useReviews } from "@/features/reviews/hooks"
 import dayjs from "dayjs"
 
 export default function Page() {
