@@ -29,7 +29,6 @@ import { NavLink } from "@/types/link"
 import {
   ChevronsUpDown,
   Earth,
-  Gamepad2,
   Gift,
   Home,
   LogOut,
@@ -62,13 +61,10 @@ function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader>
+      <SidebarHeader className="py-4">
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex items-center gap-2">
-              <div className="size-9 h-fit w-fit rounded-lg border bg-accent/20 p-2">
-                <Gamepad2 className="size-5" />
-              </div>
               <div className="group-data-[collapsible=icon]:hidden">
                 <p className="text-2xl font-extrabold">Pixel</p>
                 <p className="text-2xl font-extrabold">Reviews</p>
@@ -84,14 +80,15 @@ function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-2">
               {links.map((link) => (
                 <SidebarMenuItem key={link.label}>
                   <SidebarMenuButton
                     isActive={pathname == link.href ? true : false}
                     render={<Link href={link.href} />}
+                    className="rounded-sm border-l-2 border-l-primary selection:bg-primary hover:bg-primary/7 data-selected:bg-primary"
                   >
-                    <link.icon />
+                    <link.icon className="text-primary" />
                     <span className="text-lg">{link.label}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -103,14 +100,15 @@ function AppSidebar() {
           <SidebarGroupLabel>Library</SidebarGroupLabel>
           {session && (
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="gap-2">
                 {authLinks.map((link) => (
                   <SidebarMenuItem key={link.label}>
                     <SidebarMenuButton
                       isActive={pathname == link.href ? true : false}
                       render={<Link href={link.href} />}
+                      className="rounded-sm border-l-2 border-l-primary selection:bg-primary hover:bg-primary/7 data-selected:bg-primary"
                     >
-                      <link.icon />
+                      <link.icon className="text-primary" />
                       <span className="text-lg">{link.label}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
