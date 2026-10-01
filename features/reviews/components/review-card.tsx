@@ -1,4 +1,5 @@
 import StarRating from "@/components/ui/star-rating"
+import LikeButton from "@/features/likes/components/like-button"
 import { Review } from "@/features/reviews/types"
 import dayjs from "dayjs"
 import Image from "next/image"
@@ -43,6 +44,13 @@ function ReviewCard({ review }: Props) {
           <div>
             <h3 className="text-2xl font-bold">{review.title}</h3>
             <p className="text-lg text-muted-foreground">{review.content}</p>
+          </div>
+          <div className="pt-1">
+            <LikeButton
+              reviewId={review.id}
+              likesCount={review.likesCount ?? 0}
+              likedByUser={Boolean(review.likedByUser)}
+            />
           </div>
         </div>
         <div className="shrink-0">

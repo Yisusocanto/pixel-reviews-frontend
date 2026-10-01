@@ -10,6 +10,8 @@ export interface Review {
   updatedAt: Date
   createAt: Date
   score: number
+  likesCount: number
+  likedByUser: boolean
 
   game?: Game
   user?: User

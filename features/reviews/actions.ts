@@ -1,5 +1,6 @@
 "use server"
 
+import { LikeToggle } from "@/features/likes/types"
 import {
   CreateReview,
   Review,
@@ -47,5 +48,10 @@ export async function getUserGameReviewAction(
 
 export async function deleteReviewAction(reviewId: string): Promise<Review> {
   const res = await apiClient.delete<Review>(`/reviews/${reviewId}`)
+  return res
+}
+
+export async function likeToggleAction(reviewId: string): Promise<LikeToggle> {
+  const res = await apiClient.post<LikeToggle>(`/reviews/${reviewId}/like`)
   return res
 }

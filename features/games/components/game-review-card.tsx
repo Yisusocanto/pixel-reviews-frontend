@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import StarRating from "@/components/ui/star-rating"
+import LikeButton from "@/features/likes/components/like-button"
 import ReviewDialog from "@/features/reviews/components/review-dialog"
 import { useDeleteReview } from "@/features/reviews/hooks"
 import { Review } from "@/features/reviews/types"
@@ -41,7 +42,7 @@ function GameReviewCard({ review, ownReview = false }: Props) {
             >
               @{review.user?.username}
             </Link>
-            <Badge className="w-fit">Your review</Badge>
+            {ownReview && <Badge className="w-fit">Your review</Badge>}
           </div>
           <span className="text-xs text-muted-foreground">
             {dayjs(review.createAt).format("DD/MM/YYYY")}
@@ -77,9 +78,16 @@ function GameReviewCard({ review, ownReview = false }: Props) {
           <p className="text-muted-foreground">{review.content}</p>
         </div>
       </div>
-      {review.game && ownReview && (
-        <ReviewDialog game={review.game} review={review} />
-      )}
+      <div className="flex items-center justify-between pt-2">
+        <LikeButton
+          reviewId={review.id}
+          likesCount={review.likesCount ?? 0}
+          likedByUser={Boolean(review.likedByUser)}
+        />
+        {review.game && ownReview && (
+          <ReviewDialog game={review.game} review={review} />
+        )}
+      </div>
     </div>
   )
 }
