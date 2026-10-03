@@ -5,6 +5,9 @@ import GameReviewCard from "@/features/reviews/components/game-review-card"
 import { useGameReviews } from "@/features/games/hooks/use-games"
 import { useUserGameReview } from "@/features/reviews/hooks"
 import { Review } from "@/features/reviews/types"
+import { useInView } from "react-intersection-observer"
+import { useEffect } from "react"
+import { Spinner } from "@/components/ui/spinner"
 
 interface Props {
   gameId: string
@@ -17,7 +20,18 @@ function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
   const currentUserReview =
     userReview !== undefined ? userReview : initialUserReview
 
-  const { data } = useGameReviews(gameSlug)
+  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useGameReviews(gameSlug)
+
+  const { ref, inView } = useInView({
+    threshold: 0,
+  })
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+    }
+  })
 
   const reviews = data?.pages
     .flatMap((page) => page.items)
@@ -41,6 +55,12 @@ function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
           {reviews.map((review) => (
             <GameReviewCard review={review} key={review.id} />
           ))}
+          <div ref={ref} className="py-4 text-center">
+            {isFetchingNextPage && <Spinner />}
+            {!hasNextPage && reviews.length > 0 && (
+              <p className="text-sm text-muted-foreground">No more reviews</p>
+            )}
+          </div>
         </div>
       ) : (
         <div className="flex">

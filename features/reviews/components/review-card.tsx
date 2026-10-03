@@ -17,7 +17,7 @@ function ReviewCard({ review }: Props) {
         <span className="text-muted-foreground">
           <Link
             href={`/users/${review.user?.username}`}
-            className="font-bold text-foreground hover:text-primary"
+            className="font-bold text-foreground transition-colors duration-300 ease-in-out hover:text-primary"
           >
             {review.user?.username}
           </Link>{" "}
@@ -32,7 +32,7 @@ function ReviewCard({ review }: Props) {
           <div className="flex gap-2">
             <Link
               href={`/games/${review.game?.slug}`}
-              className="font-heading text-4xl font-extrabold uppercase hover:text-primary"
+              className="font-heading text-4xl font-extrabold uppercase transition-colors duration-300 hover:text-primary"
             >
               {review.game?.title}
             </Link>

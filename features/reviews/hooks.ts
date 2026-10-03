@@ -15,15 +15,24 @@ import {
 } from "@/features/reviews/types"
 import {
   InfiniteData,
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query"
 
-export const useReviews = (page: number = 1, limit: number = 10) => {
-  return useQuery({
-    queryKey: ["reviews", page, limit],
-    queryFn: () => getAllReviewsAction(page, limit),
+export const useReviews = () => {
+  return useInfiniteQuery({
+    queryKey: ["reviews"],
+    queryFn: ({ pageParam }) => getAllReviewsAction(pageParam, 10),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page < lastPage.totalPages) {
+        return lastPage.page + 1
+      }
+
+      return undefined
+    },
   })
 }
 
