@@ -96,6 +96,7 @@ export const useDeleteReview = () => {
       }
       qc.invalidateQueries({ queryKey: ["reviews"] })
       qc.invalidateQueries({ queryKey: ["gameReviews"] })
+      qc.invalidateQueries({ queryKey: ["userReviews"] })
       qc.invalidateQueries({ queryKey: ["userReview"] })
       toast.add({
         description: "Review deleted successfully",
@@ -118,17 +119,20 @@ export const useLikeToggle = () => {
     onMutate: async (reviewId: string) => {
       await qc.cancelQueries({ queryKey: ["reviews"] })
       await qc.cancelQueries({ queryKey: ["gameReviews"] })
+      await qc.cancelQueries({ queryKey: ["userReviews"] })
       await qc.cancelQueries({ queryKey: ["userReview"] })
 
       const previousReviews = qc.getQueriesData({ queryKey: ["reviews"] })
       const previousGameReviews = qc.getQueriesData({
         queryKey: ["gameReviews"],
       })
+      const previousUserInfinityReviews = qc.getQueriesData({
+        queryKey: ["userReviews"],
+      })
       const previousUserReviews = qc.getQueriesData({
         queryKey: ["userReview"],
       })
 
-      // Helper to calculate next like state
       const updateReviewLike = (r: Review): Review => {
         if (r.id !== reviewId) return r
         const willBeLiked = !r.likedByUser
@@ -141,7 +145,6 @@ export const useLikeToggle = () => {
         }
       }
 
-      // 1. Optimistically update infinite queries: ["gameReviews", slug]
       qc.setQueriesData<InfiniteData<ReviewPagination>>(
         { queryKey: ["gameReviews"] },
         (old) => {
@@ -156,7 +159,21 @@ export const useLikeToggle = () => {
         }
       )
 
-      // 2. Optimistically update paginated queries: ["reviews", page, limit]
+      qc.setQueriesData<InfiniteData<ReviewPagination>>(
+        { queryKey: ["userReviews"] },
+        (old) => {
+          if (!old?.pages) return old
+
+          return {
+            ...old,
+            pages: old.pages.map((page) => ({
+              ...page,
+              items: page.items.map(updateReviewLike),
+            })),
+          }
+        }
+      )
+
       qc.setQueriesData<ReviewPagination>({ queryKey: ["reviews"] }, (old) => {
         if (!old?.items) return old
         return {
@@ -165,13 +182,17 @@ export const useLikeToggle = () => {
         }
       })
 
-      // 3. Optimistically update single review: ["userReview", gameId]
       qc.setQueriesData<Review | null>({ queryKey: ["userReview"] }, (old) => {
         if (!old) return old
         return updateReviewLike(old)
       })
 
-      return { previousReviews, previousGameReviews, previousUserReviews }
+      return {
+        previousReviews,
+        previousGameReviews,
+        previousUserInfinityReviews,
+        previousUserReviews,
+      }
     },
     onError: (_err, _reviewId, context) => {
       if (context?.previousReviews) {
@@ -181,6 +202,11 @@ export const useLikeToggle = () => {
       }
       if (context?.previousGameReviews) {
         context.previousGameReviews.forEach(([queryKey, data]) => {
+          qc.setQueryData(queryKey, data)
+        })
+      }
+      if (context?.previousUserInfinityReviews) {
+        context.previousUserInfinityReviews.forEach(([queryKey, data]) => {
           qc.setQueryData(queryKey, data)
         })
       }
@@ -196,6 +222,7 @@ export const useLikeToggle = () => {
     },
     onSettled: () => {
       qc.invalidateQueries({ queryKey: ["gameReviews"] })
+      qc.invalidateQueries({ queryKey: ["userReviews"] })
       qc.invalidateQueries({ queryKey: ["reviews"] })
       qc.invalidateQueries({ queryKey: ["userReview"] })
     },

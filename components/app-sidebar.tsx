@@ -26,15 +26,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { NavLink } from "@/types/link"
-import {
-  ChevronsUpDown,
-  Earth,
-  Gift,
-  Home,
-  LogOut,
-  Pencil,
-  Search,
-} from "lucide-react"
+import { ChevronsUpDown, Earth, Home, LogOut, Search, User } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -50,8 +42,11 @@ function AppSidebar() {
     { label: "Search", href: "/search", icon: Search },
   ]
   const authLinks: NavLink[] = [
-    { label: "My reviews", href: "/user", icon: Pencil },
-    { label: "Wishlist", href: "/user", icon: Gift },
+    {
+      label: "Profile",
+      href: `/users/${session?.user.username}`,
+      icon: User,
+    },
   ]
 
   const handleSignOut = async () => {

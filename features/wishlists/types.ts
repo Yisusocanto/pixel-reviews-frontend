@@ -5,8 +5,8 @@ export interface Wishlist {
   id: string
   gameId: string
   userId: string
-  game?: Game
-  user?: User
+  game: Game
+  user: User
 }
 
 export interface ToggleWishlistRequest {
@@ -16,4 +16,11 @@ export interface ToggleWishlistRequest {
 export interface InUserWishlist {
   inWishlist: boolean
   wishlistId?: string | null
+}
+
+export interface WishlistPagination {
+  items: Wishlist[]
+  total: number
+  page: number
+  totalPages: number
 }

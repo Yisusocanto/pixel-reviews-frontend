@@ -1,7 +1,7 @@
 "use client"
 
 import { Separator } from "@/components/ui/separator"
-import GameReviewCard from "@/features/games/components/game-review-card"
+import GameReviewCard from "@/features/reviews/components/game-review-card"
 import { useGameReviews } from "@/features/games/hooks/use-games"
 import { useUserGameReview } from "@/features/reviews/hooks"
 import { Review } from "@/features/reviews/types"
@@ -14,7 +14,8 @@ interface Props {
 
 function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
   const { data: userReview } = useUserGameReview(gameId, initialUserReview)
-  const currentUserReview = userReview !== undefined ? userReview : initialUserReview
+  const currentUserReview =
+    userReview !== undefined ? userReview : initialUserReview
 
   const { data } = useGameReviews(gameSlug)
 
