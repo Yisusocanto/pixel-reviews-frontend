@@ -18,15 +18,15 @@ const Progress = React.forwardRef<
     ref={ref}
     data-slot="progress-track"
     className={cn(
-      "relative h-2.5 w-full overflow-hidden rounded-full bg-zinc-800/90 dark:bg-zinc-800/90 border border-white/5",
-      className,
+      "relative h-2 w-full overflow-hidden rounded-full bg-muted border border-border/30",
+      className
     )}
     {...props}
   >
     <ProgressPrimitive.Indicator
       data-slot="progress-indicator"
       className={cn(
-        "h-full w-full flex-1 bg-primary rounded-full transition-all duration-500 ease-out",
+        "h-full w-full flex-1 bg-primary transition-all duration-500 ease-out",
         indicatorClassName
       )}
       style={{ transform: `translateX(-${100 - (value || 0)}%)` }}

@@ -75,19 +75,21 @@ export function RatingDistribution({
   )
 
   return (
-    <div className={cn("w-full space-y-2", className)} {...props}>
+    <div className={cn("w-full space-y-1.5", className)} {...props}>
       {normalizedDistribution.map((row) => {
-        const percentage =
+        const rawPercentage =
           row.percentage !== undefined
-            ? row.percentage
+            ? Number(row.percentage) || 0
             : totalCount > 0
-              ? Math.round(((row.count || 0) / totalCount) * 100)
+              ? ((row.count || 0) / totalCount) * 100
               : 0
+        const percentage = Math.round(rawPercentage)
 
         return (
           <div
             key={row.stars}
-            className="flex items-center gap-3 text-sm py-0.5"
+            className="group flex items-center gap-3 py-0.5 text-sm"
+            title={`${row.count} ${row.count === 1 ? "review" : "reviews"} (${percentage}%)`}
           >
             {/* Stars label */}
             <div className="flex w-7 shrink-0 items-center justify-end gap-1 text-xs font-semibold text-foreground/80">
@@ -100,18 +102,18 @@ export function RatingDistribution({
             {/* Progress Bar (stretches full width) */}
             <Progress
               value={percentage}
-              className={cn("h-2.5 flex-1", progressClassName)}
+              className={cn("h-2 flex-1", progressClassName)}
             />
 
             {/* Percentage & Review count */}
-            <div className="flex min-w-16 shrink-0 items-center justify-end gap-1.5 text-right text-xs">
+            <div className="flex min-w-16 shrink-0 items-center justify-end gap-1.5 text-right text-xs tabular-nums">
               {showPercentage && (
-                <span className="font-semibold text-foreground/90 tabular-nums">
+                <span className="font-medium text-foreground/90">
                   {percentage}%
                 </span>
               )}
               {showCount && (
-                <span className="text-[11px] text-muted-foreground/70 tabular-nums">
+                <span className="text-[11px] text-muted-foreground/70">
                   ({row.count})
                 </span>
               )}

@@ -1,7 +1,6 @@
 import { auth } from "@/auth"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import RatingDistribution from "@/components/ui/c-rating-6"
-import StarRating from "@/components/ui/star-rating"
+import RatingDistributionCard from "@/components/ui/rating-distribution-card"
 import { getUserAction, getUserStatsAction } from "@/features/users/actions"
 import UpdateUserDialog from "@/features/users/components/update-user-dialog"
 import UserReviewSection from "@/features/users/components/users-reviews-section"
@@ -72,38 +71,11 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
         {/* left */}
         <div className="flex flex-2 flex-col gap-10">
           {/* Rating stats section */}
-          <div className="flex flex-col items-center gap-6 rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur-sm sm:flex-row sm:gap-10">
-            <div className="flex min-w-44 shrink-0 flex-col items-center justify-center border-border/40 sm:border-r sm:pr-8">
-              <div className="flex items-baseline gap-1.5">
-                <span className="font-heading text-5xl font-black tracking-tight text-foreground">
-                  {userStats?.avgRating
-                    ? Number(userStats?.avgRating).toFixed(1)
-                    : "0.0"}
-                </span>
-                <span className="text-xl font-semibold text-muted-foreground/70">
-                  / 5
-                </span>
-              </div>
-              <div className="mt-2.5">
-                <StarRating
-                  value={Number(userStats?.avgRating) || 0}
-                  size="md"
-                  readOnly
-                />
-              </div>
-              <span className="mt-2 text-xs font-medium text-muted-foreground">
-                {userStats?.totalReviews === 1
-                  ? "1 review"
-                  : `${userStats?.totalReviews ?? 0} reviews`}
-              </span>
-            </div>
-            <div className="w-full flex-1">
-              <RatingDistribution
-                distribution={userStats?.ratingDistribution}
-                className="w-full"
-              />
-            </div>
-          </div>
+          <RatingDistributionCard
+            avgRating={userStats?.avgRating}
+            totalReviews={userStats?.totalReviews}
+            distribution={userStats?.ratingDistribution}
+          />
 
           {/* Reviews */}
           <div>
