@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { ReviewPagination } from "@/features/reviews/types"
 import { User, UserStats, UserUpdate } from "@/features/users/types"
 import { WishlistPagination } from "@/features/wishlists/types"
@@ -48,5 +49,12 @@ export async function getUserWishlistAction(
       },
     }
   )
+  return res
+}
+
+export async function uploadProfilePhotoAction(formData: FormData) {
+  const res = await apiClient.post<User>("/users/profile-photo", formData)
+  revalidatePath(`/users/${res.username}`)
+  revalidatePath("/", "layout")
   return res
 }

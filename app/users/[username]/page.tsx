@@ -1,7 +1,8 @@
 import { auth } from "@/auth"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import RatingDistributionCard from "@/components/ui/rating-distribution-card"
 import { getUserAction, getUserStatsAction } from "@/features/users/actions"
+import ProfilePhotoDialog from "@/features/users/components/profile-photo-dialog"
 import UpdateUserDialog from "@/features/users/components/update-user-dialog"
 import UserReviewSection from "@/features/users/components/users-reviews-section"
 import UsersWishlistSection from "@/features/users/components/users-wishlist-section"
@@ -29,12 +30,22 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
       <header className="relative flex flex-col gap-4 border-b border-b-border p-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div>
+            <div className="relative inline-block">
               <Avatar className="size-30">
+                <AvatarImage
+                  src={user?.profilePhotoUrl}
+                  alt={user?.username}
+                  className="object-cover"
+                />
                 <AvatarFallback className="text-4xl font-bold uppercase">
                   {user?.username.slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
+              {ownProfile && (
+                <div className="absolute right-0 bottom-0 z-10 translate-x-1 translate-y-1">
+                  <ProfilePhotoDialog initialImageUrl={user?.profilePhotoUrl} />
+                </div>
+              )}
             </div>
             <div>
               <h1 className="text-4xl font-extrabold">@{user?.username}</h1>
