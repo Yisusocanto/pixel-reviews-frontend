@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import StarRating from "@/components/ui/star-rating"
 import LikeButton from "@/features/likes/components/like-button"
 import { Review } from "@/features/reviews/types"
@@ -14,17 +15,21 @@ function ReviewCard({ review }: Props) {
   return (
     <div className="flex flex-col gap-4 border-b border-b-border py-8">
       <div className="flex gap-2">
-        <span className="text-muted-foreground">
+        <span className="flex items-center gap-2 text-muted-foreground">
+          <Avatar className="size-8">
+            <AvatarImage src={review.user?.profilePhotoUrl} />
+            <AvatarFallback>
+              <span>{review.user?.username.slice(0, 2)}</span>
+            </AvatarFallback>
+          </Avatar>
           <Link
             href={`/users/${review.user?.username}`}
             className="font-bold text-foreground transition-colors duration-300 ease-in-out hover:text-primary"
           >
             {review.user?.username}
           </Link>{" "}
-          reviewed a game on
-        </span>
-        <span className="text-muted-foreground">
-          {dayjs(review.createAt).format("DD/MM/YYYY")}
+          reviewed a game on{" "}
+          <strong>{dayjs(review.createAt).format("DD/MM/YYYY")}</strong>
         </span>
       </div>
       <div className="flex items-center justify-between gap-4">

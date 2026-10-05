@@ -1,5 +1,6 @@
 "use client"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge-2"
 import { Button } from "@/components/ui/button"
 import {
@@ -35,7 +36,13 @@ function GameReviewCard({ review, ownReview = false }: Props) {
     >
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <Avatar className="size-8">
+              <AvatarImage src={review.user?.profilePhotoUrl} />
+              <AvatarFallback className="uppercase">
+                <span>{review.user?.username.slice(0, 2)}</span>
+              </AvatarFallback>
+            </Avatar>
             <Link
               href={`/users/${review.user?.username}`}
               className="font-bold transition-colors duration-300 ease-in-out hover:text-primary"
