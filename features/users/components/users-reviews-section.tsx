@@ -7,9 +7,10 @@ import { useInView } from "react-intersection-observer"
 
 interface Props {
   username: string
+  ownReview?: boolean
 }
 
-function UserReviewSection({ username }: Props) {
+function UserReviewSection({ username, ownReview = false }: Props) {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useUserReviews(username)
   const reviews = data?.pages.flatMap((page) => page.items) ?? []
@@ -44,6 +45,7 @@ function UserReviewSection({ username }: Props) {
         <UserReviewCard
           key={review.id}
           review={review}
+          ownReview={ownReview}
           className="border-b border-b-border last:border-0"
         />
       ))}

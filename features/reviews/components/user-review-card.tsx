@@ -20,9 +20,10 @@ import Link from "next/link"
 interface Props {
   review: Review
   className?: string
+  ownReview?: boolean
 }
 
-function UserReviewCard({ review, className }: Props) {
+function UserReviewCard({ review, className, ownReview = false }: Props) {
   const { mutate: deleteReview } = useDeleteReview()
   return (
     <div className={cn("flex justify-between gap-4 p-8", className)}>
@@ -61,24 +62,26 @@ function UserReviewCard({ review, className }: Props) {
             likesCount={review.likesCount}
             likedByUser={review.likedByUser}
           />
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button variant={"ghost"}>
-                  <Ellipsis />
-                </Button>
-              }
-            />
-            <DropdownMenuContent>
-              <DropdownMenuItem
-                onClick={() => deleteReview(review.id)}
-                className={"text-destructive hover:bg-destructive/50"}
-              >
-                <Trash className="text-destructive" />
-                <span>Delete</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {ownReview && (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button variant={"ghost"}>
+                    <Ellipsis />
+                  </Button>
+                }
+              />
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  onClick={() => deleteReview(review.id)}
+                  className={"text-destructive hover:bg-destructive/50"}
+                >
+                  <Trash className="text-destructive" />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </div>
     </div>

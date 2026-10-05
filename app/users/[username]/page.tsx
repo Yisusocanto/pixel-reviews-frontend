@@ -90,7 +90,7 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
 
           {/* Reviews */}
           <div>
-            <UserReviewSection username={username} />
+            <UserReviewSection username={username} ownReview={ownProfile} />
           </div>
         </div>
 
