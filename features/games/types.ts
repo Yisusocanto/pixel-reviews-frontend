@@ -9,6 +9,7 @@ export interface Game {
   rawgId: string
   releaseDate: string
   imageUrl: string
+  backgroundImage?: string
   description: string
   screenshots: string[]
   developers: Developer[]

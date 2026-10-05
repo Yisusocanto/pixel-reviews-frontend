@@ -59,21 +59,19 @@ async function GameDetailPage({
     title: s,
   }))
 
+  const backgroundImage = game.backgroundImage || game.imageUrl
+
   return (
     <div className="relative min-h-screen">
       {/* Hero Banner Background */}
       <div className="relative h-96 w-full overflow-hidden border-b border-b-border">
-        {game.imageUrl && (
-          <>
-            <Image
-              src={game.imageUrl}
-              alt={game.title}
-              fill
-              className="absolute inset-0 h-full w-full object-cover opacity-25 blur-[1px] filter"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent" />
-          </>
-        )}
+        <Image
+          src={backgroundImage}
+          alt={game.title}
+          fill
+          className="absolute inset-0 h-full w-full object-cover opacity-25 blur-[1px] filter"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-background/30 via-background/5 to-transparent" />
 
         {/* Poster & Header Info */}
         <div className="absolute bottom-6 left-8 z-10 flex items-end gap-6">
