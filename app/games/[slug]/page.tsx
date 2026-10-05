@@ -27,10 +27,8 @@ async function GameDetailPage({
   let gameStats: GameStats
   let review: Review | undefined = undefined
   try {
-    ;[game, gameStats] = await Promise.all([
-      getGameAction(slug),
-      getGameStatsAction(slug),
-    ])
+    game = await getGameAction(slug)
+    gameStats = await getGameStatsAction(slug)
   } catch (error) {
     const err = error as Error
     return (
