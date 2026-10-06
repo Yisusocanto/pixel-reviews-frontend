@@ -3,6 +3,7 @@ import {
   createReviewAction,
   deleteReviewAction,
   getAllReviewsAction,
+  getReviewCommentsAction,
   getUserGameReviewAction,
   likeToggleAction,
   updateReviewAction,
@@ -234,6 +235,28 @@ export const useLikeToggle = () => {
       qc.invalidateQueries({ queryKey: ["userReviews"] })
       qc.invalidateQueries({ queryKey: ["reviews"] })
       qc.invalidateQueries({ queryKey: ["userReview"] })
+    },
+  })
+}
+
+export const useReviewComments = (reviewId: string) => {
+  return useInfiniteQuery({
+    queryKey: ["comments", reviewId],
+    queryFn: ({ pageParam }) =>
+      getReviewCommentsAction(reviewId, pageParam, 10),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (
+        lastPage?.page &&
+        lastPage?.totalPages &&
+        Number(lastPage.page) < Number(lastPage.totalPages)
+      ) {
+        return Number(lastPage.page) + 1
+      }
+      if (lastPage?.items?.length === 10 && lastPage?.page) {
+        return Number(lastPage.page) + 1
+      }
+      return undefined
     },
   })
 }

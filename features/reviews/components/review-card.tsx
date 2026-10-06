@@ -1,17 +1,26 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import StarRating from "@/components/ui/star-rating"
 import LikeButton from "@/features/likes/components/like-button"
 import { Review } from "@/features/reviews/types"
+import { cn } from "cn"
 import dayjs from "dayjs"
+import { MessageSquare } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import React from "react"
 
 interface Props {
   review: Review
+  onCommentButtonClick: (review: Review) => void
+  commentsSelected?: boolean
 }
 
-function ReviewCard({ review }: Props) {
+function ReviewCard({
+  review,
+  onCommentButtonClick,
+  commentsSelected = false,
+}: Props) {
   return (
     <div className="flex flex-col gap-4 border-b border-b-border py-8">
       <div className="flex gap-2">
@@ -50,12 +59,23 @@ function ReviewCard({ review }: Props) {
             <h3 className="text-2xl font-bold">{review.title}</h3>
             <p className="text-lg text-muted-foreground">{review.content}</p>
           </div>
-          <div className="pt-1">
+          <div className="flex items-center gap-2 pt-1">
             <LikeButton
               reviewId={review.id}
               likesCount={review.likesCount ?? 0}
               likedByUser={Boolean(review.likedByUser)}
             />
+            <Button
+              variant={"ghost"}
+              onClick={() => onCommentButtonClick(review)}
+              className={cn(
+                "text-xs font-medium",
+                commentsSelected && "text-primary"
+              )}
+            >
+              <MessageSquare className="h-4 w-4 transition-transform duration-200 active:scale-125" />
+              {review.commentsCount} comments
+            </Button>
           </div>
         </div>
         <div className="shrink-0">

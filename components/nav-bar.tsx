@@ -17,7 +17,7 @@ function NavBar() {
   }
 
   return (
-    <header className="flex h-15 items-center justify-between border-b border-b-border bg-secondary px-4">
+    <header className="sticky top-0 z-30 flex h-15 items-center justify-between border-b border-b-border bg-secondary/95 backdrop-blur-sm px-4">
       <SidebarTrigger />
       {!session && (
         <div className="flex gap-2">

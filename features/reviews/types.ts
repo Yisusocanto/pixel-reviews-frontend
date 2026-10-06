@@ -12,6 +12,7 @@ export interface Review {
   score: number
   likesCount: number
   likedByUser: boolean
+  commentsCount: number
 
   game?: Game
   user?: User

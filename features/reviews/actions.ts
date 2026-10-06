@@ -1,5 +1,6 @@
 "use server"
 
+import { CommentsPagination } from "@/features/comments/types"
 import { LikeToggle } from "@/features/likes/types"
 import {
   CreateReview,
@@ -53,5 +54,19 @@ export async function deleteReviewAction(reviewId: string): Promise<Review> {
 
 export async function likeToggleAction(reviewId: string): Promise<LikeToggle> {
   const res = await apiClient.post<LikeToggle>(`/reviews/${reviewId}/like`)
+  return res
+}
+
+export async function getReviewCommentsAction(
+  reviewId: string,
+  page: number,
+  limit: number
+) {
+  const res = await apiClient.get<CommentsPagination>(
+    `/reviews/${reviewId}/comments`,
+    {
+      params: { page, limit },
+    }
+  )
   return res
 }
