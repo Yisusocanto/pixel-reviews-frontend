@@ -41,13 +41,8 @@ function FeedCommentsSection({ selectedReview, onClose }: Props) {
     resolver: zodResolver(schema),
   })
 
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useReviewComments(selectedReview.id)
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useReviewComments(selectedReview.id)
 
   const comments = data?.pages.flatMap((page) => page.items)
   const totalComments = data?.pages?.[0]?.total ?? comments?.length ?? 0
@@ -55,7 +50,6 @@ function FeedCommentsSection({ selectedReview, onClose }: Props) {
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
       const { scrollTop, scrollHeight, clientHeight } = e.currentTarget
-      // Disparar carga si el scroll está a menos de 100px del fondo
       if (scrollHeight - scrollTop - clientHeight < 100) {
         if (hasNextPage && !isFetchingNextPage) {
           fetchNextPage()
@@ -148,10 +142,7 @@ function FeedCommentsSection({ selectedReview, onClose }: Props) {
             ) : comments && comments.length > 0 ? (
               <>
                 {comments.map((comment) => {
-                  const isAuthor =
-                    comment.user?.id &&
-                    selectedReview.user?.id &&
-                    comment.user.id === selectedReview.user.id
+                  const isAuthor = comment.userId === session?.user.id
 
                   return (
                     <CommentCard
