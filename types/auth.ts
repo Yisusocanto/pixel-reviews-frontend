@@ -5,6 +5,7 @@ export interface UserResponse {
   bio: string | null
   createdAt: string
   updatedAt: string
+  profilePhotoUrl: string
 }
 
 export interface AuthResponse {

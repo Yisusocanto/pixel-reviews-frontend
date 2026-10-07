@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import StarRating from "@/components/ui/star-rating"
 import LikeButton from "@/features/likes/components/like-button"
+import ReviewDetailDialog from "@/features/reviews/components/review-detail-dialog"
 import ReviewDialog from "@/features/reviews/components/review-dialog"
 import { useDeleteReview } from "@/features/reviews/hooks"
 import { Review } from "@/features/reviews/types"
@@ -86,11 +87,14 @@ function GameReviewCard({ review, ownReview = false }: Props) {
         </div>
       </div>
       <div className="flex items-center justify-between pt-2">
-        <LikeButton
-          reviewId={review.id}
-          likesCount={review.likesCount ?? 0}
-          likedByUser={Boolean(review.likedByUser)}
-        />
+        <div className="flex items-center gap-2">
+          <LikeButton
+            reviewId={review.id}
+            likesCount={review.likesCount ?? 0}
+            likedByUser={Boolean(review.likedByUser)}
+          />
+          <ReviewDetailDialog review={review} />
+        </div>
         {review.game && ownReview && (
           <ReviewDialog game={review.game} review={review} />
         )}

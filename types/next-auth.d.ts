@@ -16,6 +16,7 @@ declare module "next-auth" {
     email: string
     username: string
     bio?: string | null
+    profilePhotoUrl: string
     accessToken: string
     refreshToken: string
     accessTokenExpires: number

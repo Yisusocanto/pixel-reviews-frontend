@@ -23,7 +23,7 @@ export default function Page() {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
     }
-  })
+  }, [inView, fetchNextPage, hasNextPage, isFetchingNextPage])
 
   const today = dayjs().format("DD/MM/YYYY")
 

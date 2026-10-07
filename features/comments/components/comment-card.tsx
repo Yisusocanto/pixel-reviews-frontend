@@ -10,12 +10,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useDeleteComments } from "@/features/comments/hooks"
 import { Comment } from "@/features/comments/types"
-import dayjs from "dayjs"
-import relativeTime from "dayjs/plugin/relativeTime"
+import { formatTimeAgo } from "@/lib/format-time"
 import { Ellipsis, Trash } from "lucide-react"
 import Link from "next/link"
-
-dayjs.extend(relativeTime)
 
 interface Props {
   comment: Comment
@@ -23,10 +20,6 @@ interface Props {
 }
 
 function CommentCard({ comment, isAuthor = false }: Props) {
-  const formatTimeAgo = (date: Date | string): string => {
-    return dayjs(date).fromNow()
-  }
-
   const { mutate: deleteComment, isPending } = useDeleteComments()
 
   return (

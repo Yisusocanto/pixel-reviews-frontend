@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import StarRating from "@/components/ui/star-rating"
 import LikeButton from "@/features/likes/components/like-button"
+import ReviewDetailDialog from "@/features/reviews/components/review-detail-dialog"
+import ReviewDialog from "@/features/reviews/components/review-dialog"
 import { useDeleteReview } from "@/features/reviews/hooks"
 import { Review } from "@/features/reviews/types"
 import { cn } from "cn"
@@ -56,31 +58,39 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
           <h3 className="text-2xl font-bold text-primary">{review.title}</h3>
           <p>{review.content}</p>
         </div>
-        <div className="flex items-center justify-between">
-          <LikeButton
-            reviewId={review.id}
-            likesCount={review.likesCount}
-            likedByUser={review.likedByUser}
-          />
+        <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center gap-2">
+            <LikeButton
+              reviewId={review.id}
+              likesCount={review.likesCount ?? 0}
+              likedByUser={Boolean(review.likedByUser)}
+            />
+            <ReviewDetailDialog review={review} />
+          </div>
           {ownReview && (
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <Button variant={"ghost"}>
-                    <Ellipsis />
-                  </Button>
-                }
-              />
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  onClick={() => deleteReview(review.id)}
-                  className={"text-destructive hover:bg-destructive/50"}
-                >
-                  <Trash className="text-destructive" />
-                  <span>Delete</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-2">
+              {review.game && (
+                <ReviewDialog game={review.game} review={review} />
+              )}
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button variant={"ghost"}>
+                      <Ellipsis />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={() => deleteReview(review.id)}
+                    className={"text-destructive hover:bg-destructive/50"}
+                  >
+                    <Trash className="text-destructive" />
+                    <span>Delete</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           )}
         </div>
       </div>

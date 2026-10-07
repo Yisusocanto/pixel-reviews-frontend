@@ -39,11 +39,10 @@ export function LikeButton({
       <Button
         type="button"
         variant="ghost"
-        size="icon-lg"
         onClick={handleLike}
         disabled={isPending}
         className={cn(
-          "flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium transition-colors hover:bg-muted/60",
+          "flex w-auto items-center gap-1.5 px-2.5 py-1 text-xs font-medium transition-colors hover:bg-muted/60",
           likedByUser
             ? "text-red-500 hover:text-red-600"
             : "text-muted-foreground hover:text-foreground",
