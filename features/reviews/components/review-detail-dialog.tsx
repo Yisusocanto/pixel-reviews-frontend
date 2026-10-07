@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dialog"
 import { Review } from "@/features/reviews/types"
 import { MessageSquare } from "lucide-react"
-
 import { formatTimeAgo } from "@/lib/format-time"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link"
@@ -21,15 +20,7 @@ import LikeButton from "@/features/likes/components/like-button"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { useReviewComments } from "@/features/reviews/hooks"
-import {
-  Message,
-  MessageAvatar,
-  MessageContent,
-  MessageFooter,
-} from "@/components/ui/message"
-import { Bubble, BubbleContent } from "@/components/ui/bubble"
 import { useSession } from "next-auth/react"
-import { Badge } from "@/components/ui/badge-2"
 import { useInView } from "react-intersection-observer"
 import { useEffect } from "react"
 import { useCreateComment } from "@/features/comments/hooks"
@@ -38,6 +29,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
 import { Spinner } from "@/components/ui/spinner"
 import LoginModal from "@/components/auth/login-modal"
+import MessageCommentCard from "@/features/comments/components/message-comment-card"
 
 interface Props {
   review: Review
@@ -180,51 +172,12 @@ function ReviewDetailDialog({ review }: Props) {
                 session?.user.username === comment.user.username
 
               return (
-                <Message
+                <MessageCommentCard
                   key={comment.id}
-                  align={isOwnComment ? "end" : "start"}
-                >
-                  <MessageAvatar>
-                    <Avatar>
-                      <AvatarImage
-                        src={comment.user.profilePhotoUrl}
-                        alt={comment.user.username}
-                      />
-                      <AvatarFallback className="uppercase">
-                        {comment.user.username.slice(0, 2)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </MessageAvatar>
-                  <MessageContent>
-                    <Bubble variant={"secondary"}>
-                      <BubbleContent>
-                        <div className="flex flex-col gap-0.5">
-                          <div className="flex items-center gap-1.5">
-                            <Link
-                              href={`/users/${comment.user.username}`}
-                              className="font-bold transition-colors hover:underline"
-                            >
-                              {comment.user.username}
-                            </Link>
-                            {isAuthor && (
-                              <Badge className="ml-1 h-fit w-fit bg-primary/30">
-                                Author
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="leading-relaxed whitespace-pre-wrap">
-                            {comment.content}
-                          </p>
-                        </div>
-                      </BubbleContent>
-                    </Bubble>
-                    <MessageFooter>
-                      <span className="text-xs text-muted-foreground">
-                        {formatTimeAgo(comment.createdAt)}
-                      </span>
-                    </MessageFooter>
-                  </MessageContent>
-                </Message>
+                  comment={comment}
+                  isAuthor={isAuthor}
+                  isOwnComment={isOwnComment}
+                />
               )
             })}
 
