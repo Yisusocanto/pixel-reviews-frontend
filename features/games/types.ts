@@ -1,6 +1,7 @@
 import { RatingDistributionRow } from "@/components/ui/c-rating-6"
 import { Developer } from "@/types/developer"
 import { Publisher } from "@/types/publisher"
+import { Store } from "@/types/store"
 
 export interface Game {
   id: string
@@ -14,6 +15,12 @@ export interface Game {
   screenshots: string[]
   developers: Developer[]
   publishers: Publisher[]
+  metacriticScore?: number | null
+  metacriticUrl?: string | null
+  metacritic_score?: number | null
+  metacritic_url?: string | null
+  website?: string | null
+  stores?: Store[]
 }
 
 export interface GameSearch {
