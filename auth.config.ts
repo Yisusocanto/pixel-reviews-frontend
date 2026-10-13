@@ -1,6 +1,7 @@
 import type { NextAuthConfig } from "next-auth"
 import type { JWT } from "next-auth/jwt"
 import Credentials from "next-auth/providers/credentials"
+import Google from "next-auth/providers/google"
 import { loginSchema } from "@/lib/validations/auth"
 import type { AuthResponse, TokenResponse } from "@/types/auth"
 
@@ -9,10 +10,6 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   "http://localhost:8000"
 
-/**
- * Safely decodes the expiration (`exp`) timestamp from a JWT access token.
- * Uses standard `atob` for universal runtime support (Edge, Node.js, and browser).
- */
 function decodeJwtExpiry(token: string): number | null {
   try {
     const parts = token.split(".")
@@ -26,10 +23,6 @@ function decodeJwtExpiry(token: string): number | null {
   }
 }
 
-/**
- * Requests a new pair of tokens (rotation) from the FastAPI backend
- * using the stored `refresh_token`.
- */
 async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
@@ -67,8 +60,32 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
   }
 }
 
+async function exchangeGoogleToken(idToken: string): Promise<AuthResponse | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/google`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id_token: idToken,
+      }),
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    return (await response.json()) as AuthResponse
+  } catch (error) {
+    console.error("Error exchanging Google token with backend:", error)
+    return null
+  }
+}
+
 export const authConfig: NextAuthConfig = {
   providers: [
+    Google,
     Credentials({
       name: "Credentials",
       credentials: {
@@ -121,8 +138,34 @@ export const authConfig: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      // 1. Initial sign-in: `user` is provided from authorize()
+    async signIn({ account }) {
+      if (account?.provider === "google") {
+        if (!account.id_token) return false
+        const backendAuth = await exchangeGoogleToken(account.id_token)
+        return !!backendAuth
+      }
+      return true
+    },
+    async jwt({ token, user, account }) {
+      if (account?.provider === "google" && account.id_token) {
+        const backendAuth = await exchangeGoogleToken(account.id_token)
+        if (backendAuth) {
+          const expiresAt =
+            decodeJwtExpiry(backendAuth.access_token) ??
+            Date.now() + 15 * 60 * 1000
+
+          token.id = backendAuth.user.id
+          token.email = backendAuth.user.email
+          token.username = backendAuth.user.username
+          token.bio = backendAuth.user.bio
+          token.accessToken = backendAuth.access_token
+          token.refreshToken = backendAuth.refresh_token
+          token.accessTokenExpires = expiresAt
+          token.error = undefined
+          return token
+        }
+      }
+
       if (user) {
         token.id = user.id
         token.email = user.email
@@ -134,12 +177,10 @@ export const authConfig: NextAuthConfig = {
         return token
       }
 
-      // 2. Return previous token if the access token has not expired yet (with a 60-second safety window)
       if (Date.now() < token.accessTokenExpires - 60 * 1000) {
         return token
       }
 
-      // 3. Access token has expired or is close to expiring, rotate tokens
       return await refreshAccessToken(token)
     },
     async session({ session, token }) {
@@ -158,8 +199,8 @@ export const authConfig: NextAuthConfig = {
     },
   },
   pages: {
-    signIn: "/auth/login",
-    error: "/auth/login",
+    signIn: "/",
+    error: "/",
   },
   session: {
     strategy: "jwt",

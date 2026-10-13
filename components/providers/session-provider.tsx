@@ -15,9 +15,8 @@ function SessionWatcher({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession()
 
   useEffect(() => {
-    // If token rotation failed on the server, sign out cleanly
     if (session?.error === "RefreshAccessTokenError") {
-      signOut({ callbackUrl: "/auth/login?error=SessionExpired" })
+      signOut({ callbackUrl: "/" })
     }
   }, [session])
 

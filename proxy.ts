@@ -3,11 +3,9 @@ import { NextResponse } from "next/server"
 
 export const proxy = auth((req) => {
   const { nextUrl } = req
-  const isLoggedIn = !!req.auth
   const isAuthRoute = nextUrl.pathname.startsWith("/auth")
 
-  // If the user is already authenticated and visits /auth/login or other auth routes, redirect to home
-  if (isLoggedIn && isAuthRoute) {
+  if (isAuthRoute) {
     return NextResponse.redirect(new URL("/", nextUrl))
   }
 

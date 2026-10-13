@@ -114,9 +114,11 @@ export async function registerAction(
   }
 }
 
-/**
- * Server Action to sign out.
- */
 export async function logoutAction() {
   await signOut()
 }
+
+export async function googleLoginAction() {
+  await signIn("google")
+}
+

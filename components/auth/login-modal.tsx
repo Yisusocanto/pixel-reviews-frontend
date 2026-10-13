@@ -1,6 +1,12 @@
 "use client"
 
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { loginAction, registerAction } from "@/app/actions/auth"
+import { GoogleSignInButton } from "@/components/auth/google-sign-in-button"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -12,6 +18,7 @@ import {
 } from "@/components/ui/dialog"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -20,11 +27,6 @@ import {
   loginSchema,
   registerSchema,
 } from "@/lib/validations/auth"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
 
 interface LoginModalProps {
   open?: boolean
@@ -47,24 +49,19 @@ function LoginModal({
   const open = isControlled ? openProp : internalOpen
   const setOpen = isControlled ? (onOpenChangeProp ?? (() => {})) : setInternalOpen
 
+  const [loginError, setLoginError] = useState("")
+  const [registerError, setRegisterError] = useState("")
   const [activeTab, setActiveTab] = useState<"sign-in" | "sign-up">(defaultTab)
 
-  // Sync activeTab whenever defaultTab changes or modal opens
-  useEffect(() => {
-    if (defaultTab) {
-      setActiveTab(defaultTab)
-    }
-  }, [defaultTab])
-
-  useEffect(() => {
-    if (open) {
+  const handleOpenChange = (newOpen: boolean) => {
+    if (newOpen) {
       setLoginError("")
       setRegisterError("")
+      setActiveTab(defaultTab)
     }
-  }, [open])
+    setOpen(newOpen)
+  }
 
-  // --- Sign In ---
-  const [loginError, setLoginError] = useState("")
   const {
     register: registerLogin,
     handleSubmit: handleLoginSubmit,
@@ -85,8 +82,6 @@ function LoginModal({
     }
   })
 
-  // --- Sign Up ---
-  const [registerError, setRegisterError] = useState("")
   const {
     register: registerSignUp,
     handleSubmit: handleRegisterSubmit,
@@ -108,13 +103,13 @@ function LoginModal({
   })
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       {!isControlled && (
         <DialogTrigger
           render={trigger ?? <Button variant={"ghost"}>Sign in</Button>}
         />
       )}
-      <DialogContent>
+      <DialogContent className="w-[calc(100%-1rem)] max-w-md! p-4 sm:p-6 max-h-[90dvh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Pixel Reviews</DialogTitle>
           <DialogDescription>FOR THOSE WHO PLAY</DialogDescription>
@@ -129,15 +124,23 @@ function LoginModal({
               <TabsTrigger value={"sign-up"}>Create account</TabsTrigger>
             </TabsList>
 
-            {/* ── Sign In ── */}
             <TabsContent value={"sign-in"}>
               <div>
-                <h2 className="font-heading text-4xl">
+                <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl">
                   WELCOME <br /> BACK.
                 </h2>
-                <p className="text-muted-foreground">The games missed you</p>
+                <p className="text-xs text-muted-foreground sm:text-sm">The games missed you</p>
               </div>
-              <div className="mt-4">
+              <div className="mt-4 flex flex-col gap-4">
+                <GoogleSignInButton text="Sign in with Google" />
+
+                <div className="relative flex items-center justify-center">
+                  <Separator className="w-full" />
+                  <span className="bg-background text-muted-foreground absolute px-2 text-xs uppercase">
+                    Or
+                  </span>
+                </div>
+
                 <form onSubmit={onLoginSubmit} className="flex flex-col gap-2">
                   <Field data-invalid={!!loginErrors.email}>
                     <FieldLabel>Email</FieldLabel>
@@ -170,17 +173,25 @@ function LoginModal({
               </div>
             </TabsContent>
 
-            {/* ── Sign Up ── */}
             <TabsContent value={"sign-up"}>
               <div>
-                <h2 className="font-heading text-4xl">
+                <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl">
                   JOIN THE <br /> GAME.
                 </h2>
-                <p className="text-muted-foreground">
+                <p className="text-xs text-muted-foreground sm:text-sm">
                   Create your account and start reviewing
                 </p>
               </div>
-              <div className="mt-4">
+              <div className="mt-4 flex flex-col gap-4">
+                <GoogleSignInButton text="Sign up with Google" />
+
+                <div className="relative flex items-center justify-center">
+                  <Separator className="w-full" />
+                  <span className="bg-background text-muted-foreground absolute px-2 text-xs uppercase">
+                    Or
+                  </span>
+                </div>
+
                 <form
                   onSubmit={onRegisterSubmit}
                   className="flex flex-col gap-2"
