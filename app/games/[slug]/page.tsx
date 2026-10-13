@@ -8,6 +8,8 @@ import GameMetacriticCard from "@/features/games/components/game-metacritic-card
 import GameRatingSection from "@/features/games/components/game-rating-section"
 import GameScreenshotsSection from "@/features/games/components/game-screenshots-section"
 import GameStoresSection from "@/features/games/components/game-stores-section"
+import { GameGenresList } from "@/features/genres/components/game-genres-list"
+import { GamePlatformsList } from "@/features/platforms/components/game-platforms-list"
 import { Game, GameStats } from "@/features/games/types"
 import { getUserGameReviewAction } from "@/features/reviews/actions"
 import ReviewDialog from "@/features/reviews/components/review-dialog"
@@ -91,6 +93,7 @@ async function GameDetailPage({
           </div>
 
           <div className="flex flex-col gap-4 pb-2">
+            <GameGenresList genres={game.genres} />
             <div className="flex items-baseline gap-3">
               <h1 className="font-heading text-4xl font-bold tracking-tight uppercase">
                 {game.title}
@@ -122,7 +125,7 @@ async function GameDetailPage({
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row justify-between gap-12 lg:gap-20 p-6 lg:p-12">
+      <div className="flex flex-col justify-between gap-12 p-6 lg:flex-row lg:gap-20 lg:p-12">
         <div className="flex flex-2 flex-col gap-16">
           <section>
             <h2 className="mb-4 font-bold tracking-widest text-primary uppercase">
@@ -146,11 +149,8 @@ async function GameDetailPage({
           </section>
         </div>
 
-        <div className="flex-1 flex flex-col gap-10">
-          <GameMetacriticCard
-            score={metacriticScore}
-            url={metacriticUrl}
-          />
+        <div className="flex flex-1 flex-col gap-10">
+          <GameMetacriticCard score={metacriticScore} url={metacriticUrl} />
 
           <section>
             <h2 className="mb-4 font-bold tracking-widest text-primary uppercase">
@@ -164,13 +164,15 @@ async function GameDetailPage({
             </div>
 
             {website && (
-              <div className="flex justify-between items-center gap-8 border-b border-b-border py-2">
+              <div className="flex items-center justify-between gap-8 border-b border-b-border py-2">
                 <span className="text-muted-foreground">Website</span>
                 <a
-                  href={website.startsWith("http") ? website : `https://${website}`}
+                  href={
+                    website.startsWith("http") ? website : `https://${website}`
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 font-bold text-primary hover:underline text-end max-w-[220px] truncate"
+                  className="inline-flex max-w-55 items-center gap-1.5 truncate text-end font-bold text-primary hover:underline"
                 >
                   <Globe className="size-3.5 shrink-0" />
                   <span className="truncate">Official site</span>
@@ -199,6 +201,14 @@ async function GameDetailPage({
                 ))}
               </div>
             </div>
+            {game.platforms.length > 0 && (
+              <div className="flex flex-col gap-3 border-b border-b-border py-4">
+                <span className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Available Platforms
+                </span>
+                <GamePlatformsList platforms={game.platforms} />
+              </div>
+            )}
           </section>
 
           <GameStoresSection stores={game.stores} />

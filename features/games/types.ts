@@ -1,4 +1,6 @@
 import { RatingDistributionRow } from "@/components/ui/c-rating-6"
+import { Genre } from "@/features/genres/types"
+import { Platform } from "@/features/platforms/types"
 import { Developer } from "@/types/developer"
 import { Publisher } from "@/types/publisher"
 import { Store } from "@/types/store"
@@ -21,6 +23,8 @@ export interface Game {
   metacritic_url?: string | null
   website?: string | null
   stores?: Store[]
+  genres: Genre[]
+  platforms: Platform[]
 }
 
 export interface GameSearch {

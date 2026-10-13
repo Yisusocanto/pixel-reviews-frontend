@@ -31,10 +31,16 @@ function GameStoresSection({ stores, className }: Props) {
 
   return (
     <section className={className}>
-      <h2 className="mb-4 font-heading font-bold tracking-widest text-primary uppercase">
-        Where to Buy
-      </h2>
-      <div className="flex flex-col gap-2.5">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="font-heading text-sm font-bold tracking-widest text-primary uppercase">
+          Where to Buy
+        </h2>
+        <span className="font-mono text-xs text-muted-foreground">
+          {stores.length} {stores.length === 1 ? "store" : "stores"}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 gap-2.5">
         {stores.map((store) => {
           const href = getStoreHref(store)
           return (
@@ -43,27 +49,30 @@ function GameStoresSection({ stores, className }: Props) {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-between rounded-lg border border-border bg-card/60 p-3 transition-colors hover:border-primary/50 hover:bg-card"
+              className="group relative flex items-center justify-between overflow-hidden rounded-xl border border-border/70 bg-card/60 p-3.5 backdrop-blur-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-card hover:shadow-md hover:shadow-primary/5"
             >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-border/50 bg-secondary/70 text-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary">
                   <StoreIcon
                     slug={store.slug}
                     domain={store.domain}
                     name={store.name}
-                    className="size-4.5"
+                    className="size-5 shrink-0"
                   />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="truncate text-sm font-semibold transition-colors group-hover:text-primary">
+                  <span className="truncate text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
                     {store.name}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {store.domain}
+                    {store.domain || "Official Store"}
                   </span>
                 </div>
               </div>
-              <ExternalLink className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+
+              <div className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-all duration-200 group-hover:bg-primary/10 group-hover:text-primary">
+                <ExternalLink className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </div>
             </a>
           )
         })}
