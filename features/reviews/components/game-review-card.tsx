@@ -1,5 +1,6 @@
 "use client"
 
+import ExpandableText from "@/components/expandable-text"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge-2"
 import { Button } from "@/components/ui/button"
@@ -83,7 +84,7 @@ function GameReviewCard({ review, ownReview = false }: Props) {
         <StarRating value={review.score} showValue readOnly />
         <div>
           <h3 className="text-3xl font-bold">{review.title}</h3>
-          <p className="text-muted-foreground">{review.content}</p>
+          <ExpandableText content={review.content} />
         </div>
       </div>
       <div className="flex items-center justify-between pt-2">

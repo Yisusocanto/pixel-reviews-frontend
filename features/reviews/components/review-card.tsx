@@ -1,3 +1,4 @@
+import ExpandableText from "@/components/expandable-text"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import StarRating from "@/components/ui/star-rating"
@@ -57,7 +58,7 @@ function ReviewCard({
           <StarRating value={review.score} showValue readOnly size="md" />
           <div>
             <h3 className="text-2xl font-bold">{review.title}</h3>
-            <p className="text-lg text-muted-foreground">{review.content}</p>
+            <ExpandableText content={review.content} />
           </div>
           <div className="flex items-center gap-2 pt-1">
             <LikeButton

@@ -1,5 +1,6 @@
 "use client"
 
+import ExpandableText from "@/components/expandable-text"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -56,7 +57,7 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
         </div>
         <div className="flex flex-col gap-1">
           <h3 className="text-2xl font-bold text-primary">{review.title}</h3>
-          <p>{review.content}</p>
+          <ExpandableText content={review.content} />
         </div>
         <div className="flex items-center justify-between pt-2">
           <div className="flex items-center gap-2">

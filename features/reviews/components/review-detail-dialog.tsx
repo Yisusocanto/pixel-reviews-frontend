@@ -30,6 +30,7 @@ import z from "zod"
 import { Spinner } from "@/components/ui/spinner"
 import LoginModal from "@/components/auth/login-modal"
 import MessageCommentCard from "@/features/comments/components/message-comment-card"
+import ExpandableText from "@/components/expandable-text"
 
 interface Props {
   review: Review
@@ -142,7 +143,7 @@ function ReviewDetailDialog({ review }: Props) {
 
           <div className="flex flex-col gap-1">
             <h4 className="text-xl font-bold">{review.title}</h4>
-            <p className="text-muted-foreground">{review.content}</p>
+            <ExpandableText content={review.content} />
           </div>
 
           <div className="flex items-center gap-2">
