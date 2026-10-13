@@ -8,7 +8,7 @@ export interface Review {
   title: string
   content: string
   updatedAt: Date
-  createAt: Date
+  createdAt: Date
   score: number
   likesCount: number
   likedByUser: boolean

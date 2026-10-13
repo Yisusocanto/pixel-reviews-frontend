@@ -119,7 +119,7 @@ function ReviewDetailDialog({ review }: Props) {
                 {review.user?.username}
               </Link>
               <span className="text-sm text-muted-foreground">
-                {formatTimeAgo(review.createAt)}
+                {formatTimeAgo(review.createdAt)}
               </span>
             </div>
           </div>

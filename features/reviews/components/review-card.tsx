@@ -23,7 +23,12 @@ function ReviewCard({
   commentsSelected = false,
 }: Props) {
   return (
-    <div className="flex flex-col gap-4 border-b border-b-border py-8">
+    <div
+      className={cn(
+        "flex flex-col gap-4 border-b border-b-border py-8 transition-colors",
+        commentsSelected && "bg-muted/15"
+      )}
+    >
       <div className="flex gap-2">
         <span className="flex items-center gap-2 text-muted-foreground">
           <Avatar className="size-8">
@@ -39,25 +44,31 @@ function ReviewCard({
             {review.user?.username}
           </Link>{" "}
           reviewed a game on{" "}
-          <strong>{dayjs(review.createAt).format("DD/MM/YYYY")}</strong>
+          <strong>
+            {dayjs(review.createdAt).format("DD/MM/YYYY")}
+          </strong>
         </span>
       </div>
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex flex-col gap-3">
-          <div className="flex gap-2">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
+          <div className="leading-tight">
             <Link
               href={`/games/${review.game?.slug}`}
-              className="font-heading text-4xl font-extrabold uppercase transition-colors duration-300 hover:text-primary"
+              className="font-heading text-2xl font-extrabold uppercase transition-colors duration-300 hover:text-primary sm:text-3xl lg:text-4xl"
             >
               {review.game?.title}
             </Link>
-            <span className="flex-col place-content-end text-muted-foreground">
-              {dayjs(review.game?.releaseDate).format("YYYY")}
-            </span>
+            {review.game?.releaseDate && (
+              <span className="ml-2.5 inline-block font-sans text-sm font-normal text-muted-foreground sm:text-base">
+                {dayjs(review.game.releaseDate).format("YYYY")}
+              </span>
+            )}
           </div>
           <StarRating value={review.score} showValue readOnly size="md" />
-          <div>
-            <h3 className="text-2xl font-bold">{review.title}</h3>
+          <div className="space-y-1">
+            <h3 className="text-xl font-bold break-words sm:text-2xl">
+              {review.title}
+            </h3>
             <ExpandableText content={review.content} />
           </div>
           <div className="flex items-center gap-2 pt-1">
@@ -80,13 +91,13 @@ function ReviewCard({
           </div>
         </div>
         <div className="shrink-0">
-          <div className="relative aspect-2/3 w-28 overflow-hidden rounded-md border bg-card/10 shadow-2xl sm:w-36">
+          <div className="relative aspect-2/3 w-24 overflow-hidden rounded-md border bg-card/10 shadow-2xl sm:w-28 md:w-32 lg:w-36">
             {review.game?.imageUrl && (
               <Image
                 src={review.game.imageUrl}
                 alt={review.game.title || "Game cover"}
                 fill
-                sizes="(max-width: 768px) 192px, 224px"
+                sizes="(max-width: 640px) 96px, (max-width: 1024px) 128px, 144px"
                 className="object-cover"
                 priority
               />

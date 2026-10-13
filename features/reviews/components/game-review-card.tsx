@@ -54,7 +54,7 @@ function GameReviewCard({ review, ownReview = false }: Props) {
             {ownReview && <Badge className="w-fit">Your review</Badge>}
           </div>
           <span className="text-xs text-muted-foreground">
-            {dayjs(review.createAt).format("DD/MM/YYYY")}
+            {dayjs(review.createdAt).format("DD/MM/YYYY")}
           </span>
         </div>
         {ownReview && (
@@ -80,10 +80,12 @@ function GameReviewCard({ review, ownReview = false }: Props) {
           </div>
         )}
       </div>
-      <div>
+      <div className="flex flex-col gap-2">
         <StarRating value={review.score} showValue readOnly />
-        <div>
-          <h3 className="text-3xl font-bold">{review.title}</h3>
+        <div className="space-y-1">
+          <h3 className="text-2xl font-bold break-words sm:text-3xl">
+            {review.title}
+          </h3>
           <ExpandableText content={review.content} />
         </div>
       </div>

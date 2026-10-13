@@ -40,24 +40,30 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
           />
         </div>
       </div>
-      <div className="flex flex-2 flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex gap-2">
-            <Link
-              href={`/games/${review.game?.slug}`}
-              className="text-lg font-bold transition-colors duration-300 ease-in-out hover:text-primary"
-            >
-              {review.game?.title}
-            </Link>
-            <span className="place-content-end text-muted-foreground">
-              {dayjs(review.game?.releaseDate).format("YYYY")}
-            </span>
+      <div className="flex flex-2 flex-col justify-between gap-3">
+        <div>
+          <div className="flex items-center justify-between">
+            <div className="leading-tight">
+              <Link
+                href={`/games/${review.game?.slug}`}
+                className="text-lg font-bold transition-colors duration-300 ease-in-out hover:text-primary"
+              >
+                {review.game?.title}
+              </Link>
+              {review.game?.releaseDate && (
+                <span className="ml-2 font-sans text-sm font-normal text-muted-foreground">
+                  {dayjs(review.game.releaseDate).format("YYYY")}
+                </span>
+              )}
+            </div>
+            <StarRating value={review.score} readOnly showValue />
           </div>
-          <StarRating value={review.score} readOnly showValue />
-        </div>
-        <div className="flex flex-col gap-1">
-          <h3 className="text-2xl font-bold text-primary">{review.title}</h3>
-          <ExpandableText content={review.content} />
+          <div className="flex flex-col gap-1">
+            <h3 className="break-words text-2xl font-bold text-primary">
+              {review.title}
+            </h3>
+            <ExpandableText content={review.content} />
+          </div>
         </div>
         <div className="flex items-center justify-between pt-2">
           <div className="flex items-center gap-2">
