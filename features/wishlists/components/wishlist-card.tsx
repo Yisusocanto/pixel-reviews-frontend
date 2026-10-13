@@ -13,33 +13,36 @@ interface Props {
 
 function WishlistCard({ wishlist, ownWishlist = false, className }: Props) {
   return (
-    <div className={cn("flex justify-between py-3", className)}>
-      <div className="flex items-center gap-4">
-        <div className="relative aspect-2/3 w-12 overflow-hidden rounded-md border">
+    <div className={cn("flex items-center justify-between gap-3 py-3", className)}>
+      <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+        <div className="relative aspect-2/3 w-12 shrink-0 overflow-hidden rounded-md border">
           <Image
             className="absolute inset-0 object-cover"
             src={wishlist.game?.imageUrl}
             alt={wishlist.game?.title}
             fill
+            sizes="48px"
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex min-w-0 flex-col">
           <Link
-            href={`/games/${wishlist.game.slug}`}
-            className="text-xl font-bold transition-colors duration-300 ease-in-out hover:text-primary"
+            href={`/games/${wishlist.game?.slug}`}
+            className="truncate text-base font-bold transition-colors duration-300 ease-in-out hover:text-primary sm:text-lg"
           >
             {wishlist.game?.title}
           </Link>
-          <span className="text-muted-foreground">
+          <span className="text-xs text-muted-foreground sm:text-sm">
             {dayjs(wishlist.game?.releaseDate).format("YYYY")}
           </span>
         </div>
       </div>
       {ownWishlist && (
-        <WishlistButton
-          gameId={wishlist.game?.id ?? wishlist.gameId}
-          initialData={{ inWishlist: true, wishlistId: wishlist.id }}
-        />
+        <div className="shrink-0">
+          <WishlistButton
+            gameId={wishlist.game?.id ?? wishlist.gameId}
+            initialData={{ inWishlist: true, wishlistId: wishlist.id }}
+          />
+        </div>
       )}
     </div>
   )

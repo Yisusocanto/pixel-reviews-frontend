@@ -33,7 +33,7 @@ import { usePathname, useRouter } from "next/navigation"
 
 function AppSidebar() {
   const { data: session } = useSession()
-  const { isMobile } = useSidebar()
+  const { isMobile, setOpenMobile } = useSidebar()
   const router = useRouter()
   const pathname = usePathname()
   const links: NavLink[] = [
@@ -49,7 +49,12 @@ function AppSidebar() {
     },
   ]
 
+  const handleNavigate = () => {
+    if (isMobile) setOpenMobile(false)
+  }
+
   const handleSignOut = async () => {
+    handleNavigate()
     await signOut()
     router.refresh()
   }
@@ -80,7 +85,7 @@ function AppSidebar() {
                 <SidebarMenuItem key={link.label}>
                   <SidebarMenuButton
                     isActive={pathname == link.href ? true : false}
-                    render={<Link href={link.href} />}
+                    render={<Link href={link.href} onClick={handleNavigate} />}
                     className="rounded-sm border-l-2 border-l-primary selection:bg-primary hover:bg-primary/7 data-selected:bg-primary"
                   >
                     <link.icon className="text-primary" />
@@ -100,7 +105,7 @@ function AppSidebar() {
                   <SidebarMenuItem key={link.label}>
                     <SidebarMenuButton
                       isActive={pathname == link.href ? true : false}
-                      render={<Link href={link.href} />}
+                      render={<Link href={link.href} onClick={handleNavigate} />}
                       className="rounded-sm border-l-2 border-l-primary selection:bg-primary hover:bg-primary/7 data-selected:bg-primary"
                     >
                       <link.icon className="text-primary" />

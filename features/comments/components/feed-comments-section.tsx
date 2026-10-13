@@ -79,8 +79,8 @@ function FeedCommentsSection({ selectedReview, onClose }: Props) {
 
   return (
     <aside
-      className="sticky top-15 flex w-80 shrink-0 flex-col justify-between border-l border-border bg-background md:w-96 lg:w-105"
-      style={{ height: "calc(100dvh - 60px)" }}
+      className="fixed inset-y-0 right-0 z-50 flex w-full max-w-full flex-col justify-between border-l border-border bg-background sm:max-w-md md:sticky md:top-15 md:z-20 md:w-80 md:shrink-0 lg:w-96 xl:w-105"
+      style={{ height: "100dvh" }}
     >
       <div className="flex shrink-0 flex-col gap-3 border-b border-border p-4">
         <div className="flex items-center justify-between">
@@ -92,7 +92,7 @@ function FeedCommentsSection({ selectedReview, onClose }: Props) {
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="size-7 rounded-sm text-muted-foreground hover:text-foreground"
+              className="size-8 rounded-sm text-muted-foreground hover:text-foreground"
               aria-label="Close conversation"
             >
               <X className="size-4" />
@@ -178,7 +178,7 @@ function FeedCommentsSection({ selectedReview, onClose }: Props) {
         </ScrollArea>
       </div>
 
-      <div className="mt-auto shrink-0 border-t border-border bg-background p-4">
+      <div className="mt-auto shrink-0 border-t border-border bg-background p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-4">
         {session ? (
           <form onSubmit={onSubmit} className="flex flex-col gap-3">
             <Field data-invalid={!!errors.content}>

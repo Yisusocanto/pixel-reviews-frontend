@@ -32,28 +32,28 @@ function GameReviewCard({ review, ownReview = false }: Props) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-4 border-b border-b-border py-6",
-        ownReview && "rounded-2xl border-2 border-primary bg-card p-8"
+        "flex flex-col gap-4 border-b border-b-border py-4 sm:py-6",
+        ownReview && "rounded-2xl border-2 border-primary bg-card p-4 sm:p-6 md:p-8"
       )}
     >
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            <Avatar className="size-8">
+          <div className="flex flex-wrap items-center gap-2">
+            <Avatar className="size-7 sm:size-8">
               <AvatarImage src={review.user?.profilePhotoUrl} />
-              <AvatarFallback className="uppercase">
-                <span>{review.user?.username.slice(0, 2)}</span>
+              <AvatarFallback className="text-[10px] sm:text-xs uppercase">
+                <span>{review.user?.username?.slice(0, 2) ?? "U"}</span>
               </AvatarFallback>
             </Avatar>
             <Link
               href={`/users/${review.user?.username}`}
-              className="font-bold transition-colors duration-300 ease-in-out hover:text-primary"
+              className="text-sm sm:text-base font-bold transition-colors duration-300 ease-in-out hover:text-primary"
             >
               @{review.user?.username}
             </Link>
-            {ownReview && <Badge className="w-fit">Your review</Badge>}
+            {ownReview && <Badge className="w-fit text-xs">Your review</Badge>}
           </div>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-[11px] text-muted-foreground sm:text-xs">
             {dayjs(review.createdAt).format("DD/MM/YYYY")}
           </span>
         </div>
@@ -62,8 +62,8 @@ function GameReviewCard({ review, ownReview = false }: Props) {
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
-                  <Button variant={"ghost"}>
-                    <Ellipsis />
+                  <Button variant={"ghost"} size="icon-sm">
+                    <Ellipsis className="size-4" />
                   </Button>
                 }
               />
@@ -72,7 +72,7 @@ function GameReviewCard({ review, ownReview = false }: Props) {
                   onClick={() => deleteReview(review.id)}
                   className={"text-destructive hover:bg-destructive/50"}
                 >
-                  <Trash className="text-destructive" />
+                  <Trash className="text-destructive size-4" />
                   <span>Delete</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -81,16 +81,16 @@ function GameReviewCard({ review, ownReview = false }: Props) {
         )}
       </div>
       <div className="flex flex-col gap-2">
-        <StarRating value={review.score} showValue readOnly />
+        <StarRating value={review.score} showValue readOnly size="sm" />
         <div className="space-y-1">
-          <h3 className="text-2xl font-bold break-words sm:text-3xl">
+          <h3 className="text-xl font-bold break-words sm:text-2xl md:text-3xl">
             {review.title}
           </h3>
           <ExpandableText content={review.content} />
         </div>
       </div>
-      <div className="flex items-center justify-between pt-2">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
+        <div className="flex flex-wrap items-center gap-2">
           <LikeButton
             reviewId={review.id}
             likesCount={review.likesCount ?? 0}

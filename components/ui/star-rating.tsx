@@ -16,7 +16,7 @@
 
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -161,12 +161,13 @@ export function StarRating({
     formatValue(previewValue).length,
   );
 
-  // Digits roll up while the preview rises and back down while it falls
-  const previousPreviewRef = useRef(previewValue);
-  const direction = previewValue >= previousPreviewRef.current ? 1 : -1;
-  useEffect(() => {
-    previousPreviewRef.current = previewValue;
-  }, [previewValue]);
+  const [prevVal, setPrevVal] = useState(previewValue);
+  const [direction, setDirection] = useState(1);
+
+  if (previewValue !== prevVal) {
+    setDirection(previewValue >= prevVal ? 1 : -1);
+    setPrevVal(previewValue);
+  }
 
   const commitValue = useCallback(
     (next: number) => {

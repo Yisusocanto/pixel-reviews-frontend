@@ -39,18 +39,20 @@ export default function Page() {
 
   return (
     <div className="flex min-h-svh flex-row items-start justify-between gap-6">
-      <div className="min-w-0 flex-3 p-6">
-        <div className="flex h-fit justify-between border-b border-b-secondary py-8">
+      <div className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
+        <div className="flex h-fit flex-col gap-3 border-b border-b-secondary py-6 sm:flex-row sm:items-end sm:justify-between sm:py-8">
           <div>
-            <span className="tracking-wider text-primary uppercase">
+            <span className="text-xs font-semibold tracking-wider text-primary uppercase sm:text-sm">
               The games goes on here
             </span>
-            <h1 className="font-heading text-6xl">
+            <h1 className="font-heading text-4xl font-extrabold sm:text-5xl lg:text-6xl">
               Your circle. <br />
               No filters.
             </h1>
           </div>
-          <div className="place-content-end tracking-widest">{today}</div>
+          <div className="text-xs tracking-widest text-muted-foreground sm:text-sm sm:place-content-end">
+            {today}
+          </div>
         </div>
         <Separator />
         {reviews && reviews.length > 0 ? (
@@ -71,7 +73,7 @@ export default function Page() {
             </div>
           </div>
         ) : (
-          <div>
+          <div className="py-12 text-center">
             <span className="text-muted-foreground">No reviews</span>
           </div>
         )}

@@ -27,18 +27,18 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
 
   return (
     <div>
-      <header className="relative flex flex-col gap-4 border-b border-b-border p-8">
-        <div className="flex items-center justify-between">
+      <header className="relative flex flex-col gap-4 border-b border-b-border p-4 sm:p-6 lg:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <div className="relative inline-block">
-              <Avatar className="size-30">
+            <div className="relative inline-block shrink-0">
+              <Avatar className="size-20 sm:size-24 md:size-28">
                 <AvatarImage
                   src={user?.profilePhotoUrl}
                   alt={user?.username}
                   className="object-cover"
                 />
-                <AvatarFallback className="text-4xl font-bold uppercase">
-                  {user?.username.slice(0, 2)}
+                <AvatarFallback className="text-2xl font-bold uppercase sm:text-3xl md:text-4xl">
+                  {user?.username?.slice(0, 2) ?? "U"}
                 </AvatarFallback>
               </Avatar>
               {ownProfile && (
@@ -47,40 +47,44 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
                 </div>
               )}
             </div>
-            <div>
-              <h1 className="text-4xl font-extrabold">@{user?.username}</h1>
-              <span className="mt-1 text-muted-foreground">
+            <div className="min-w-0">
+              <h1 className="truncate text-2xl font-extrabold sm:text-3xl md:text-4xl">
+                @{user?.username}
+              </h1>
+              <span className="mt-1 block text-xs text-muted-foreground sm:text-sm">
                 joined {dayjs(user?.createdAt).format("DD/MM/YYYY")}
               </span>
             </div>
           </div>
-          <div>{ownProfile && <UpdateUserDialog user={user} />}</div>
+          <div className="self-start sm:self-auto">
+            {ownProfile && <UpdateUserDialog user={user} />}
+          </div>
         </div>
         {user?.bio && (
           <div>
-            <p className="text-muted-foreground">{user.bio}</p>
+            <p className="text-sm text-muted-foreground sm:text-base">{user.bio}</p>
           </div>
         )}
-        <div className="flex items-center gap-4">
-          <span className="text-lg text-muted-foreground uppercase">
-            <strong className="text-primary">{userStats?.totalReviews}</strong>{" "}
+        <div className="flex flex-wrap items-center gap-3 sm:gap-6 pt-1">
+          <span className="text-sm text-muted-foreground uppercase sm:text-base">
+            <strong className="text-primary">{userStats?.totalReviews ?? 0}</strong>{" "}
             Reviews
           </span>
-          <span className="text-lg text-muted-foreground uppercase">
-            <strong className="text-primary">{userStats?.totalRatings}</strong>{" "}
+          <span className="text-sm text-muted-foreground uppercase sm:text-base">
+            <strong className="text-primary">{userStats?.totalRatings ?? 0}</strong>{" "}
             Ratings
           </span>
-          <span className="text-lg text-muted-foreground uppercase">
-            <strong className="text-primary">{userStats?.totalLikes}</strong>{" "}
+          <span className="text-sm text-muted-foreground uppercase sm:text-base">
+            <strong className="text-primary">{userStats?.totalLikes ?? 0}</strong>{" "}
             Likes
           </span>
         </div>
       </header>
 
       {/* Body */}
-      <div className="flex justify-between gap-10 p-8">
-        {/* left */}
-        <div className="flex flex-2 flex-col gap-10">
+      <div className="flex flex-col justify-between gap-8 p-4 sm:p-6 lg:flex-row lg:gap-10 lg:p-8">
+        {/* Rating stats & Reviews */}
+        <div className="order-2 flex min-w-0 flex-2 flex-col gap-8 sm:gap-10 lg:order-1">
           {/* Rating stats section */}
           <RatingDistributionCard
             avgRating={userStats?.avgRating}
@@ -94,8 +98,8 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
           </div>
         </div>
 
-        {/* Right */}
-        <div className="flex-1">
+        {/* Wishlist */}
+        <div className="order-1 min-w-0 flex-1 lg:order-2">
           <UsersWishlistSection username={username} />
         </div>
       </div>

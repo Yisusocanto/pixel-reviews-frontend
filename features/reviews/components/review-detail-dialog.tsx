@@ -98,55 +98,67 @@ function ReviewDetailDialog({ review }: Props) {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-2xl!">
+      <DialogContent className="w-[calc(100%-1rem)] max-w-2xl! p-4 sm:p-6 max-h-[90dvh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>{review.user?.username}&apos;s review</DialogTitle>
+          <DialogTitle className="text-base sm:text-lg">{review.user?.username}&apos;s review</DialogTitle>
         </DialogHeader>
         <Separator />
-        <div className="-mx-4 no-scrollbar flex max-h-[60vh] scrollbar-none flex-col gap-6 overflow-y-auto px-4 [&::-webkit-scrollbar]:hidden">
-          <div className="flex gap-2">
-            <Avatar>
+        <div className="-mx-2 no-scrollbar flex flex-1 flex-col gap-5 overflow-y-auto px-2 sm:-mx-4 sm:px-4 [&::-webkit-scrollbar]:hidden">
+          <div className="flex items-center gap-2">
+            <Avatar className="size-7 sm:size-8">
               <AvatarImage src={review.user?.profilePhotoUrl} />
-              <AvatarFallback className="uppercase">
-                {review.user?.username?.slice(0, 2)}
+              <AvatarFallback className="text-[10px] sm:text-xs uppercase">
+                {review.user?.username?.slice(0, 2) ?? "U"}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <Link
                 href={`/users/${review.user?.username}`}
-                className="transition-colors duration-300 ease-in-out hover:text-primary"
+                className="text-sm font-bold transition-colors duration-300 ease-in-out hover:text-primary"
               >
                 {review.user?.username}
               </Link>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 {formatTimeAgo(review.createdAt)}
               </span>
             </div>
           </div>
 
-          <div className="flex gap-3">
-            <div className="relative aspect-2/2.5 w-28 shrink-0 overflow-hidden rounded-lg">
-              <Image
-                src={review.game?.imageUrl ?? ""}
-                fill
-                alt={review.game?.title ?? ""}
-                className="absolute inset-0 object-cover"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <h3 className="text-2xl font-extrabold tracking-tight">
-                {review.game?.title}
-              </h3>
-              <StarRating readOnly showValue value={review.score} />
-            </div>
+          <div className="flex flex-col gap-2">
+            {review.game?.imageUrl && (
+              <div className="relative aspect-21/9 sm:aspect-16/7 w-full overflow-hidden rounded-lg border border-border/60 bg-card/40">
+                <Image
+                  src={review.game.imageUrl}
+                  fill
+                  alt={review.game?.title ?? ""}
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, 600px"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent" />
+                <div className="absolute bottom-2 left-3 right-3 flex items-end justify-between gap-2">
+                  <h3 className="truncate font-heading text-base font-extrabold tracking-tight uppercase text-foreground drop-shadow-md sm:text-xl">
+                    {review.game?.title}
+                  </h3>
+                  <StarRating readOnly showValue value={review.score} size="sm" />
+                </div>
+              </div>
+            )}
+            {!review.game?.imageUrl && (
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="truncate font-heading text-lg font-extrabold tracking-tight sm:text-2xl">
+                  {review.game?.title}
+                </h3>
+                <StarRating readOnly showValue value={review.score} size="sm" />
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-1">
-            <h4 className="text-xl font-bold">{review.title}</h4>
+            <h4 className="text-lg font-bold sm:text-xl">{review.title}</h4>
             <ExpandableText content={review.content} />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <LikeButton
               likedByUser={Boolean(review.likedByUser)}
               likesCount={review.likesCount ?? 0}
@@ -195,36 +207,36 @@ function ReviewDetailDialog({ review }: Props) {
 
         <Separator />
 
-        <DialogFooter className="w-full">
+        <DialogFooter className="w-full shrink-0">
           {session ? (
             <form onSubmit={onSubmit} className="flex w-full flex-col gap-2">
-              <div className="flex w-full items-center gap-3">
-                <Avatar className="size-9 shrink-0">
+              <div className="flex w-full items-center gap-2 sm:gap-3">
+                <Avatar className="size-8 sm:size-9 shrink-0">
                   <AvatarImage
                     src={session.user.profilePhotoUrl ?? undefined}
                   />
-                  <AvatarFallback className="uppercase">
+                  <AvatarFallback className="text-[10px] sm:text-xs uppercase">
                     {session.user.username?.slice(0, 2) ?? "U"}
                   </AvatarFallback>
                 </Avatar>
                 <Input
                   placeholder="Write a comment..."
-                  className="flex-1"
+                  className="flex-1 text-sm"
                   disabled={isPending}
                   autoComplete="off"
                   {...register("content")}
                 />
-                <Button type="submit" disabled={isPending}>
+                <Button type="submit" disabled={isPending} size="sm" className="sm:h-9 sm:px-4">
                   {isPending ? <Spinner className="size-4" /> : "Send"}
                 </Button>
               </div>
               {errors.content && (
-                <span className="ml-12 text-xs text-destructive">
+                <span className="text-xs text-destructive">
                   {errors.content.message}
                 </span>
               )}
               {isError && error && (
-                <span className="ml-12 text-xs text-destructive">
+                <span className="text-xs text-destructive">
                   {error.message ?? "Error creating comment"}
                 </span>
               )}

@@ -181,14 +181,14 @@ function ReviewDialog({
           }
         />
       )}
-      <DialogContent className={"border-t-2 border-t-primary"}>
+      <DialogContent className={"w-[calc(100%-1rem)] max-w-lg! p-4 sm:p-6 border-t-2 border-t-primary max-h-[90dvh] overflow-y-auto"}>
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-base sm:text-lg">
             {isEditing
               ? `Edit review for ${game.title}`
               : `Review ${game.title}`}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm">
             {isEditing
               ? "Update your review and rating for this game"
               : "Share your opinion with the community and upgrade your status"}
@@ -206,7 +206,7 @@ function ReviewDialog({
                       value={field.value}
                       onValueChange={field.onChange}
                       showValue
-                      size="lg"
+                      size="md"
                     />
                     <FieldError>{errors.score?.message}</FieldError>
                   </Field>

@@ -29,43 +29,57 @@ interface Props {
 function UserReviewCard({ review, className, ownReview = false }: Props) {
   const { mutate: deleteReview } = useDeleteReview()
   return (
-    <div className={cn("flex justify-between gap-4 p-8", className)}>
-      <div className="flex-1">
-        <div className="relative aspect-2/3 w-50 overflow-hidden border">
+    <div
+      className={cn(
+        "flex flex-col gap-4 p-4 sm:p-6 lg:p-8",
+        className
+      )}
+    >
+      {review.game?.imageUrl && (
+        <Link
+          href={`/games/${review.game.slug}`}
+          className="group relative block aspect-21/9 sm:aspect-16/7 md:aspect-16/6 w-full overflow-hidden rounded-lg border border-border/60 bg-card/40 shadow-md transition-all duration-300 hover:border-primary/50"
+        >
           <Image
-            className="absolute inset-0 object-cover"
-            src={review.game?.imageUrl ?? ""}
-            alt={review.game?.title ?? ""}
+            className="absolute inset-0 object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            src={review.game.imageUrl}
+            alt={review.game.title ?? ""}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 800px"
           />
-        </div>
-      </div>
-      <div className="flex flex-2 flex-col justify-between gap-3">
-        <div>
-          <div className="flex items-center justify-between">
-            <div className="leading-tight">
-              <Link
-                href={`/games/${review.game?.slug}`}
-                className="text-lg font-bold transition-colors duration-300 ease-in-out hover:text-primary"
-              >
-                {review.game?.title}
-              </Link>
-              {review.game?.releaseDate && (
-                <span className="ml-2 font-sans text-sm font-normal text-muted-foreground">
-                  {dayjs(review.game.releaseDate).format("YYYY")}
-                </span>
-              )}
-            </div>
-            <StarRating value={review.score} readOnly showValue />
+          <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent" />
+          <div className="absolute bottom-2 left-3 right-3 flex items-end justify-between gap-2">
+            <span className="font-heading text-sm font-extrabold tracking-tight uppercase text-foreground drop-shadow-md sm:text-base">
+              {review.game.title}
+            </span>
+            {review.game.releaseDate && (
+              <span className="rounded bg-background/80 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-primary backdrop-blur-xs">
+                {dayjs(review.game.releaseDate).format("YYYY")}
+              </span>
+            )}
           </div>
-          <div className="flex flex-col gap-1">
-            <h3 className="break-words text-2xl font-bold text-primary">
+        </Link>
+      )}
+
+      <div className="flex min-w-0 flex-1 flex-col justify-between gap-3">
+        <div>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <Link
+              href={`/games/${review.game?.slug}`}
+              className="font-heading text-lg font-bold uppercase transition-colors duration-300 ease-in-out hover:text-primary sm:text-xl"
+            >
+              {review.game?.title}
+            </Link>
+            <StarRating value={review.score} readOnly showValue size="sm" />
+          </div>
+          <div className="mt-2 flex flex-col gap-1">
+            <h3 className="break-words text-xl font-bold text-primary sm:text-2xl">
               {review.title}
             </h3>
             <ExpandableText content={review.content} />
           </div>
         </div>
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
           <div className="flex items-center gap-2">
             <LikeButton
               reviewId={review.id}

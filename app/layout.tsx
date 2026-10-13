@@ -1,3 +1,4 @@
+import type { Viewport } from "next"
 import { Geist_Mono, Outfit, Merriweather } from "next/font/google"
 
 import "./globals.css"
@@ -20,6 +21,16 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f4f4f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#1c1c1c" },
+  ],
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -40,10 +51,10 @@ export default function RootLayout({
       <body className="bg-secondary">
         <Providers>
           <AppSidebar />
-          <SidebarInset className="flex min-h-svh flex-1 flex-col bg-secondary">
+          <SidebarInset className="flex min-h-svh min-w-0 flex-1 flex-col bg-secondary">
             <NavBar />
             <Toaster />
-            <div className="flex flex-1 flex-col bg-secondary">
+            <div className="flex min-w-0 flex-1 flex-col bg-secondary">
               {children}
             </div>
           </SidebarInset>

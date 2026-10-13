@@ -67,7 +67,7 @@ function UpdateUserDialog({ user }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button>Edit Profile</Button>} />
-      <DialogContent>
+      <DialogContent className="w-[calc(100%-1rem)] max-w-md! p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>Edit your profile</DialogTitle>
         </DialogHeader>

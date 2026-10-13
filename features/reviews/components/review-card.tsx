@@ -29,80 +29,84 @@ function ReviewCard({
         commentsSelected && "bg-muted/15"
       )}
     >
-      <div className="flex gap-2">
-        <span className="flex items-center gap-2 text-muted-foreground">
-          <Avatar className="size-8">
-            <AvatarImage src={review.user?.profilePhotoUrl} />
-            <AvatarFallback>
-              <span>{review.user?.username.slice(0, 2)}</span>
-            </AvatarFallback>
-          </Avatar>
-          <Link
-            href={`/users/${review.user?.username}`}
-            className="font-bold text-foreground transition-colors duration-300 ease-in-out hover:text-primary"
-          >
-            {review.user?.username}
-          </Link>{" "}
-          reviewed a game on{" "}
-          <strong>
-            {dayjs(review.createdAt).format("DD/MM/YYYY")}
-          </strong>
-        </span>
+      <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground sm:text-sm">
+        <Avatar className="size-6 sm:size-7">
+          <AvatarImage src={review.user?.profilePhotoUrl} />
+          <AvatarFallback className="text-[10px] sm:text-xs">
+            <span>{review.user?.username?.slice(0, 2) ?? "U"}</span>
+          </AvatarFallback>
+        </Avatar>
+        <Link
+          href={`/users/${review.user?.username}`}
+          className="font-bold text-foreground transition-colors duration-300 ease-in-out hover:text-primary"
+        >
+          {review.user?.username}
+        </Link>
+        <span>reviewed a game on</span>
+        <strong className="text-foreground">
+          {dayjs(review.createdAt).format("DD/MM/YYYY")}
+        </strong>
       </div>
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="leading-tight">
-            <Link
-              href={`/games/${review.game?.slug}`}
-              className="font-heading text-2xl font-extrabold uppercase transition-colors duration-300 hover:text-primary sm:text-3xl lg:text-4xl"
-            >
-              {review.game?.title}
-            </Link>
-            {review.game?.releaseDate && (
-              <span className="ml-2.5 inline-block font-sans text-sm font-normal text-muted-foreground sm:text-base">
+      {review.game?.imageUrl && (
+        <Link
+          href={`/games/${review.game.slug}`}
+          className="group relative block aspect-21/9 sm:aspect-16/7 md:aspect-16/6 w-full overflow-hidden rounded-lg border border-border/60 bg-card/40 shadow-md transition-all duration-300 hover:border-primary/50"
+        >
+          <Image
+            src={review.game.imageUrl}
+            alt={review.game.title || "Game cover"}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 900px"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            priority
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent" />
+          <div className="absolute bottom-2 left-3 right-3 flex items-end justify-between gap-2">
+            <span className="font-heading text-sm font-extrabold tracking-tight uppercase text-foreground drop-shadow-md sm:text-base">
+              {review.game.title}
+            </span>
+            {review.game.releaseDate && (
+              <span className="rounded bg-background/80 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-primary backdrop-blur-xs">
                 {dayjs(review.game.releaseDate).format("YYYY")}
               </span>
             )}
           </div>
+        </Link>
+      )}
+
+      <div className="flex min-w-0 flex-1 flex-col gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <Link
+            href={`/games/${review.game?.slug}`}
+            className="font-heading text-xl font-extrabold uppercase transition-colors duration-300 hover:text-primary sm:text-2xl md:text-3xl"
+          >
+            {review.game?.title}
+          </Link>
           <StarRating value={review.score} showValue readOnly size="md" />
-          <div className="space-y-1">
-            <h3 className="text-xl font-bold break-words sm:text-2xl">
-              {review.title}
-            </h3>
-            <ExpandableText content={review.content} />
-          </div>
-          <div className="flex items-center gap-2 pt-1">
-            <LikeButton
-              reviewId={review.id}
-              likesCount={review.likesCount ?? 0}
-              likedByUser={Boolean(review.likedByUser)}
-            />
-            <Button
-              variant={"ghost"}
-              onClick={() => onCommentButtonClick(review)}
-              className={cn(
-                "text-xs font-medium",
-                commentsSelected && "text-primary"
-              )}
-            >
-              <MessageSquare className="h-4 w-4 transition-transform duration-200 active:scale-125" />
-              {review.commentsCount} comments
-            </Button>
-          </div>
         </div>
-        <div className="shrink-0">
-          <div className="relative aspect-2/3 w-24 overflow-hidden rounded-md border bg-card/10 shadow-2xl sm:w-28 md:w-32 lg:w-36">
-            {review.game?.imageUrl && (
-              <Image
-                src={review.game.imageUrl}
-                alt={review.game.title || "Game cover"}
-                fill
-                sizes="(max-width: 640px) 96px, (max-width: 1024px) 128px, 144px"
-                className="object-cover"
-                priority
-              />
+        <div className="space-y-1">
+          <h3 className="text-lg font-bold break-words sm:text-xl md:text-2xl">
+            {review.title}
+          </h3>
+          <ExpandableText content={review.content} />
+        </div>
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <LikeButton
+            reviewId={review.id}
+            likesCount={review.likesCount ?? 0}
+            likedByUser={Boolean(review.likedByUser)}
+          />
+          <Button
+            variant={"ghost"}
+            onClick={() => onCommentButtonClick(review)}
+            className={cn(
+              "text-xs font-medium",
+              commentsSelected && "text-primary"
             )}
-          </div>
+          >
+            <MessageSquare className="h-4 w-4 transition-transform duration-200 active:scale-125" />
+            {review.commentsCount} comments
+          </Button>
         </div>
       </div>
     </div>
