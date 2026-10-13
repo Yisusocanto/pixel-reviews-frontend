@@ -79,8 +79,7 @@ function FeedCommentsSection({ selectedReview, onClose }: Props) {
 
   return (
     <aside
-      className="fixed inset-y-0 right-0 z-50 flex w-full max-w-full flex-col justify-between border-l border-border bg-background sm:max-w-md md:sticky md:top-15 md:z-20 md:w-80 md:shrink-0 lg:w-96 xl:w-105"
-      style={{ height: "100dvh" }}
+      className="fixed inset-y-0 right-0 z-50 flex h-dvh w-full max-w-full flex-col justify-between border-l border-border bg-background sm:max-w-md md:sticky md:top-15 md:inset-auto md:z-20 md:h-[calc(100dvh-60px)] md:w-80 md:shrink-0 lg:w-96 xl:w-105"
     >
       <div className="flex shrink-0 flex-col gap-3 border-b border-border p-4">
         <div className="flex items-center justify-between">
