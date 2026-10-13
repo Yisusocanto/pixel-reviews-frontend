@@ -2,7 +2,7 @@ import {
   getGameReviewsAction,
   searchGamesAction,
 } from "@/features/games/actions"
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery } from "@tanstack/react-query"
 
 export const useGameReviews = (gameSlug: string) => {
   return useInfiniteQuery({
@@ -19,9 +19,16 @@ export const useGameReviews = (gameSlug: string) => {
 }
 
 export const useSearchGames = (title: string = "", enabled: boolean = true) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["searchGames", title],
-    queryFn: () => searchGamesAction(title),
+    queryFn: ({ pageParam }) => searchGamesAction(title, pageParam, 20),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page < lastPage.totalPages && lastPage.items.length > 0) {
+        return lastPage.page + 1
+      }
+      return undefined
+    },
     enabled,
   })
 }

@@ -14,29 +14,112 @@ import {
   SearchX,
   X,
 } from "lucide-react"
-import { useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { Suspense, useEffect, useState } from "react"
+import { useInView } from "react-intersection-observer"
 import { useDebounce } from "use-debounce"
 
-function SearchPage() {
-  const [title, setTitle] = useState("")
-  const [gameTitle] = useDebounce(title, 400)
+function SearchPageFallback() {
+  return (
+    <div className="flex flex-1 flex-col bg-secondary px-6 sm:px-8 pb-12">
+      <div className="py-8">
+        <div className="relative w-full max-w-3xl">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search any game by title..."
+            type="search"
+            disabled
+            className="h-11 w-full rounded-lg border-border/60 bg-background/50 pl-10 pr-10 text-sm focus-visible:ring-primary [&::-webkit-search-cancel-button]:hidden"
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 9 }).map((_, i) => (
+          <GameSearchCardSkeleton key={i} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function SearchPageContent() {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const queryInUrl = searchParams.get("q") ?? searchParams.get("title") ?? ""
+
+  const [title, setTitle] = useState(queryInUrl)
+  const [prevQueryInUrl, setPrevQueryInUrl] = useState(queryInUrl)
+
+  if (queryInUrl !== prevQueryInUrl) {
+    setPrevQueryInUrl(queryInUrl)
+    setTitle(queryInUrl)
+  }
+
+  const [debouncedTitle] = useDebounce(title, 400)
+
+  useEffect(() => {
+    const currentParam =
+      searchParams.get("q") ?? searchParams.get("title") ?? ""
+    const trimmed = debouncedTitle.trim()
+
+    if (trimmed === currentParam) {
+      return
+    }
+
+    const nextParams = new URLSearchParams(searchParams.toString())
+    nextParams.delete("title")
+    if (trimmed) {
+      nextParams.set("q", trimmed)
+    } else {
+      nextParams.delete("q")
+    }
+
+    const queryString = nextParams.toString()
+    const targetUrl = queryString ? `${pathname}?${queryString}` : pathname
+    router.replace(targetUrl, { scroll: false })
+  }, [debouncedTitle, pathname, router, searchParams])
 
   const {
-    data: games,
+    data,
     isLoading,
-    isFetching,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
     isError,
     error,
     refetch,
-  } = useSearchGames(gameTitle)
+  } = useSearchGames(debouncedTitle)
 
-  const isDebouncing = title !== gameTitle
-  const showLoading = isLoading || isFetching
-  const isSearchActive = gameTitle.trim().length > 0
+  const { ref, inView } = useInView({
+    threshold: 0,
+  })
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
+
+  const handleClear = () => {
+    setTitle("")
+    const nextParams = new URLSearchParams(searchParams.toString())
+    nextParams.delete("q")
+    nextParams.delete("title")
+    const queryString = nextParams.toString()
+    const targetUrl = queryString ? `${pathname}?${queryString}` : pathname
+    router.replace(targetUrl, { scroll: false })
+  }
+
+  const isDebouncing = title !== debouncedTitle
+  const showInitialLoading = isLoading
+  const isSearchActive = debouncedTitle.trim().length > 0
+  const games = data?.pages.flatMap((page) => page.items) ?? []
+  const totalResults = data?.pages[0]?.total ?? games.length
 
   return (
     <div className="flex flex-1 flex-col bg-secondary px-6 sm:px-8 pb-12">
-      {/* Search Input */}
       <div className="py-8">
         <div className="relative w-full max-w-3xl">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -54,7 +137,7 @@ function SearchPage() {
             {title && (
               <button
                 type="button"
-                onClick={() => setTitle("")}
+                onClick={handleClear}
                 className="rounded-sm p-0.5 text-muted-foreground transition-colors hover:text-foreground"
                 aria-label="Clear search"
               >
@@ -65,15 +148,14 @@ function SearchPage() {
         </div>
       </div>
 
-      {/* Header Info: Popular Games or Search Results Count */}
       {!isError && (
         <div className="mb-6">
-          {showLoading ? (
+          {showInitialLoading ? (
             <div className="flex items-center gap-2">
               <Loader2 className="size-4 animate-spin text-primary" />
               <span className="text-sm text-muted-foreground">
                 {isSearchActive
-                  ? `Searching games for "${gameTitle || title}"...`
+                  ? `Searching games for "${debouncedTitle || title}"...`
                   : "Loading popular games..."}
               </span>
             </div>
@@ -81,11 +163,11 @@ function SearchPage() {
             <p className="text-sm text-muted-foreground">
               Found{" "}
               <strong className="font-semibold text-primary">
-                {games?.length ?? 0}
+                {totalResults}
               </strong>{" "}
-              {games?.length === 1 ? "result" : "results"} matching{" "}
+              {totalResults === 1 ? "result" : "results"} matching{" "}
               <strong className="text-foreground italic">
-                &quot;{gameTitle}&quot;
+                &quot;{debouncedTitle}&quot;
               </strong>
             </p>
           ) : (
@@ -105,7 +187,6 @@ function SearchPage() {
         </div>
       )}
 
-      {/* Error State */}
       {isError && (
         <div className="my-6 flex flex-col items-center justify-center rounded-xl border border-destructive/30 bg-destructive/10 p-8 text-center">
           <div className="mb-3 rounded-full bg-destructive/20 p-3 text-destructive">
@@ -130,8 +211,7 @@ function SearchPage() {
         </div>
       )}
 
-      {/* Skeletons Loading Grid */}
-      {showLoading && (
+      {showInitialLoading && (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 9 }).map((_, i) => (
             <GameSearchCardSkeleton key={i} />
@@ -139,8 +219,7 @@ function SearchPage() {
         </div>
       )}
 
-      {/* Empty State */}
-      {!showLoading && !isError && games && games.length === 0 && (
+      {!showInitialLoading && !isError && games.length === 0 && (
         <div className="my-6 flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-card/20 p-12 text-center">
           <div className="mb-3 rounded-full bg-muted/40 p-4 text-muted-foreground">
             <SearchX className="size-8" />
@@ -150,13 +229,15 @@ function SearchPage() {
           </h3>
           <p className="mt-1 max-w-md text-sm text-muted-foreground">
             We couldn&apos;t find any games matching{" "}
-            <strong className="text-foreground">&quot;{gameTitle}&quot;</strong>.
-            Try checking for typos or searching with different keywords.
+            <strong className="text-foreground">
+              &quot;{debouncedTitle}&quot;
+            </strong>
+            . Try checking for typos or searching with different keywords.
           </p>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setTitle("")}
+            onClick={handleClear}
             className="mt-4"
           >
             View popular games
@@ -164,16 +245,40 @@ function SearchPage() {
         </div>
       )}
 
-      {/* Results Grid */}
-      {!showLoading && !isError && games && games.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {games.map((game) => (
-            <GameSearchCard key={game.slug} game={game} />
-          ))}
+      {!showInitialLoading && !isError && games.length > 0 && (
+        <div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {games.map((game, index) => (
+              <GameSearchCard key={`${game.slug}-${index}`} game={game} />
+            ))}
+          </div>
+
+          <div
+            ref={ref}
+            className="flex flex-col items-center justify-center py-8"
+          >
+            {isFetchingNextPage && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="size-5 animate-spin text-primary" />
+                <span>Loading more games...</span>
+              </div>
+            )}
+            {!hasNextPage && games.length > 0 && (
+              <p className="text-xs text-muted-foreground">
+                You have reached the end of the results.
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>
   )
 }
 
-export default SearchPage
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<SearchPageFallback />}>
+      <SearchPageContent />
+    </Suspense>
+  )
+}

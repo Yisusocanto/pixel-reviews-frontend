@@ -34,6 +34,13 @@ export interface GameSearch {
   backgroundImage: string
 }
 
+export interface GameSearchPagination {
+  items: GameSearch[]
+  total: number
+  totalPages: number
+  page: number
+}
+
 export interface GameStats {
   totalReviews: number
   avgRatings: number

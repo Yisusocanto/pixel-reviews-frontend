@@ -108,6 +108,7 @@ export const authConfig: NextAuthConfig = {
             name: data.user.username,
             username: data.user.username,
             bio: data.user.bio,
+            profilePhotoUrl: data.user.profilePhotoUrl,
             accessToken: data.access_token,
             refreshToken: data.refresh_token,
             accessTokenExpires: expiresAt,
