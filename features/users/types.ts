@@ -13,6 +13,7 @@ export interface User {
 export type AuthUser = User
 
 export interface UserUpdate {
+  username?: string
   bio?: string
 }
 

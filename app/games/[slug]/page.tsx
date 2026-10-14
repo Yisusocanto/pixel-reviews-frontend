@@ -20,6 +20,7 @@ import { InUserWishlist } from "@/features/wishlists/types"
 import dayjs from "dayjs"
 import { ExternalLink, Globe } from "lucide-react"
 import Image from "next/image"
+import { notFound } from "next/navigation"
 
 async function GameDetailPage({
   params,
@@ -32,15 +33,12 @@ async function GameDetailPage({
   let gameStats: GameStats
   let review: Review | undefined = undefined
   try {
-    game = await getGameAction(slug)
-    gameStats = await getGameStatsAction(slug)
-  } catch (error) {
-    const err = error as Error
-    return (
-      <div>
-        <h1>{err.message}</h1>
-      </div>
-    )
+    ;[game, gameStats] = await Promise.all([
+      getGameAction(slug),
+      getGameStatsAction(slug),
+    ])
+  } catch {
+    notFound()
   }
 
   let wishlistStatus: InUserWishlist = { inWishlist: false }

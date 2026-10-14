@@ -8,6 +8,7 @@ import UserReviewSection from "@/features/users/components/users-reviews-section
 import UsersWishlistSection from "@/features/users/components/users-wishlist-section"
 import { User, UserStats } from "@/features/users/types"
 import dayjs from "dayjs"
+import { notFound } from "next/navigation"
 
 async function UserPage({ params }: { params: Promise<{ username: string }> }) {
   const session = await auth()
@@ -15,12 +16,19 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
   let user: User | undefined = undefined
   let userStats: UserStats | undefined = undefined
   try {
-    ;[user, userStats] = await Promise.all([
-      getUserAction(username),
-      getUserStatsAction(username),
-    ])
+    user = await getUserAction(username)
+  } catch {
+    notFound()
+  }
+
+  if (!user) {
+    notFound()
+  }
+
+  try {
+    userStats = await getUserStatsAction(username)
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 
   const ownProfile = session?.user.username == username
