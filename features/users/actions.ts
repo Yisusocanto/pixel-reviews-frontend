@@ -13,6 +13,8 @@ export async function getUserAction(username: string) {
 
 export async function updateUserAction(data: UserUpdate) {
   const res = await apiClient.patch<User>("/users", data)
+  revalidatePath(`/users/${res.username}`)
+  revalidatePath("/", "layout")
   return res
 }
 

@@ -1,18 +1,12 @@
-export interface UserResponse {
-  id: string
-  email: string
-  username: string
-  bio: string | null
-  createdAt: string
-  updatedAt: string
-  profilePhotoUrl: string
-}
+import type { User } from "@/features/users/types"
+
+export type UserResponse = User
 
 export interface AuthResponse {
   access_token: string
   refresh_token: string
   token_type: string
-  user: UserResponse
+  user: User
 }
 
 export interface TokenResponse {

@@ -16,11 +16,12 @@ import { Spinner } from "@/components/ui/spinner"
 import { toast } from "@/components/ui/toast"
 import { uploadProfilePhotoAction } from "@/features/users/actions"
 import { Camera } from "lucide-react"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 
 interface Props {
-  initialImageUrl?: string
+  initialImageUrl?: string | null
   trigger?: React.ReactElement
 }
 
@@ -30,6 +31,7 @@ function ProfilePhotoDialog({ initialImageUrl, trigger }: Props) {
   const [serverError, setServerError] = useState<string>("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { update } = useSession()
 
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen)
@@ -47,7 +49,12 @@ function ProfilePhotoDialog({ initialImageUrl, trigger }: Props) {
     const data = new FormData()
     data.append("file", file)
     try {
-      await uploadProfilePhotoAction(data)
+      const updatedUser = await uploadProfilePhotoAction(data)
+      await update({
+        user: {
+          profilePhotoUrl: updatedUser.profilePhotoUrl,
+        },
+      })
       toast.add({
         description: "Profile photo updated successfully.",
         type: "success",
@@ -93,7 +100,7 @@ function ProfilePhotoDialog({ initialImageUrl, trigger }: Props) {
             setFile(selectedFile)
             setServerError("")
           }}
-          initialImageUrl={initialImageUrl}
+          initialImageUrl={initialImageUrl ?? undefined}
           className="border-none bg-transparent p-0 shadow-none"
         />
 

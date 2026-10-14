@@ -33,7 +33,7 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
             <div className="relative inline-block shrink-0">
               <Avatar className="size-20 sm:size-24 md:size-28">
                 <AvatarImage
-                  src={user?.profilePhotoUrl}
+                  src={user?.profilePhotoUrl ?? undefined}
                   alt={user?.username}
                   className="object-cover"
                 />

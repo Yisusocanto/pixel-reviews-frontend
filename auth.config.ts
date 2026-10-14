@@ -122,12 +122,8 @@ export const authConfig: NextAuthConfig = {
             decodeJwtExpiry(data.access_token) ?? Date.now() + 15 * 60 * 1000
 
           return {
-            id: data.user.id,
-            email: data.user.email,
+            ...data.user,
             name: data.user.username,
-            username: data.user.username,
-            bio: data.user.bio,
-            profilePhotoUrl: data.user.profilePhotoUrl,
             accessToken: data.access_token,
             refreshToken: data.refresh_token,
             accessTokenExpires: expiresAt,
@@ -148,7 +144,7 @@ export const authConfig: NextAuthConfig = {
       }
       return true
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
       if (account?.provider === "google" && account.id_token) {
         const backendAuth = await exchangeGoogleToken(account.id_token)
         if (backendAuth) {
@@ -160,6 +156,9 @@ export const authConfig: NextAuthConfig = {
           token.email = backendAuth.user.email
           token.username = backendAuth.user.username
           token.bio = backendAuth.user.bio
+          token.profilePhotoUrl = backendAuth.user.profilePhotoUrl
+          token.createdAt = backendAuth.user.createdAt
+          token.updatedAt = backendAuth.user.updatedAt
           token.accessToken = backendAuth.access_token
           token.refreshToken = backendAuth.refresh_token
           token.accessTokenExpires = expiresAt
@@ -169,14 +168,29 @@ export const authConfig: NextAuthConfig = {
       }
 
       if (user) {
-        token.id = user.id
+        token.id = user.id ?? token.id ?? ""
         token.email = user.email
         token.username = user.username
         token.bio = user.bio
+        token.profilePhotoUrl = user.profilePhotoUrl
+        token.createdAt = user.createdAt
+        token.updatedAt = user.updatedAt
         token.accessToken = user.accessToken
         token.refreshToken = user.refreshToken
         token.accessTokenExpires = user.accessTokenExpires
         return token
+      }
+
+      if (trigger === "update" && session?.user) {
+        if (session.user.profilePhotoUrl !== undefined) {
+          token.profilePhotoUrl = session.user.profilePhotoUrl
+        }
+        if (session.user.bio !== undefined) {
+          token.bio = session.user.bio
+        }
+        if (session.user.username !== undefined) {
+          token.username = session.user.username
+        }
       }
 
       if (Date.now() < token.accessTokenExpires - 60 * 1000) {
@@ -189,12 +203,17 @@ export const authConfig: NextAuthConfig = {
       if (token) {
         session.accessToken = token.accessToken
         session.error = token.error
-        if (session.user) {
-          session.user.id = token.id
-          session.user.username = token.username
-          session.user.bio = token.bio
-          if (token.email) session.user.email = token.email
-          if (token.username) session.user.name = token.username
+        session.user = {
+          ...session.user,
+          id: token.id,
+          username: token.username,
+          bio: token.bio ?? null,
+          profilePhotoUrl: token.profilePhotoUrl ?? null,
+          createdAt: token.createdAt ?? null,
+          updatedAt: token.updatedAt ?? null,
+          email: token.email ?? session.user?.email ?? "",
+          name: token.username ?? session.user?.name ?? "",
+          image: token.profilePhotoUrl ?? session.user?.image ?? null,
         }
       }
       return session

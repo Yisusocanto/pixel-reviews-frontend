@@ -37,13 +37,17 @@ function Avatar({
 
 function AvatarImage({
   className,
+  src,
   ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+}: Omit<React.ComponentProps<typeof AvatarPrimitive.Image>, "src"> & {
+  src?: string | Blob | null
+}) {
   return (
     <div className={cn("relative overflow-hidden rounded-full", className)}>
       <AvatarPrimitive.Image
         data-slot="avatar-image"
         className={cn("aspect-square h-full w-full")}
+        src={src ?? undefined}
         {...props}
       />
     </div>

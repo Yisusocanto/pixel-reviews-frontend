@@ -1,6 +1,6 @@
 "use client"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/sidebar"
 import { PixelGamepadIcon } from "@/components/ui/pixel-gamepad-icon"
 import { NavLink } from "@/types/link"
-import { ChevronsUpDown, Earth, Home, LogOut, Search, User } from "lucide-react"
+import { ChevronsUpDown, Home, LogOut, Search, User } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -39,7 +39,6 @@ function AppSidebar() {
   const pathname = usePathname()
   const links: NavLink[] = [
     { label: "Feed", href: "/", icon: Home },
-    { label: "Discover", href: "/discover", icon: Earth },
     { label: "Search", href: "/search", icon: Search },
   ]
   const authLinks: NavLink[] = [
@@ -59,6 +58,8 @@ function AppSidebar() {
     await signOut()
     router.refresh()
   }
+
+  console.log(session)
 
   return (
     <Sidebar collapsible="icon">
@@ -104,9 +105,9 @@ function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Library</SidebarGroupLabel>
-          {session && (
+        {session && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Library</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="gap-2">
                 {authLinks.map((link) => (
@@ -125,8 +126,8 @@ function AppSidebar() {
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
-          )}
-        </SidebarGroup>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       {session && (
         <SidebarFooter>
@@ -143,6 +144,10 @@ function AppSidebar() {
                   }
                 >
                   <Avatar className="h-7 w-7 shrink-0 rounded-lg">
+                    <AvatarImage
+                      src={session.user.profilePhotoUrl ?? ""}
+                      alt={`${session.user.username}' profile photo`}
+                    />
                     <AvatarFallback className="rounded-lg bg-primary/20 text-xs font-semibold text-primary">
                       {session?.user.name?.slice(0, 2)}
                     </AvatarFallback>
@@ -164,6 +169,10 @@ function AppSidebar() {
                     <DropdownMenuLabel className="p-0 font-normal">
                       <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                         <Avatar>
+                          <AvatarImage
+                            src={session.user.profilePhotoUrl ?? ""}
+                            alt={`${session.user.username}' profile photo`}
+                          />
                           <AvatarFallback>
                             {session?.user.name?.slice(0, 2)}
                           </AvatarFallback>

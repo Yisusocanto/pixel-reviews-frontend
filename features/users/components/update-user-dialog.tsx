@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { updateUserAction } from "@/features/users/actions"
 import { User } from "@/features/users/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
@@ -40,6 +41,7 @@ interface Props {
 
 function UpdateUserDialog({ user }: Props) {
   const router = useRouter()
+  const { update } = useSession()
   const [open, setOpen] = useState(false)
   const [apiError, setApiError] = useState("")
   const {
@@ -55,7 +57,12 @@ function UpdateUserDialog({ user }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await updateUserAction(data)
+      const updatedUser = await updateUserAction(data)
+      await update({
+        user: {
+          bio: updatedUser.bio,
+        },
+      })
       setOpen(false)
       router.refresh()
     } catch (error) {

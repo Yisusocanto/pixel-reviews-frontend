@@ -36,7 +36,7 @@ function MessageCommentCard({ comment, isAuthor, isOwnComment }: Props) {
       <MessageAvatar>
         <Avatar>
           <AvatarImage
-            src={comment.user.profilePhotoUrl}
+            src={comment.user.profilePhotoUrl ?? undefined}
             alt={comment.user.username}
           />
           <AvatarFallback className="uppercase">

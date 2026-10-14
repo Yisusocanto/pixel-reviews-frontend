@@ -4,11 +4,13 @@ export interface User {
   id: string
   username: string
   email: string
-  bio?: string
-  profilePhotoUrl?: string
-  createdAt: Date
-  updatedAt: Date
+  bio?: string | null
+  profilePhotoUrl?: string | null
+  createdAt?: string | null
+  updatedAt?: string | null
 }
+
+export type AuthUser = User
 
 export interface UserUpdate {
   bio?: string
