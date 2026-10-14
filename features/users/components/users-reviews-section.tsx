@@ -16,7 +16,9 @@ function UserReviewSection({ username, ownReview = false }: Props) {
   const reviews =
     data?.pages
       .flatMap((page) => page.items)
-      .filter((review) => Boolean(review.title?.trim() && review.content?.trim())) ?? []
+      .filter((review) =>
+        Boolean(review.title?.trim() && review.content?.trim())
+      ) ?? []
 
   const { ref, inView } = useInView({
     threshold: 0,

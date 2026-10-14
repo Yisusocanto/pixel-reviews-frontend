@@ -20,7 +20,7 @@ export function GameGenresList({ genres, className }: Props) {
           <span
             key={genre.slug || genre.id}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-heading text-xs font-bold uppercase tracking-wider backdrop-blur-xs transition-all duration-200",
+              "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-heading text-xs font-bold tracking-wider uppercase backdrop-blur-xs transition-all duration-200",
               theme.badgeClass
             )}
           >

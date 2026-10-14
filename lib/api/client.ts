@@ -17,19 +17,15 @@ export class ApiError extends Error {
   }
 }
 
-export type QueryParamValue =
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
+export type QueryParamValue = string | number | boolean | null | undefined
 
 export type QueryParams =
-  | Record<string, QueryParamValue | QueryParamValue[]>
-  | URLSearchParams
+  Record<string, QueryParamValue | QueryParamValue[]> | URLSearchParams
 
-export interface ApiClientOptions<TBody = unknown>
-  extends Omit<RequestInit, "body"> {
+export interface ApiClientOptions<TBody = unknown> extends Omit<
+  RequestInit,
+  "body"
+> {
   /**
    * Query parameters as key-value pairs or URLSearchParams.
    * Null and undefined values will be automatically excluded.
@@ -108,9 +104,11 @@ export async function apiClient<TResponse, TBody = unknown>(
   let formattedBody: BodyInit | undefined = undefined
 
   if (body !== undefined && body !== null) {
-    const isFormData = typeof FormData !== "undefined" && body instanceof FormData
+    const isFormData =
+      typeof FormData !== "undefined" && body instanceof FormData
     const isBlob = typeof Blob !== "undefined" && body instanceof Blob
-    const isSearchParams = typeof URLSearchParams !== "undefined" && body instanceof URLSearchParams
+    const isSearchParams =
+      typeof URLSearchParams !== "undefined" && body instanceof URLSearchParams
     const isString = typeof body === "string"
 
     if (isFormData || isBlob || isSearchParams) {
@@ -153,7 +151,9 @@ export async function apiClient<TResponse, TBody = unknown>(
       if (typeof data.detail === "string") {
         errorMessage = data.detail
       } else if (Array.isArray(data.detail)) {
-        errorMessage = data.detail.map((d: { msg?: string }) => d.msg).join(", ")
+        errorMessage = data.detail
+          .map((d: { msg?: string }) => d.msg)
+          .join(", ")
       } else if (data.message) {
         errorMessage = data.message
       }

@@ -181,7 +181,11 @@ function ReviewDialog({
           }
         />
       )}
-      <DialogContent className={"w-[calc(100%-1rem)] max-w-lg! p-4 sm:p-6 border-t-2 border-t-primary max-h-[90dvh] overflow-y-auto"}>
+      <DialogContent
+        className={
+          "max-h-[90dvh] w-[calc(100%-1rem)] max-w-lg! overflow-y-auto border-t-2 border-t-primary p-4 sm:p-6"
+        }
+      >
         <DialogHeader>
           <DialogTitle className="text-base sm:text-lg">
             {isEditing

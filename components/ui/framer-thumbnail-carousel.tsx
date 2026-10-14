@@ -150,7 +150,10 @@ export function Component({
             style={{ x }}
           >
             {propItems.map((item) => (
-              <div key={item.id} className="h-64 w-full shrink-0 sm:h-80 md:h-[400px]">
+              <div
+                key={item.id}
+                className="h-64 w-full shrink-0 sm:h-80 md:h-[400px]"
+              >
                 <img
                   src={item.url}
                   alt={item.title}
@@ -167,13 +170,13 @@ export function Component({
             aria-label="Previous slide"
             disabled={index === 0}
             onClick={() => handleIndexChange(Math.max(0, index - 1))}
-            className={`absolute top-1/2 left-2 sm:left-4 z-10 flex size-8 sm:size-10 -translate-y-1/2 items-center justify-center rounded-full text-black shadow-lg transition-transform ${
+            className={`absolute top-1/2 left-2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-black shadow-lg transition-transform sm:left-4 sm:size-10 ${
               index === 0
                 ? "cursor-not-allowed opacity-40"
                 : "bg-white opacity-70 hover:scale-110 hover:opacity-100"
             }`}
           >
-            <ChevronLeft className="size-4 sm:size-6 text-black" />
+            <ChevronLeft className="size-4 text-black sm:size-6" />
           </motion.button>
 
           {/* Next Button */}
@@ -184,13 +187,13 @@ export function Component({
             onClick={() =>
               handleIndexChange(Math.min(propItems.length - 1, index + 1))
             }
-            className={`absolute top-1/2 right-2 sm:right-4 z-10 flex size-8 sm:size-10 -translate-y-1/2 items-center justify-center rounded-full text-black shadow-lg transition-transform ${
+            className={`absolute top-1/2 right-2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-black shadow-lg transition-transform sm:right-4 sm:size-10 ${
               index === propItems.length - 1
                 ? "cursor-not-allowed opacity-40"
                 : "bg-white opacity-70 hover:scale-110 hover:opacity-100"
             }`}
           >
-            <ChevronRight className="size-4 sm:size-6 text-black" />
+            <ChevronRight className="size-4 text-black sm:size-6" />
           </motion.button>
         </div>
 

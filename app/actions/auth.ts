@@ -121,4 +121,3 @@ export async function logoutAction() {
 export async function googleLoginAction() {
   await signIn("google")
 }
-

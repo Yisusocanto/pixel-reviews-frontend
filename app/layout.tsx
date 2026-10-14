@@ -1,4 +1,4 @@
-import type { Viewport } from "next"
+import type { Metadata, Viewport } from "next"
 import { Geist_Mono, Outfit, Merriweather } from "next/font/google"
 
 import "./globals.css"
@@ -20,6 +20,23 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  title: {
+    default: "Pixel Reviews | For those who play",
+    template: "%s | Pixel Reviews",
+  },
+  description:
+    "The gaming community review platform - Your circle. No filters.",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
+}
 
 export const viewport: Viewport = {
   width: "device-width",

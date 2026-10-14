@@ -31,7 +31,7 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
   return (
     <div
       className={cn(
-        "flex flex-col sm:flex-row justify-between gap-4 p-4 sm:p-6 lg:p-8",
+        "flex flex-col justify-between gap-4 p-4 sm:flex-row sm:p-6 lg:p-8",
         className
       )}
     >
@@ -64,7 +64,7 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
         </div>
       </div>
 
-      <div className="flex min-w-0 flex-1 sm:flex-2 flex-col justify-between gap-3">
+      <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 sm:flex-2">
         <div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="leading-tight">
@@ -83,7 +83,7 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
             <StarRating value={review.score} readOnly showValue size="sm" />
           </div>
           <div className="mt-2 flex flex-col gap-1">
-            <h3 className="break-words text-xl font-bold text-primary sm:text-2xl">
+            <h3 className="text-xl font-bold break-words text-primary sm:text-2xl">
               {review.title}
             </h3>
             <ExpandableText content={review.content} />

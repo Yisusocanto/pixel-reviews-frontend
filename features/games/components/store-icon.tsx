@@ -27,7 +27,11 @@ export function StoreIcon({ slug, domain, name, className }: StoreIconProps) {
   const d = (domain || "").toLowerCase()
   const n = (name || "").toLowerCase()
 
-  if (s.includes("steam") || d.includes("steampowered") || n.includes("steam")) {
+  if (
+    s.includes("steam") ||
+    d.includes("steampowered") ||
+    n.includes("steam")
+  ) {
     return <SiSteam className={className} />
   }
   if (
@@ -55,11 +59,7 @@ export function StoreIcon({ slug, domain, name, className }: StoreIconProps) {
   ) {
     return <BsNintendoSwitch className={className} />
   }
-  if (
-    s.includes("epic") ||
-    d.includes("epicgames") ||
-    n.includes("epic")
-  ) {
+  if (s.includes("epic") || d.includes("epicgames") || n.includes("epic")) {
     return <SiEpicgames className={className} />
   }
   if (s.includes("gog") || d.includes("gog.com") || n.includes("gog")) {

@@ -52,7 +52,7 @@ export default function Page() {
               No filters.
             </h1>
           </div>
-          <div className="text-xs tracking-widest text-muted-foreground sm:text-sm sm:place-content-end">
+          <div className="text-xs tracking-widest text-muted-foreground sm:place-content-end sm:text-sm">
             {today}
           </div>
         </div>

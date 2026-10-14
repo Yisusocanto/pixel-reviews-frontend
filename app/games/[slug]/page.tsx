@@ -166,7 +166,9 @@ async function GameDetailPage({
                   <span className="text-muted-foreground">Website</span>
                   <a
                     href={
-                      website.startsWith("http") ? website : `https://${website}`
+                      website.startsWith("http")
+                        ? website
+                        : `https://${website}`
                     }
                     target="_blank"
                     rel="noopener noreferrer"
@@ -201,7 +203,7 @@ async function GameDetailPage({
               </div>
               {game.platforms.length > 0 && (
                 <div className="flex flex-col gap-3 border-b border-b-border py-4">
-                  <span className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  <span className="font-heading text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     Available Platforms
                   </span>
                   <GamePlatformsList platforms={game.platforms} />
@@ -276,7 +278,7 @@ async function GameDetailPage({
             </div>
             {game.platforms.length > 0 && (
               <div className="flex flex-col gap-3 border-b border-b-border py-4">
-                <span className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <span className="font-heading text-xs font-bold tracking-wider text-muted-foreground uppercase">
                   Available Platforms
                 </span>
                 <GamePlatformsList platforms={game.platforms} />

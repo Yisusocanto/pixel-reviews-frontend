@@ -5,8 +5,9 @@ import * as ProgressPrimitive from "@radix-ui/react-progress"
 
 import { cn } from "@/lib/utils"
 
-export interface ProgressProps
-  extends React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> {
+export interface ProgressProps extends React.ComponentPropsWithoutRef<
+  typeof ProgressPrimitive.Root
+> {
   indicatorClassName?: string
 }
 
@@ -18,7 +19,7 @@ const Progress = React.forwardRef<
     ref={ref}
     data-slot="progress-track"
     className={cn(
-      "relative h-2 w-full overflow-hidden rounded-full bg-muted border border-border/30",
+      "relative h-2 w-full overflow-hidden rounded-full border border-border/30 bg-muted",
       className
     )}
     {...props}

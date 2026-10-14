@@ -98,16 +98,18 @@ function ReviewDetailDialog({ review }: Props) {
           </Button>
         }
       />
-      <DialogContent className="w-[calc(100%-1rem)] max-w-2xl! p-4 sm:p-6 max-h-[90dvh] flex flex-col">
+      <DialogContent className="flex max-h-[90dvh] w-[calc(100%-1rem)] max-w-2xl! flex-col p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="text-base sm:text-lg">{review.user?.username}&apos;s review</DialogTitle>
+          <DialogTitle className="text-base sm:text-lg">
+            {review.user?.username}&apos;s review
+          </DialogTitle>
         </DialogHeader>
         <Separator />
         <div className="-mx-2 no-scrollbar flex flex-1 flex-col gap-5 overflow-y-auto px-2 sm:-mx-4 sm:px-4 [&::-webkit-scrollbar]:hidden">
           <div className="flex items-center gap-2">
             <Avatar className="size-7 sm:size-8">
               <AvatarImage src={review.user?.profilePhotoUrl} />
-              <AvatarFallback className="text-[10px] sm:text-xs uppercase">
+              <AvatarFallback className="text-[10px] uppercase sm:text-xs">
                 {review.user?.username?.slice(0, 2) ?? "U"}
               </AvatarFallback>
             </Avatar>
@@ -126,7 +128,7 @@ function ReviewDetailDialog({ review }: Props) {
 
           <div className="flex flex-col gap-2">
             {review.game?.imageUrl && (
-              <div className="relative aspect-21/9 sm:aspect-16/7 w-full overflow-hidden rounded-lg border border-border/60 bg-card/40">
+              <div className="relative aspect-21/9 w-full overflow-hidden rounded-lg border border-border/60 bg-card/40 sm:aspect-16/7">
                 <Image
                   src={review.game.imageUrl}
                   fill
@@ -135,11 +137,16 @@ function ReviewDetailDialog({ review }: Props) {
                   sizes="(max-width: 640px) 100vw, 600px"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent" />
-                <div className="absolute bottom-2 left-3 right-3 flex items-end justify-between gap-2">
-                  <h3 className="truncate font-heading text-base font-extrabold tracking-tight uppercase text-foreground drop-shadow-md sm:text-xl">
+                <div className="absolute right-3 bottom-2 left-3 flex items-end justify-between gap-2">
+                  <h3 className="truncate font-heading text-base font-extrabold tracking-tight text-foreground uppercase drop-shadow-md sm:text-xl">
                     {review.game?.title}
                   </h3>
-                  <StarRating readOnly showValue value={review.score} size="sm" />
+                  <StarRating
+                    readOnly
+                    showValue
+                    value={review.score}
+                    size="sm"
+                  />
                 </div>
               </div>
             )}
@@ -211,11 +218,11 @@ function ReviewDetailDialog({ review }: Props) {
           {session ? (
             <form onSubmit={onSubmit} className="flex w-full flex-col gap-2">
               <div className="flex w-full items-center gap-2 sm:gap-3">
-                <Avatar className="size-8 sm:size-9 shrink-0">
+                <Avatar className="size-8 shrink-0 sm:size-9">
                   <AvatarImage
                     src={session.user.profilePhotoUrl ?? undefined}
                   />
-                  <AvatarFallback className="text-[10px] sm:text-xs uppercase">
+                  <AvatarFallback className="text-[10px] uppercase sm:text-xs">
                     {session.user.username?.slice(0, 2) ?? "U"}
                   </AvatarFallback>
                 </Avatar>
@@ -226,7 +233,12 @@ function ReviewDetailDialog({ review }: Props) {
                   autoComplete="off"
                   {...register("content")}
                 />
-                <Button type="submit" disabled={isPending} size="sm" className="sm:h-9 sm:px-4">
+                <Button
+                  type="submit"
+                  disabled={isPending}
+                  size="sm"
+                  className="sm:h-9 sm:px-4"
+                >
                   {isPending ? <Spinner className="size-4" /> : "Send"}
                 </Button>
               </div>

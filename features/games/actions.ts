@@ -1,10 +1,6 @@
 "use server"
 
-import {
-  Game,
-  GameSearchPagination,
-  GameStats,
-} from "@/features/games/types"
+import { Game, GameSearchPagination, GameStats } from "@/features/games/types"
 import { ReviewPagination } from "@/features/reviews/types"
 import { apiClient } from "@/lib/api/client"
 

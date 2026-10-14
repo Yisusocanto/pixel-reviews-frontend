@@ -2,6 +2,7 @@
 
 import LoginModal from "@/components/auth/login-modal"
 import { Button } from "@/components/ui/button"
+import { PixelGamepadIcon } from "@/components/ui/pixel-gamepad-icon"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
@@ -23,9 +24,12 @@ function NavBar() {
         <SidebarTrigger />
         <Link
           href="/"
-          className="truncate text-lg leading-none font-extrabold tracking-tight md:hidden"
+          className="flex items-center gap-2 truncate text-base leading-none font-extrabold tracking-tight md:hidden"
         >
-          Pixel Reviews
+          <PixelGamepadIcon className="h-5 w-10 shrink-0 text-primary" />
+          <span className="font-black tracking-tight">
+            <span className="text-primary">Pixel</span> Reviews
+          </span>
         </Link>
       </div>
       {!session && (

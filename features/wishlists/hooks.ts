@@ -76,7 +76,10 @@ export const useToggleWishlist = (gameId: string) => {
     },
     onError: (error, _vars, context) => {
       if (context?.previousInUserWishlist) {
-        qc.setQueryData(["userGameWishlist", gameId], context.previousInUserWishlist)
+        qc.setQueryData(
+          ["userGameWishlist", gameId],
+          context.previousInUserWishlist
+        )
       }
       if (context?.previousUserWishlists) {
         context.previousUserWishlists.forEach(([queryKey, data]) => {

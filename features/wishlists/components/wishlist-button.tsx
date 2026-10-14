@@ -6,7 +6,10 @@ import { Bookmark } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import LoginModal from "@/components/auth/login-modal"
 import { InUserWishlist } from "@/features/wishlists/types"
-import { useToggleWishlist, useUserGameWishlist } from "@/features/wishlists/hooks"
+import {
+  useToggleWishlist,
+  useUserGameWishlist,
+} from "@/features/wishlists/hooks"
 
 interface WishlistButtonProps {
   gameId: string
@@ -47,7 +50,7 @@ export function WishlistButton({
         <Bookmark
           className={`h-4 w-4 transition-transform duration-200 ${
             inWishlist
-              ? "fill-primary-foreground text-primary-foreground scale-110"
+              ? "scale-110 fill-primary-foreground text-primary-foreground"
               : "text-muted-foreground"
           }`}
         />

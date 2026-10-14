@@ -60,7 +60,9 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
   }
 }
 
-async function exchangeGoogleToken(idToken: string): Promise<AuthResponse | null> {
+async function exchangeGoogleToken(
+  idToken: string
+): Promise<AuthResponse | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/google`, {
       method: "POST",

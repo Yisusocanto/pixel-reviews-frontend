@@ -30,7 +30,7 @@ function GameSearchCard({ game }: Props) {
       ) : (
         <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-muted/30 text-muted-foreground">
           <Gamepad2 className="size-8 opacity-40" />
-          <span className="text-xs uppercase tracking-wider">No image</span>
+          <span className="text-xs tracking-wider uppercase">No image</span>
         </div>
       )}
       <div className="absolute inset-0 z-5 bg-linear-to-t from-background via-background/40 to-transparent" />
@@ -39,7 +39,7 @@ function GameSearchCard({ game }: Props) {
           {game.title}
         </h2>
         {formattedDate && (
-          <span className="shrink-0 font-mono text-xs font-semibold text-primary border border-border/60 bg-secondary/90 px-1.5 py-0.5">
+          <span className="shrink-0 border border-border/60 bg-secondary/90 px-1.5 py-0.5 font-mono text-xs font-semibold text-primary">
             {formattedDate}
           </span>
         )}
@@ -49,4 +49,3 @@ function GameSearchCard({ game }: Props) {
 }
 
 export default GameSearchCard
-

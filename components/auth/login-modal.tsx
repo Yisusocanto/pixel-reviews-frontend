@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginAction, registerAction } from "@/app/actions/auth"
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button"
 import { Button } from "@/components/ui/button"
+import { PixelGamepadIcon } from "@/components/ui/pixel-gamepad-icon"
 import {
   Dialog,
   DialogContent,
@@ -47,7 +48,9 @@ function LoginModal({
   const [internalOpen, setInternalOpen] = useState(false)
   const isControlled = openProp !== undefined
   const open = isControlled ? openProp : internalOpen
-  const setOpen = isControlled ? (onOpenChangeProp ?? (() => {})) : setInternalOpen
+  const setOpen = isControlled
+    ? (onOpenChangeProp ?? (() => {}))
+    : setInternalOpen
 
   const [loginError, setLoginError] = useState("")
   const [registerError, setRegisterError] = useState("")
@@ -109,10 +112,17 @@ function LoginModal({
           render={trigger ?? <Button variant={"ghost"}>Sign in</Button>}
         />
       )}
-      <DialogContent className="w-[calc(100%-1rem)] max-w-md! p-4 sm:p-6 max-h-[90dvh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Pixel Reviews</DialogTitle>
-          <DialogDescription>FOR THOSE WHO PLAY</DialogDescription>
+      <DialogContent className="max-h-[90dvh] w-[calc(100%-1rem)] max-w-md! overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="gap-1.5">
+          <div className="flex items-center gap-2">
+            <PixelGamepadIcon className="h-6 w-12 shrink-0 text-primary" />
+            <DialogTitle className="text-xl font-black tracking-tight">
+              <span className="text-primary">Pixel</span> Reviews
+            </DialogTitle>
+          </div>
+          <DialogDescription className="text-xs tracking-widest uppercase">
+            For those who play
+          </DialogDescription>
         </DialogHeader>
         <div>
           <Tabs
@@ -129,14 +139,16 @@ function LoginModal({
                 <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl">
                   WELCOME <br /> BACK.
                 </h2>
-                <p className="text-xs text-muted-foreground sm:text-sm">The games missed you</p>
+                <p className="text-xs text-muted-foreground sm:text-sm">
+                  The games missed you
+                </p>
               </div>
               <div className="mt-4 flex flex-col gap-4">
                 <GoogleSignInButton text="Sign in with Google" />
 
                 <div className="relative flex items-center justify-center">
                   <Separator className="w-full" />
-                  <span className="bg-background text-muted-foreground absolute px-2 text-xs uppercase">
+                  <span className="absolute bg-background px-2 text-xs text-muted-foreground uppercase">
                     Or
                   </span>
                 </div>
@@ -187,7 +199,7 @@ function LoginModal({
 
                 <div className="relative flex items-center justify-center">
                   <Separator className="w-full" />
-                  <span className="bg-background text-muted-foreground absolute px-2 text-xs uppercase">
+                  <span className="absolute bg-background px-2 text-xs text-muted-foreground uppercase">
                     Or
                   </span>
                 </div>
@@ -251,7 +263,9 @@ function LoginModal({
                     type="submit"
                     disabled={isRegisterSubmitting}
                   >
-                    {isRegisterSubmitting ? "Creating account..." : "Create account"}
+                    {isRegisterSubmitting
+                      ? "Creating account..."
+                      : "Create account"}
                   </Button>
                 </form>
               </div>

@@ -9,8 +9,7 @@ export interface RatingDistributionRow {
   percentage?: number
 }
 
-export interface RatingDistributionProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface RatingDistributionProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Array of rating distribution rows.
    * If percentage is not provided, it will be automatically computed based on total counts.
@@ -52,7 +51,8 @@ export function RatingDistribution({
   ...props
 }: RatingDistributionProps) {
   // Normalize distribution: filter out 0 stars if present, order 5 down to 1, fill missing stars
-  const rowsSource = distribution && distribution.length > 0 ? distribution : defaultDistribution
+  const rowsSource =
+    distribution && distribution.length > 0 ? distribution : defaultDistribution
 
   const map = new Map<number, RatingDistributionRow>()
   for (const row of rowsSource) {
@@ -95,7 +95,7 @@ export function RatingDistribution({
             <div className="flex w-7 shrink-0 items-center justify-end gap-1 text-xs font-semibold text-foreground/80">
               <span>{row.stars}</span>
               {showStarIcon && (
-                <Star className="size-3.5 fill-primary text-primary shrink-0" />
+                <Star className="size-3.5 shrink-0 fill-primary text-primary" />
               )}
             </div>
 

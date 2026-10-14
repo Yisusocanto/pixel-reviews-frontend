@@ -13,7 +13,9 @@ interface Props {
 
 function WishlistCard({ wishlist, ownWishlist = false, className }: Props) {
   return (
-    <div className={cn("flex items-center justify-between gap-3 py-3", className)}>
+    <div
+      className={cn("flex items-center justify-between gap-3 py-3", className)}
+    >
       <div className="flex min-w-0 items-center gap-3 sm:gap-4">
         <div className="relative aspect-2/3 w-12 shrink-0 overflow-hidden rounded-md border">
           <Image

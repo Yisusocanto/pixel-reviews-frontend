@@ -114,8 +114,7 @@ export const useCreateComment = () => {
 }
 
 export type DeleteCommentParams =
-  | string
-  | { commentId: string; reviewId?: string }
+  string | { commentId: string; reviewId?: string }
 
 export const useDeleteComments = () => {
   const qc = useQueryClient()

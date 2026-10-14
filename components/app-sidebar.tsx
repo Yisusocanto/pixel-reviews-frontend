@@ -25,6 +25,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { PixelGamepadIcon } from "@/components/ui/pixel-gamepad-icon"
 import { NavLink } from "@/types/link"
 import { ChevronsUpDown, Earth, Home, LogOut, Search, User } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
@@ -64,15 +65,22 @@ function AppSidebar() {
       <SidebarHeader className="py-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex items-center gap-2">
-              <div className="group-data-[collapsible=icon]:hidden">
-                <p className="text-2xl font-extrabold">Pixel</p>
-                <p className="text-2xl font-extrabold">Reviews</p>
-                <p className="text-sm tracking-widest text-muted-foreground uppercase">
+            <Link
+              href="/"
+              onClick={handleNavigate}
+              className="flex items-center gap-3 overflow-hidden rounded-md p-1 transition-colors outline-none group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
+            >
+              <PixelGamepadIcon className="h-6 w-12 shrink-0 text-primary transition-transform hover:scale-105" />
+              <div className="flex flex-col group-data-[collapsible=icon]:hidden">
+                <div className="flex items-baseline gap-1 text-xl leading-none font-black tracking-tight">
+                  <span className="text-primary">Pixel</span>
+                  <span className="text-foreground">Reviews</span>
+                </div>
+                <span className="mt-1 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                   For those who play
-                </p>
+                </span>
               </div>
-            </div>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -105,7 +113,9 @@ function AppSidebar() {
                   <SidebarMenuItem key={link.label}>
                     <SidebarMenuButton
                       isActive={pathname == link.href ? true : false}
-                      render={<Link href={link.href} onClick={handleNavigate} />}
+                      render={
+                        <Link href={link.href} onClick={handleNavigate} />
+                      }
                       className="rounded-sm border-l-2 border-l-primary selection:bg-primary hover:bg-primary/7 data-selected:bg-primary"
                     >
                       <link.icon className="text-primary" />

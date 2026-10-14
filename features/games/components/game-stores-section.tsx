@@ -51,7 +51,7 @@ function GameStoresSection({ stores, className }: Props) {
               rel="noopener noreferrer"
               className="group relative flex items-center justify-between overflow-hidden rounded-xl border border-border/70 bg-card/60 p-3.5 backdrop-blur-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-card hover:shadow-md hover:shadow-primary/5"
             >
-              <div className="flex items-center gap-3.5 min-w-0">
+              <div className="flex min-w-0 items-center gap-3.5">
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-border/50 bg-secondary/70 text-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary">
                   <StoreIcon
                     slug={store.slug}
@@ -60,7 +60,7 @@ function GameStoresSection({ stores, className }: Props) {
                     className="size-5 shrink-0"
                   />
                 </div>
-                <div className="flex flex-col min-w-0">
+                <div className="flex min-w-0 flex-col">
                   <span className="truncate text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
                     {store.name}
                   </span>

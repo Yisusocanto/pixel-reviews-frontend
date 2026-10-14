@@ -35,12 +35,12 @@ export function RatingDistributionCard({
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-6 rounded-2xl border border-border/60 bg-card/40 p-4 sm:p-6 backdrop-blur-sm sm:flex-row sm:gap-8 md:gap-10",
+        "flex flex-col items-center gap-6 rounded-2xl border border-border/60 bg-card/40 p-4 backdrop-blur-sm sm:flex-row sm:gap-8 sm:p-6 md:gap-10",
         className
       )}
     >
       {/* Left: Score & Star display */}
-      <div className="flex w-full shrink-0 flex-col items-center justify-center border-b border-border/40 pb-4 sm:w-auto sm:min-w-44 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-8">
+      <div className="flex w-full shrink-0 flex-col items-center justify-center border-b border-border/40 pb-4 sm:w-auto sm:min-w-44 sm:border-r sm:border-b-0 sm:pr-8 sm:pb-0">
         <div className="flex items-baseline gap-1.5">
           <span className="font-heading text-5xl font-black tracking-tight text-foreground">
             {formattedAvg}

@@ -62,20 +62,28 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
         </div>
         {user?.bio && (
           <div>
-            <p className="text-sm text-muted-foreground sm:text-base">{user.bio}</p>
+            <p className="text-sm text-muted-foreground sm:text-base">
+              {user.bio}
+            </p>
           </div>
         )}
-        <div className="flex flex-wrap items-center gap-3 sm:gap-6 pt-1">
+        <div className="flex flex-wrap items-center gap-3 pt-1 sm:gap-6">
           <span className="text-sm text-muted-foreground uppercase sm:text-base">
-            <strong className="text-primary">{userStats?.totalReviews ?? 0}</strong>{" "}
+            <strong className="text-primary">
+              {userStats?.totalReviews ?? 0}
+            </strong>{" "}
             Reviews
           </span>
           <span className="text-sm text-muted-foreground uppercase sm:text-base">
-            <strong className="text-primary">{userStats?.totalRatings ?? 0}</strong>{" "}
+            <strong className="text-primary">
+              {userStats?.totalRatings ?? 0}
+            </strong>{" "}
             Ratings
           </span>
           <span className="text-sm text-muted-foreground uppercase sm:text-base">
-            <strong className="text-primary">{userStats?.totalLikes ?? 0}</strong>{" "}
+            <strong className="text-primary">
+              {userStats?.totalLikes ?? 0}
+            </strong>{" "}
             Likes
           </span>
         </div>

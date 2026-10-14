@@ -27,25 +27,53 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
   const s = (slug || "").toLowerCase()
   const n = (name || "").toLowerCase()
 
-  if (s.includes("playstation-5") || s.includes("ps5") || n.includes("playstation 5") || n.includes("ps5")) {
+  if (
+    s.includes("playstation-5") ||
+    s.includes("ps5") ||
+    n.includes("playstation 5") ||
+    n.includes("ps5")
+  ) {
     return <SiPlaystation5 className={className} />
   }
-  if (s.includes("playstation-4") || s.includes("ps4") || n.includes("playstation 4") || n.includes("ps4")) {
+  if (
+    s.includes("playstation-4") ||
+    s.includes("ps4") ||
+    n.includes("playstation 4") ||
+    n.includes("ps4")
+  ) {
     return <SiPlaystation4 className={className} />
   }
-  if (s.includes("playstation-3") || s.includes("ps3") || n.includes("playstation 3") || n.includes("ps3")) {
+  if (
+    s.includes("playstation-3") ||
+    s.includes("ps3") ||
+    n.includes("playstation 3") ||
+    n.includes("ps3")
+  ) {
     return <SiPlaystation3 className={className} />
   }
-  if (s.includes("playstation-2") || s.includes("ps2") || n.includes("playstation 2") || n.includes("ps2")) {
+  if (
+    s.includes("playstation-2") ||
+    s.includes("ps2") ||
+    n.includes("playstation 2") ||
+    n.includes("ps2")
+  ) {
     return <SiPlaystation2 className={className} />
   }
   if (s.includes("ps-vita") || s.includes("vita") || n.includes("vita")) {
     return <SiPlaystationvita className={className} />
   }
-  if (s.includes("psp") || n.includes("psp") || n.includes("playstation portable")) {
+  if (
+    s.includes("psp") ||
+    n.includes("psp") ||
+    n.includes("playstation portable")
+  ) {
     return <SiPlaystationportable className={className} />
   }
-  if (s.includes("playstation") || s.includes("ps") || n.includes("playstation")) {
+  if (
+    s.includes("playstation") ||
+    s.includes("ps") ||
+    n.includes("playstation")
+  ) {
     return <SiPlaystation className={className} />
   }
 
@@ -72,7 +100,12 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     return <BsNintendoSwitch className={className} />
   }
 
-  if (s.includes("pc") || s.includes("windows") || n.includes("pc") || n.includes("windows")) {
+  if (
+    s.includes("pc") ||
+    s.includes("windows") ||
+    n.includes("pc") ||
+    n.includes("windows")
+  ) {
     return <FaWindows className={className} />
   }
 
@@ -95,7 +128,12 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     return <SiAndroid className={className} />
   }
 
-  if (s.includes("sega") || n.includes("sega") || s.includes("dreamcast") || s.includes("genesis")) {
+  if (
+    s.includes("sega") ||
+    n.includes("sega") ||
+    s.includes("dreamcast") ||
+    s.includes("genesis")
+  ) {
     return <SiSega className={className} />
   }
 
@@ -103,7 +141,12 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     return <SiAtari className={className} />
   }
 
-  if (s.includes("commodore") || s.includes("amiga") || n.includes("commodore") || n.includes("amiga")) {
+  if (
+    s.includes("commodore") ||
+    s.includes("amiga") ||
+    n.includes("commodore") ||
+    n.includes("amiga")
+  ) {
     return <SiCommodore className={className} />
   }
 

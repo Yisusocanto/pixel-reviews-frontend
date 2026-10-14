@@ -33,7 +33,8 @@ function GameReviewCard({ review, ownReview = false }: Props) {
     <div
       className={cn(
         "flex flex-col gap-4 border-b border-b-border py-4 sm:py-6",
-        ownReview && "rounded-2xl border-2 border-primary bg-card p-4 sm:p-6 md:p-8"
+        ownReview &&
+          "rounded-2xl border-2 border-primary bg-card p-4 sm:p-6 md:p-8"
       )}
     >
       <div className="flex items-center justify-between">
@@ -41,13 +42,13 @@ function GameReviewCard({ review, ownReview = false }: Props) {
           <div className="flex flex-wrap items-center gap-2">
             <Avatar className="size-7 sm:size-8">
               <AvatarImage src={review.user?.profilePhotoUrl} />
-              <AvatarFallback className="text-[10px] sm:text-xs uppercase">
+              <AvatarFallback className="text-[10px] uppercase sm:text-xs">
                 <span>{review.user?.username?.slice(0, 2) ?? "U"}</span>
               </AvatarFallback>
             </Avatar>
             <Link
               href={`/users/${review.user?.username}`}
-              className="text-sm sm:text-base font-bold transition-colors duration-300 ease-in-out hover:text-primary"
+              className="text-sm font-bold transition-colors duration-300 ease-in-out hover:text-primary sm:text-base"
             >
               @{review.user?.username}
             </Link>
@@ -72,7 +73,7 @@ function GameReviewCard({ review, ownReview = false }: Props) {
                   onClick={() => deleteReview(review.id)}
                   className={"text-destructive hover:bg-destructive/50"}
                 >
-                  <Trash className="text-destructive size-4" />
+                  <Trash className="size-4 text-destructive" />
                   <span>Delete</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

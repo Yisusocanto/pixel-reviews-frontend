@@ -34,10 +34,10 @@ function GameMetacriticCard({ score, url, className }: Props) {
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-xs">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex size-6 items-center justify-center rounded font-black text-xs text-black bg-[#ffcc33]">
+            <div className="flex size-6 items-center justify-center rounded bg-[#ffcc33] text-xs font-black text-black">
               M
             </div>
-            <span className="font-heading font-bold text-xs tracking-wider uppercase text-muted-foreground">
+            <span className="font-heading text-xs font-bold tracking-wider text-muted-foreground uppercase">
               Metascore
             </span>
           </div>
@@ -62,7 +62,7 @@ function GameMetacriticCard({ score, url, className }: Props) {
           >
             {score}
           </div>
-          <div className="flex flex-col min-w-0">
+          <div className="flex min-w-0 flex-col">
             <span className="text-sm font-bold text-foreground">
               {scoreLabel}
             </span>

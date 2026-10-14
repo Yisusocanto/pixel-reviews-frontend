@@ -16,9 +16,7 @@ export const registerSchema = z
         /^[a-zA-Z0-9_-]+$/,
         "Username can only contain letters, numbers, hyphens, and underscores"
       ),
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
     bio: z.string().max(250, "Bio must not exceed 250 characters").optional(),
   })

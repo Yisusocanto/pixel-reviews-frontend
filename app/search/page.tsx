@@ -21,15 +21,15 @@ import { useDebounce } from "use-debounce"
 
 function SearchPageFallback() {
   return (
-    <div className="flex flex-1 flex-col bg-secondary px-6 sm:px-8 pb-12">
+    <div className="flex flex-1 flex-col bg-secondary px-6 pb-12 sm:px-8">
       <div className="py-8">
         <div className="relative w-full max-w-3xl">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search any game by title..."
             type="search"
             disabled
-            className="h-11 w-full rounded-lg border-border/60 bg-background/50 pl-10 pr-10 text-sm focus-visible:ring-primary [&::-webkit-search-cancel-button]:hidden"
+            className="h-11 w-full rounded-lg border-border/60 bg-background/50 pr-10 pl-10 text-sm focus-visible:ring-primary [&::-webkit-search-cancel-button]:hidden"
           />
         </div>
       </div>
@@ -119,18 +119,18 @@ function SearchPageContent() {
   const totalResults = data?.pages[0]?.total ?? games.length
 
   return (
-    <div className="flex flex-1 flex-col bg-secondary px-6 sm:px-8 pb-12">
+    <div className="flex flex-1 flex-col bg-secondary px-6 pb-12 sm:px-8">
       <div className="py-8">
         <div className="relative w-full max-w-3xl">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={title}
             placeholder="Search any game by title..."
             type="search"
-            className="h-11 w-full rounded-lg border-border/60 bg-background/50 pl-10 pr-10 text-sm focus-visible:ring-primary [&::-webkit-search-cancel-button]:hidden"
+            className="h-11 w-full rounded-lg border-border/60 bg-background/50 pr-10 pl-10 text-sm focus-visible:ring-primary [&::-webkit-search-cancel-button]:hidden"
             onChange={(e) => setTitle(e.target.value)}
           />
-          <div className="absolute right-3.5 top-1/2 flex -translate-y-1/2 items-center gap-1.5">
+          <div className="absolute top-1/2 right-3.5 flex -translate-y-1/2 items-center gap-1.5">
             {isDebouncing && (
               <Loader2 className="size-4 animate-spin text-muted-foreground" />
             )}
@@ -174,13 +174,13 @@ function SearchPageContent() {
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <Flame className="size-5 text-primary" />
-                <h2 className="font-heading text-xl font-bold uppercase tracking-wide">
+                <h2 className="font-heading text-xl font-bold tracking-wide uppercase">
                   Popular Games
                 </h2>
               </div>
               <p className="text-xs text-muted-foreground">
-                Explore trending and top-rated games, or use the search bar above
-                to find a specific title.
+                Explore trending and top-rated games, or use the search bar
+                above to find a specific title.
               </p>
             </div>
           )}

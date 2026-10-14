@@ -79,7 +79,7 @@ function ProfilePhotoDialog({ initialImageUrl, trigger }: Props) {
           )
         }
       />
-      <DialogContent className="w-[calc(100%-1rem)] max-w-md! p-4 sm:p-6 max-h-[90dvh] overflow-y-auto">
+      <DialogContent className="max-h-[90dvh] w-[calc(100%-1rem)] max-w-md! overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>Profile Photo</DialogTitle>
           <DialogDescription>
