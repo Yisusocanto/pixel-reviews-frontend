@@ -13,7 +13,10 @@ interface Props {
 function UserReviewSection({ username, ownReview = false }: Props) {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useUserReviews(username)
-  const reviews = data?.pages.flatMap((page) => page.items) ?? []
+  const reviews =
+    data?.pages
+      .flatMap((page) => page.items)
+      .filter((review) => Boolean(review.title?.trim() && review.content?.trim())) ?? []
 
   const { ref, inView } = useInView({
     threshold: 0,

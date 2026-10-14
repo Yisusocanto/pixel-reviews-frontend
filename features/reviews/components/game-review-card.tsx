@@ -83,10 +83,12 @@ function GameReviewCard({ review, ownReview = false }: Props) {
       <div className="flex flex-col gap-2">
         <StarRating value={review.score} showValue readOnly size="sm" />
         <div className="space-y-1">
-          <h3 className="text-xl font-bold break-words sm:text-2xl md:text-3xl">
-            {review.title}
-          </h3>
-          <ExpandableText content={review.content} />
+          {review.title && (
+            <h3 className="text-xl font-bold break-words sm:text-2xl md:text-3xl">
+              {review.title}
+            </h3>
+          )}
+          {review.content && <ExpandableText content={review.content} />}
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 pt-2">

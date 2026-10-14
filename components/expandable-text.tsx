@@ -5,11 +5,15 @@ import { cn } from "cn"
 import { useState } from "react"
 
 interface Props {
-  content: string
+  content?: string | null
 }
 
 function ExpandableText({ content }: Props) {
   const [isExpanded, setIsExpanded] = useState(false)
+
+  if (!content) {
+    return null
+  }
 
   const isLong = content.length > 250
 

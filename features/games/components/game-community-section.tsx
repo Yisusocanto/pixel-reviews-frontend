@@ -33,9 +33,17 @@ function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
     }
   })
 
+  const hasUserWrittenReview = Boolean(
+    currentUserReview?.title?.trim() && currentUserReview?.content?.trim()
+  )
+
   const reviews = data?.pages
     .flatMap((page) => page.items)
-    .filter((review) => review.id !== currentUserReview?.id)
+    .filter(
+      (review) =>
+        review.id !== currentUserReview?.id &&
+        Boolean(review.title?.trim() && review.content?.trim())
+    )
 
   return (
     <div>
@@ -43,12 +51,14 @@ function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
         Community
       </h2>
 
-      {currentUserReview && (
-        <div className="my-8">
-          <GameReviewCard review={currentUserReview} ownReview />
-        </div>
+      {hasUserWrittenReview && currentUserReview && (
+        <>
+          <div className="my-8">
+            <GameReviewCard review={currentUserReview} ownReview />
+          </div>
+          <Separator className={"my-4"} />
+        </>
       )}
-      <Separator className={"my-4"} />
 
       {reviews && reviews.length > 0 ? (
         <div className="flex flex-col gap-8">
@@ -62,13 +72,13 @@ function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
             )}
           </div>
         </div>
-      ) : (
+      ) : !hasUserWrittenReview ? (
         <div className="flex">
           <span className="m-auto text-center text-muted-foreground">
             No reviews yet
           </span>
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

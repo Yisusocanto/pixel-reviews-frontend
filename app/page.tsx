@@ -13,7 +13,9 @@ import { useInView } from "react-intersection-observer"
 export default function Page() {
   const [selectedReview, setSelectedReview] = useState<Review | undefined>()
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage } = useReviews()
-  const reviews = data?.pages.flatMap((page) => page.items)
+  const reviews = data?.pages
+    .flatMap((page) => page.items)
+    .filter((review) => Boolean(review.title?.trim() && review.content?.trim()))
 
   const { ref, inView } = useInView({
     threshold: 0,
