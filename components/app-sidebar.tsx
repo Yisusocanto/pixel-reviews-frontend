@@ -27,7 +27,14 @@ import {
 } from "@/components/ui/sidebar"
 import { PixelGamepadIcon } from "@/components/ui/pixel-gamepad-icon"
 import { NavLink } from "@/types/link"
-import { ChevronsUpDown, Home, LogOut, Search, User } from "lucide-react"
+import {
+  ChevronsUpDown,
+  Home,
+  LogOut,
+  Search,
+  Settings,
+  User,
+} from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -190,6 +197,10 @@ function AppSidebar() {
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={() => router.push("/settings")}>
+                      <Settings />
+                      Settings
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut />
                       Log out

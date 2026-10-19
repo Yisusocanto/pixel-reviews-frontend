@@ -17,6 +17,16 @@ export async function updateUserAction(data: UserUpdate) {
   revalidatePath("/", "layout")
   return res
 }
+export async function updateUserPasswordAction(
+  oldPassword: string,
+  newPassword: string
+) {
+  const res = await apiClient.patch<User>("/users/update-password", {
+    oldPassword,
+    newPassword,
+  })
+  return res
+}
 
 export async function getUserStatsAction(username: string) {
   const res = apiClient.get<UserStats>(`/users/${username}/stats`)
