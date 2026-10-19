@@ -230,7 +230,7 @@ const FileUpload = ({
   return (
     <div className="flex w-full items-center justify-center border-0">
       <Card className={cn("w-full max-w-sm border-0 py-6", className)}>
-        <CardContent className="px-6">
+        <CardContent className="border-0 px-6">
           {stage === "idle" && (
             <div className="flex flex-col items-center gap-4 py-2 text-center">
               <div

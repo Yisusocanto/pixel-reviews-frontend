@@ -1,5 +1,6 @@
 "use client"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,6 +20,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast"
 import { updateUserAction } from "@/features/users/actions"
+import ProfilePhotoDialog from "@/features/users/components/profile-photo-dialog"
 import { User } from "@/features/users/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useSession } from "next-auth/react"
@@ -68,7 +70,7 @@ function UserInfoSection({ user }: Props) {
       }
 
       const updatedUser = await updateUserAction(payload)
-      update({
+      await update({
         user: {
           username: updatedUser.username,
           bio: updatedUser.bio,
@@ -98,6 +100,21 @@ function UserInfoSection({ user }: Props) {
         <CardDescription>Public identity at Pixel Reviews</CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="relative mb-6 inline-block shrink-0">
+          <Avatar className="size-20 sm:size-24 md:size-28">
+            <AvatarImage
+              src={user?.profilePhotoUrl ?? undefined}
+              alt={user?.username}
+              className="object-cover"
+            />
+            <AvatarFallback className="text-2xl font-bold uppercase sm:text-3xl md:text-4xl">
+              {user?.username?.slice(0, 2) ?? "U"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="absolute right-0 bottom-0 z-10 translate-x-1 translate-y-1">
+            <ProfilePhotoDialog initialImageUrl={user?.profilePhotoUrl} />
+          </div>
+        </div>
         <form onSubmit={onSubmit}>
           <FieldGroup>
             <Controller

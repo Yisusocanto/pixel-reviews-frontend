@@ -14,6 +14,7 @@ export async function getUserAction(username: string) {
 export async function updateUserAction(data: UserUpdate) {
   const res = await apiClient.patch<User>("/users", data)
   revalidatePath(`/users/${res.username}`)
+  revalidatePath("/settings")
   revalidatePath("/", "layout")
   return res
 }
@@ -67,6 +68,7 @@ export async function getUserWishlistAction(
 export async function uploadProfilePhotoAction(formData: FormData) {
   const res = await apiClient.post<User>("/users/profile-photo", formData)
   revalidatePath(`/users/${res.username}`)
+  revalidatePath("/settings")
   revalidatePath("/", "layout")
   return res
 }

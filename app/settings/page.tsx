@@ -1,6 +1,7 @@
 import { auth } from "@/auth"
 import SecuritySection from "@/features/settings/components/security-section"
 import UserInfoSection from "@/features/settings/components/user-info-section"
+import { getUserAction } from "@/features/users/actions"
 import { redirect } from "next/navigation"
 
 async function SettingsPage() {
@@ -8,6 +9,8 @@ async function SettingsPage() {
   if (!session) {
     redirect("/")
   }
+
+  const user = await getUserAction(session.user.username)
 
   return (
     <div className="p-8">
@@ -19,7 +22,7 @@ async function SettingsPage() {
       </div>
       <div className="flex justify-between gap-10">
         <div className="flex-2">
-          <UserInfoSection user={session?.user} />
+          <UserInfoSection user={user} />
         </div>
         <div className="flex-1">
           <SecuritySection />
