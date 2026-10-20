@@ -72,3 +72,24 @@ export async function uploadProfilePhotoAction(formData: FormData) {
   revalidatePath("/", "layout")
   return res
 }
+
+export async function forgotPasswordAction(email: string) {
+  const res = await apiClient.post<{ message: string }>(
+    "/users/forgot-password",
+    {
+      email,
+    }
+  )
+  return res
+}
+
+export async function resetPasswordAction(token: string, newPassword: string) {
+  const res = await apiClient.post<{ message: string }>(
+    "/users/reset-password",
+    {
+      token,
+      newPassword,
+    }
+  )
+  return res
+}

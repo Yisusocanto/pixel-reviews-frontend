@@ -28,6 +28,7 @@ import {
   loginSchema,
   registerSchema,
 } from "@/lib/validations/auth"
+import Link from "next/link"
 
 interface LoginModalProps {
   open?: boolean
@@ -174,6 +175,13 @@ function LoginModal({
                   {loginError && (
                     <p className="text-sm text-red-500">{loginError}</p>
                   )}
+                  <Link
+                    href={"/forgot-password"}
+                    className="text-primary underline"
+                    onClick={() => handleOpenChange(false)}
+                  >
+                    Forgot password?
+                  </Link>
                   <Button
                     className="w-full"
                     type="submit"
@@ -258,6 +266,13 @@ function LoginModal({
                   {registerError && (
                     <p className="text-sm text-red-500">{registerError}</p>
                   )}
+                  <Link
+                    href={"/forgot-password"}
+                    className="text-primary underline"
+                    onClick={() => handleOpenChange(false)}
+                  >
+                    Forgot password?
+                  </Link>
                   <Button
                     className="w-full"
                     type="submit"
