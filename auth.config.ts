@@ -136,37 +136,33 @@ export const authConfig: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    async signIn({ account }) {
+    async signIn({ user, account }) {
       if (account?.provider === "google") {
         if (!account.id_token) return false
         const backendAuth = await exchangeGoogleToken(account.id_token)
-        return !!backendAuth
+        if (!backendAuth) return false
+
+        const expiresAt =
+          decodeJwtExpiry(backendAuth.access_token) ??
+          Date.now() + 15 * 60 * 1000
+
+        user.id = backendAuth.user.id
+        user.email = backendAuth.user.email
+        user.username = backendAuth.user.username
+        user.name = backendAuth.user.username
+        user.bio = backendAuth.user.bio
+        user.profilePhotoUrl = backendAuth.user.profilePhotoUrl
+        user.createdAt = backendAuth.user.createdAt
+        user.updatedAt = backendAuth.user.updatedAt
+        user.accessToken = backendAuth.access_token
+        user.refreshToken = backendAuth.refresh_token
+        user.accessTokenExpires = expiresAt
+
+        return true
       }
       return true
     },
-    async jwt({ token, user, account, trigger, session }) {
-      if (account?.provider === "google" && account.id_token) {
-        const backendAuth = await exchangeGoogleToken(account.id_token)
-        if (backendAuth) {
-          const expiresAt =
-            decodeJwtExpiry(backendAuth.access_token) ??
-            Date.now() + 15 * 60 * 1000
-
-          token.id = backendAuth.user.id
-          token.email = backendAuth.user.email
-          token.username = backendAuth.user.username
-          token.bio = backendAuth.user.bio
-          token.profilePhotoUrl = backendAuth.user.profilePhotoUrl
-          token.createdAt = backendAuth.user.createdAt
-          token.updatedAt = backendAuth.user.updatedAt
-          token.accessToken = backendAuth.access_token
-          token.refreshToken = backendAuth.refresh_token
-          token.accessTokenExpires = expiresAt
-          token.error = undefined
-          return token
-        }
-      }
-
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id ?? token.id ?? ""
         token.email = user.email
@@ -178,6 +174,7 @@ export const authConfig: NextAuthConfig = {
         token.accessToken = user.accessToken
         token.refreshToken = user.refreshToken
         token.accessTokenExpires = user.accessTokenExpires
+        token.error = undefined
         return token
       }
 
