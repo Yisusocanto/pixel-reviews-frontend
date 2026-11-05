@@ -37,7 +37,6 @@ export default function Page() {
 
     setSelectedReview(newReview)
   }
-  console.log(selectedReview)
 
   return (
     <div className="flex min-h-svh flex-row items-start justify-between gap-6">

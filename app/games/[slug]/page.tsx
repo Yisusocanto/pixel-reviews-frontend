@@ -50,7 +50,7 @@ async function GameDetailPage({
         getUserGameWishlistAction(game.id),
       ])
     } catch (error) {
-      console.log(error)
+      console.error("Failed to load user review or wishlist status", error)
     }
   }
 
