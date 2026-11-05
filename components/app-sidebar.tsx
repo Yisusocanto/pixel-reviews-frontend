@@ -66,8 +66,6 @@ function AppSidebar() {
     router.refresh()
   }
 
-  console.log(session)
-
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="py-4">
