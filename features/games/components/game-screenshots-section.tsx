@@ -9,8 +9,8 @@ interface Props {
 function GameScreenshotsSection({ screenshots }: Props) {
   return (
     <section>
-      <h2 className="mb-4 font-heading font-bold tracking-widest text-primary uppercase">
-        Screenshots and Art game
+      <h2 className="mb-4 font-heading text-sm font-bold tracking-widest text-primary uppercase">
+        Screenshots & Artwork
       </h2>
       <FramerThumbnailCarousel
         className="mt-2"

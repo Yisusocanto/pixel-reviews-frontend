@@ -1,13 +1,14 @@
-import { ExternalLink } from "lucide-react"
+import { Award, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface Props {
   score?: number | null
+  count?: number | null
   url?: string | null
   className?: string
 }
 
-function GameMetacriticCard({ score, url, className }: Props) {
+function GameMetacriticCard({ score, count, url, className }: Props) {
   if (score === null || score === undefined || Number.isNaN(score)) {
     return null
   }
@@ -28,17 +29,17 @@ function GameMetacriticCard({ score, url, className }: Props) {
 
   return (
     <section className={className}>
-      <h2 className="mb-4 font-heading font-bold tracking-widest text-primary uppercase">
-        Metacritic
+      <h2 className="mb-4 font-heading text-sm font-bold tracking-widest text-primary uppercase">
+        Critic Consensus
       </h2>
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-xs">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex size-6 items-center justify-center rounded bg-[#ffcc33] text-xs font-black text-black">
-              M
+            <div className="flex size-6 items-center justify-center rounded bg-primary/15 text-primary">
+              <Award className="size-3.5" />
             </div>
-            <span className="font-heading text-xs font-bold tracking-wider text-muted-foreground uppercase">
-              Metascore
+            <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              IGDB Critic Score
             </span>
           </div>
           {url && (
@@ -46,9 +47,9 @@ function GameMetacriticCard({ score, url, className }: Props) {
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-primary"
+              className="group inline-flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
             >
-              <span>View reviews</span>
+              <span>IGDB page</span>
               <ExternalLink className="size-3 transition-transform group-hover:translate-x-0.5" />
             </a>
           )}
@@ -67,7 +68,9 @@ function GameMetacriticCard({ score, url, className }: Props) {
               {scoreLabel}
             </span>
             <span className="text-xs text-muted-foreground">
-              Based on critic reviews
+              {count && count > 0
+                ? `Aggregated from ${count} critic ${count === 1 ? "source" : "sources"}`
+                : "Based on aggregated critic ratings"}
             </span>
           </div>
         </div>
