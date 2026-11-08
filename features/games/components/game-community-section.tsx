@@ -47,8 +47,8 @@ function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
 
   return (
     <div>
-      <h2 className="mb-4 font-heading font-bold tracking-widest text-primary uppercase">
-        Community
+      <h2 className="mb-4 font-heading text-sm font-bold tracking-widest text-primary uppercase">
+        Community Reviews
       </h2>
 
       {hasUserWrittenReview && currentUserReview && (

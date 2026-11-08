@@ -9,7 +9,7 @@ interface Props {
 function GameRatingSection({ gameStats, className }: Props) {
   return (
     <section className={className}>
-      <h2 className="mb-4 font-heading font-bold tracking-widest text-primary uppercase">
+      <h2 className="mb-4 font-heading text-sm font-bold tracking-widest text-primary uppercase">
         Community Reception
       </h2>
       <RatingDistributionCard

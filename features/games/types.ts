@@ -9,19 +9,24 @@ export interface Game {
   id: string
   title: string
   slug: string
-  rawgId: string
-  releaseDate: string
+  igdbId: number
+  releaseDate?: string | null
   imageUrl: string
-  backgroundImage?: string
+  backgroundImage?: string | null
   description: string
+  storyline?: string | null
+  criticScore?: number | null
+  criticScoreCount?: number | null
+  igdbUrl?: string | null
+  website?: string | null
+  trailerYoutubeId?: string | null
+  trailerTitle?: string | null
   screenshots: string[]
+  gameModes: string[]
+  themes: string[]
+  playerPerspectives: string[]
   developers: Developer[]
   publishers: Publisher[]
-  metacriticScore?: number | null
-  metacriticUrl?: string | null
-  metacritic_score?: number | null
-  metacritic_url?: string | null
-  website?: string | null
   stores?: Store[]
   genres: Genre[]
   platforms: Platform[]
@@ -30,8 +35,10 @@ export interface Game {
 export interface GameSearch {
   title: string
   slug: string
-  releaseDate: string
-  backgroundImage: string
+  releaseDate?: string | null
+  imageUrl?: string | null
+  backgroundImage?: string | null
+  criticScore?: number | null
 }
 
 export interface GameSearchPagination {
