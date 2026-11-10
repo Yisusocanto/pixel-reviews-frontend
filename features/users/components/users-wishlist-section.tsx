@@ -27,6 +27,10 @@ function UsersWishlistSection({ username }: Props) {
 
   const ownProfile = session?.user.username == username
 
+  if (data.items.length < 1) {
+    return null
+  }
+
   return (
     <div>
       <h2 className="font-heading text-2xl font-bold">Wishlist</h2>
