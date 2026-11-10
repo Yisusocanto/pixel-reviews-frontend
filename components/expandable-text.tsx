@@ -6,9 +6,10 @@ import { useState } from "react"
 
 interface Props {
   content?: string | null
+  className?: string
 }
 
-function ExpandableText({ content }: Props) {
+function ExpandableText({ content, className }: Props) {
   const [isExpanded, setIsExpanded] = useState(false)
 
   if (!content) {
@@ -18,11 +19,12 @@ function ExpandableText({ content }: Props) {
   const isLong = content.length > 250
 
   return (
-    <div>
+    <>
       <p
         className={cn(
-          "leading-relaxed text-muted-foreground antialiased",
-          !isExpanded && "line-clamp-4"
+          "leading-relaxed whitespace-pre-line text-muted-foreground antialiased",
+          !isExpanded && "line-clamp-4",
+          className
         )}
       >
         {content}
@@ -36,7 +38,7 @@ function ExpandableText({ content }: Props) {
           {isExpanded ? "Show less" : "Show more"}
         </Button>
       )}
-    </div>
+    </>
   )
 }
 

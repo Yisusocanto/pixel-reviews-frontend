@@ -33,6 +33,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { notFound } from "next/navigation"
+import ExpandableText from "@/components/expandable-text"
 
 function TechnicalSpecificationsSection({
   game,
@@ -225,7 +226,7 @@ async function GameDetailPage({
 
   return (
     <div className="relative min-h-screen">
-      <div className="relative min-h-[380px] w-full overflow-hidden border-b border-b-border bg-zinc-950 sm:h-96">
+      <div className="relative min-h-95 w-full overflow-hidden border-b border-b-border bg-zinc-950 sm:h-96">
         {backgroundImage && (
           <Image
             src={backgroundImage}
@@ -309,9 +310,10 @@ async function GameDetailPage({
                   Storyline
                 </h2>
               </div>
-              <p className="text-sm leading-relaxed text-muted-foreground italic sm:text-base">
-                {game.storyline}
-              </p>
+              <ExpandableText
+                content={game.storyline}
+                className="text-sm leading-relaxed text-muted-foreground italic sm:text-base"
+              />
             </section>
           )}
 
