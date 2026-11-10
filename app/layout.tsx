@@ -8,6 +8,8 @@ import { SidebarInset } from "@/components/ui/sidebar"
 import AppSidebar from "@/components/app-sidebar"
 import NavBar from "@/components/nav-bar"
 import { Toaster } from "@/components/ui/toast"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const merriweatherHeading = Merriweather({
   subsets: ["latin"],
@@ -76,6 +78,8 @@ export default function RootLayout({
             </div>
           </SidebarInset>
         </Providers>
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   )
