@@ -18,10 +18,14 @@ export const useGameReviews = (gameSlug: string) => {
   })
 }
 
-export const useSearchGames = (title: string = "", enabled: boolean = true) => {
+export const useSearchGames = (
+  title: string = "",
+  enabled: boolean = true,
+  limit: number = 20
+) => {
   return useInfiniteQuery({
     queryKey: ["searchGames", title],
-    queryFn: ({ pageParam }) => searchGamesAction(title, pageParam, 20),
+    queryFn: ({ pageParam }) => searchGamesAction(title, pageParam, limit),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (lastPage.page < lastPage.totalPages && lastPage.items.length > 0) {

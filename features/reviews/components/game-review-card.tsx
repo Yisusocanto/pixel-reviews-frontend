@@ -85,7 +85,7 @@ function GameReviewCard({ review, ownReview = false }: Props) {
         <StarRating value={review.score} showValue readOnly size="sm" />
         <div className="space-y-1">
           {review.title && (
-            <h3 className="text-xl font-bold break-words sm:text-2xl md:text-3xl">
+            <h3 className="text-xl font-bold wrap-break-word sm:text-2xl md:text-3xl">
               {review.title}
             </h3>
           )}
