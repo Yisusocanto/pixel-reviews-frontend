@@ -1,6 +1,7 @@
 "use client"
 
 import LoginModal from "@/components/auth/login-modal"
+import SearchNavbar from "@/components/search-navbar"
 import { Button } from "@/components/ui/button"
 import { PixelGamepadIcon } from "@/components/ui/pixel-gamepad-icon"
 import { SidebarTrigger } from "@/components/ui/sidebar"
@@ -19,20 +20,23 @@ function NavBar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-15 items-center justify-between gap-2 border-b border-b-border bg-secondary/95 px-3 backdrop-blur-sm sm:px-4">
-      <div className="flex min-w-0 items-center gap-2">
+    <header className="sticky top-0 z-30 flex h-15 items-center justify-between gap-3 border-b border-b-border bg-secondary/95 px-3 backdrop-blur-sm sm:px-4">
+      <div className="flex shrink-0 items-center gap-2">
         <SidebarTrigger />
         <Link
           href="/"
           className="flex items-center gap-2 truncate text-base leading-none font-extrabold tracking-tight md:hidden"
         >
           <PixelGamepadIcon className="h-5 w-10 shrink-0 text-primary" />
-          <span className="font-black tracking-tight">
+          <span className="hidden font-black tracking-tight sm:inline">
             <span className="text-primary">Pixel</span> Reviews
           </span>
         </Link>
       </div>
-      {!session && (
+
+      <SearchNavbar />
+
+      {!session ? (
         <div className="flex shrink-0 gap-1 sm:gap-2">
           <Button variant="ghost" onClick={() => handleOpenAuth("sign-in")}>
             Sign in
@@ -47,6 +51,8 @@ function NavBar() {
             defaultTab={modalTab}
           />
         </div>
+      ) : (
+        <div className="hidden w-8 shrink-0 md:block" />
       )}
     </header>
   )
