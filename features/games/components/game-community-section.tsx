@@ -31,7 +31,7 @@ function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
     }
-  })
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
 
   const hasUserWrittenReview = Boolean(
     currentUserReview?.title?.trim() && currentUserReview?.content?.trim()

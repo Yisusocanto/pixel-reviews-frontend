@@ -15,7 +15,7 @@ import {
   X,
 } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Suspense, useEffect, useState } from "react"
+import { Suspense, useEffect, useRef, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { useDebounce } from "use-debounce"
 
@@ -46,29 +46,29 @@ function SearchPageContent() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-
-  const queryInUrl = searchParams.get("q") ?? searchParams.get("title") ?? ""
-
-  const [title, setTitle] = useState(queryInUrl)
-  const [prevQueryInUrl, setPrevQueryInUrl] = useState(queryInUrl)
-
-  if (queryInUrl !== prevQueryInUrl) {
-    setPrevQueryInUrl(queryInUrl)
-    setTitle(queryInUrl)
-  }
-
-  const [debouncedTitle] = useDebounce(title, 400)
+  const searchParamsRef = useRef(searchParams)
 
   useEffect(() => {
+    searchParamsRef.current = searchParams
+  }, [searchParams])
+
+  const [title, setTitle] = useState(
+    () => searchParams.get("q") ?? searchParams.get("title") ?? ""
+  )
+
+  const [debouncedTitle, { flush }] = useDebounce(title, 400)
+
+  useEffect(() => {
+    const currentParams = searchParamsRef.current
     const currentParam =
-      searchParams.get("q") ?? searchParams.get("title") ?? ""
+      currentParams.get("q") ?? currentParams.get("title") ?? ""
     const trimmed = debouncedTitle.trim()
 
     if (trimmed === currentParam) {
       return
     }
 
-    const nextParams = new URLSearchParams(searchParams.toString())
+    const nextParams = new URLSearchParams(currentParams.toString())
     nextParams.delete("title")
     if (trimmed) {
       nextParams.set("q", trimmed)
@@ -79,7 +79,7 @@ function SearchPageContent() {
     const queryString = nextParams.toString()
     const targetUrl = queryString ? `${pathname}?${queryString}` : pathname
     router.replace(targetUrl, { scroll: false })
-  }, [debouncedTitle, pathname, router, searchParams])
+  }, [debouncedTitle, pathname, router])
 
   const {
     data,
@@ -104,7 +104,8 @@ function SearchPageContent() {
 
   const handleClear = () => {
     setTitle("")
-    const nextParams = new URLSearchParams(searchParams.toString())
+    flush()
+    const nextParams = new URLSearchParams(searchParamsRef.current.toString())
     nextParams.delete("q")
     nextParams.delete("title")
     const queryString = nextParams.toString()

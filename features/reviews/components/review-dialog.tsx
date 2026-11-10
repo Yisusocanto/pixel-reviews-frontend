@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
@@ -112,13 +112,16 @@ function ReviewDialog({
     formState: { errors },
   } = useForm<ReviewFormValues>({
     resolver: zodResolver(schema),
-    values: defaultValues,
+    defaultValues,
   })
 
-  const setOpen = (nextOpen: boolean) => {
-    if (!nextOpen) {
+  useEffect(() => {
+    if (open) {
       reset(defaultValues)
     }
+  }, [open, defaultValues, reset])
+
+  const setOpen = (nextOpen: boolean) => {
     if (!isControlled) {
       setInternalOpen(nextOpen)
     }
@@ -128,6 +131,13 @@ function ReviewDialog({
   const { mutate: createReview, isPending: isCreating } = useCreateReview()
   const { mutate: updateReview, isPending: isUpdating } = useUpdateReview()
   const isPending = isCreating || isUpdating
+
+  const handleMutationSuccess = () => {
+    setOpen(false)
+    window.setTimeout(() => {
+      router.refresh()
+    }, 150)
+  }
 
   const onSubmit = handleSubmit((data) => {
     if (isEditing && currentReview) {
@@ -141,10 +151,7 @@ function ReviewDialog({
           },
         },
         {
-          onSuccess: () => {
-            setOpen(false)
-            router.refresh()
-          },
+          onSuccess: handleMutationSuccess,
         }
       )
     } else {
@@ -156,10 +163,7 @@ function ReviewDialog({
           gameId: game.id,
         },
         {
-          onSuccess: () => {
-            setOpen(false)
-            router.refresh()
-          },
+          onSuccess: handleMutationSuccess,
         }
       )
     }
