@@ -134,8 +134,8 @@ function AppSidebar() {
           </SidebarGroup>
         )}
       </SidebarContent>
-      {session && (
-        <SidebarFooter>
+      <SidebarFooter>
+        {session && (
           <SidebarMenu>
             <SidebarMenuItem>
               <DropdownMenu>
@@ -208,8 +208,34 @@ function AppSidebar() {
               </DropdownMenu>
             </SidebarMenuItem>
           </SidebarMenu>
-        </SidebarFooter>
-      )}
+        )}
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 px-2 py-1 text-[11px] text-muted-foreground group-data-[collapsible=icon]:hidden">
+          <Link
+            href="/privacy"
+            onClick={handleNavigate}
+            className="transition-colors hover:text-primary"
+          >
+            Privacy
+          </Link>
+          <span>·</span>
+          <Link
+            href="/terms"
+            onClick={handleNavigate}
+            className="transition-colors hover:text-primary"
+          >
+            Terms
+          </Link>
+          <span>·</span>
+          <a
+            href="https://www.igdb.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-primary"
+          >
+            Data by IGDB
+          </a>
+        </div>
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )
