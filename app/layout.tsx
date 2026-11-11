@@ -21,6 +21,7 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://pixelreviews.vercel.app"),
   title: {
     default: "Pixel Reviews | For those who play",
     template: "%s | Pixel Reviews",
@@ -35,6 +36,9 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
+  verification: {
+    google: "Bke7j_wArV8Sfx2SLNvQGpIGyr1b0kt5dgiiTW73ms0",
+  },
 }
 
 export const viewport: Viewport = {
