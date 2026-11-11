@@ -24,7 +24,7 @@ function NavBar() {
       <div className="flex shrink-0 items-center gap-2">
         <SidebarTrigger />
         <Link
-          href="/"
+          href={session ? "/feed" : "/"}
           className="flex items-center gap-2 truncate text-base leading-none font-extrabold tracking-tight md:hidden"
         >
           <PixelGamepadIcon className="h-5 w-10 shrink-0 text-primary" />
