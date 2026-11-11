@@ -5,6 +5,10 @@ export const proxy = auth((req) => {
   const { nextUrl } = req
   const isAuthRoute = nextUrl.pathname.startsWith("/auth")
 
+  if (nextUrl.pathname === "/" && req.auth) {
+    return NextResponse.redirect(new URL("/feed", nextUrl))
+  }
+
   if (isAuthRoute) {
     return NextResponse.redirect(new URL("/", nextUrl))
   }

@@ -45,7 +45,7 @@ function AppSidebar() {
   const router = useRouter()
   const pathname = usePathname()
   const links: NavLink[] = [
-    { label: "Feed", href: "/", icon: Home },
+    { label: "Feed", href: "/feed", icon: Home },
     { label: "Search", href: "/search", icon: Search },
   ]
   const authLinks: NavLink[] = [
@@ -72,7 +72,7 @@ function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <Link
-              href="/"
+              href={session ? "/feed" : "/"}
               onClick={handleNavigate}
               className="flex items-center gap-3 overflow-hidden rounded-md p-1 transition-colors outline-none group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
             >
