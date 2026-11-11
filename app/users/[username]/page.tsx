@@ -2,6 +2,7 @@ import { auth } from "@/auth"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import RatingDistributionCard from "@/components/ui/rating-distribution-card"
 import { getUserAction, getUserStatsAction } from "@/features/users/actions"
+import FavGamesSection from "@/features/users/components/fav-games-section"
 import ProfilePhotoDialog from "@/features/users/components/profile-photo-dialog"
 import UpdateUserDialog from "@/features/users/components/update-user-dialog"
 import UserReviewSection from "@/features/users/components/users-reviews-section"
@@ -98,25 +99,28 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
       </header>
 
       {/* Body */}
-      <div className="flex flex-col justify-between gap-8 p-4 sm:p-6 lg:flex-row lg:gap-10 lg:p-8">
-        {/* Rating stats & Reviews */}
-        <div className="order-2 flex min-w-0 flex-2 flex-col gap-8 sm:gap-10 lg:order-1">
-          {/* Rating stats section */}
-          <RatingDistributionCard
-            avgRating={userStats?.avgRating}
-            totalReviews={userStats?.totalReviews}
-            distribution={userStats?.ratingDistribution}
-          />
+      <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-8">
+        <FavGamesSection username={username} />
+        <div className="flex flex-col justify-between gap-8 lg:flex-row lg:gap-10">
+          {/* Rating stats & Reviews */}
+          <div className="order-2 flex min-w-0 flex-2 flex-col gap-8 sm:gap-10 lg:order-1">
+            {/* Rating stats section */}
+            <RatingDistributionCard
+              avgRating={userStats?.avgRating}
+              totalReviews={userStats?.totalReviews}
+              distribution={userStats?.ratingDistribution}
+            />
 
-          {/* Reviews */}
-          <div>
-            <UserReviewSection username={username} ownReview={ownProfile} />
+            {/* Reviews */}
+            <div>
+              <UserReviewSection username={username} ownReview={ownProfile} />
+            </div>
           </div>
-        </div>
 
-        {/* Wishlist */}
-        <div className="order-1 min-w-0 flex-1 lg:order-2">
-          <UsersWishlistSection username={username} />
+          {/* Wishlist */}
+          <div className="order-1 min-w-0 flex-1 lg:order-2">
+            <UsersWishlistSection username={username} />
+          </div>
         </div>
       </div>
     </div>

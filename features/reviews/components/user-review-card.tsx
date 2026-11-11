@@ -83,7 +83,7 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
             <StarRating value={review.score} readOnly showValue size="sm" />
           </div>
           <div className="mt-2 flex flex-col gap-1">
-            <h3 className="text-xl font-bold break-words text-primary sm:text-2xl">
+            <h3 className="text-xl font-bold wrap-break-word text-primary sm:text-2xl">
               {review.title}
             </h3>
             <ExpandableText content={review.content} />
