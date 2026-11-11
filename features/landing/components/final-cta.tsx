@@ -31,16 +31,42 @@ export default function FinalCta() {
       </div>
 
       <footer className="relative border-t border-border">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-5 py-6 sm:px-8">
-          <Link href="/" className="flex items-center gap-3">
-            <PixelGamepadIcon className="h-4 w-8 text-primary" />
-            <span className="font-mono text-xs tracking-widest uppercase">
-              Pixel Reviews
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-4 px-5 py-6 sm:flex-row sm:items-center sm:px-8">
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
+              <PixelGamepadIcon className="h-4 w-8 text-primary" />
+              <span className="font-mono text-xs tracking-widest uppercase">
+                Pixel Reviews
+              </span>
+            </Link>
+            <span className="font-mono text-xs text-muted-foreground">·</span>
+            <span className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
+              For those who play
             </span>
-          </Link>
-          <span className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
-            For those who play
-          </span>
+          </div>
+
+          <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs tracking-wider text-muted-foreground uppercase">
+            <Link
+              href="/privacy"
+              className="transition-colors hover:text-primary"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              className="transition-colors hover:text-primary"
+            >
+              Terms of Service
+            </Link>
+            <a
+              href="https://www.igdb.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-primary"
+            >
+              Data by IGDB
+            </a>
+          </nav>
         </div>
       </footer>
     </section>

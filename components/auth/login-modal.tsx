@@ -286,6 +286,25 @@ function LoginModal({
               </div>
             </TabsContent>
           </Tabs>
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            By continuing, you agree to our{" "}
+            <Link
+              href="/terms"
+              onClick={() => handleOpenChange(false)}
+              className="underline hover:text-primary"
+            >
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/privacy"
+              onClick={() => handleOpenChange(false)}
+              className="underline hover:text-primary"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </div>
       </DialogContent>
     </Dialog>
