@@ -5,6 +5,7 @@ import { ReviewPagination } from "@/features/reviews/types"
 import { User, UserStats, UserUpdate } from "@/features/users/types"
 import { WishlistPagination } from "@/features/wishlists/types"
 import { apiClient } from "@/lib/api/client"
+import { Game } from "@/features/games/types"
 
 export async function getUserAction(username: string) {
   const res = await apiClient.get<User>(`/users/${username}`)
@@ -91,5 +92,17 @@ export async function resetPasswordAction(token: string, newPassword: string) {
       newPassword,
     }
   )
+  return res
+}
+
+export async function getUserFavGamesAction(username: string) {
+  const res = await apiClient.get<Game[]>(`/users/${username}/favorites`)
+  return res
+}
+
+export async function updateUserFavGamesAction(slugs: Game["slug"][]) {
+  const res = await apiClient.patch<Game[]>("/favorites", {
+    gamesSlugs: slugs,
+  })
   return res
 }
