@@ -106,3 +106,9 @@ export async function updateUserFavGamesAction(slugs: Game["slug"][]) {
   })
   return res
 }
+
+export async function deleteAccountAction() {
+  const res = await apiClient.delete<User>("/users")
+  revalidatePath("/", "layout")
+  return res
+}
