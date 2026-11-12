@@ -14,14 +14,14 @@ async function SettingsPage() {
   const user = await getUserAction(session.user.username)
 
   return (
-    <div className="flex flex-col gap-4 p-8">
+    <div className="flex flex-col gap-4 p-4 sm:p-6 lg:p-8">
       <div>
         <h1 className="text-4xl font-bold">Settings</h1>
         <p className="text-muted-foreground">
           Manage your identity and account security on Pixel Reviews.
         </p>
       </div>
-      <div className="flex justify-between gap-10">
+      <div className="flex flex-col gap-4 md:flex-row md:justify-between md:gap-10">
         <div className="flex-2">
           <UserInfoSection user={user} />
         </div>
