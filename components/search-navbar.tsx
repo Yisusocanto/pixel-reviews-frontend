@@ -1,18 +1,12 @@
 "use client"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { useSearchGames } from "@/features/games/hooks/use-games"
+import { useSearchUsers } from "@/features/users/hooks"
 import { cn } from "@/lib/utils"
 import dayjs from "dayjs"
-import {
-  AlertCircle,
-  ArrowRight,
-  Gamepad2,
-  Loader2,
-  Search,
-  SearchX,
-  X,
-} from "lucide-react"
+import { ArrowRight, Gamepad2, Loader2, Search, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -30,6 +24,43 @@ function getScoreBadgeColor(score: number | null | undefined) {
   return "border-rose-500/40 bg-rose-950/85 text-rose-300"
 }
 
+function SectionHeader({ label, total }: { label: string; total?: number }) {
+  return (
+    <div className="flex items-center justify-between px-3 pt-2.5 pb-1">
+      <span className="font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+        {label}
+      </span>
+      {total !== undefined && total > 0 && (
+        <span className="font-mono text-[10px] text-muted-foreground">
+          {total}
+        </span>
+      )}
+    </div>
+  )
+}
+
+function SectionSkeleton() {
+  return (
+    <div className="flex flex-col gap-1 px-2 pb-2">
+      {Array.from({ length: 2 }).map((_, index) => (
+        <div key={index} className="flex items-center gap-3 rounded-lg p-2">
+          <div className="h-10 w-14 shrink-0 animate-pulse rounded-md bg-muted/60" />
+          <div className="flex flex-1 flex-col gap-2">
+            <div className="h-3.5 w-3/4 animate-pulse rounded bg-muted/60" />
+            <div className="h-2.5 w-12 animate-pulse rounded bg-muted/40" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function SectionMessage({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="px-3 pb-3 text-[11px] text-muted-foreground">{children}</p>
+  )
+}
+
 function SearchNavbar() {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
@@ -39,16 +70,27 @@ function SearchNavbar() {
   const trimmedQuery = debouncedTitle.trim()
   const hasInput = title.trim().length > 0
   const isDebouncing = title.trim() !== trimmedQuery
+  const enabled = trimmedQuery.length > 0
 
-  const { data, isLoading, isError } = useSearchGames(
-    trimmedQuery,
-    trimmedQuery.length > 0,
-    5
-  )
+  const {
+    data: gamesData,
+    isLoading: isLoadingGames,
+    isError: isErrorGames,
+  } = useSearchGames(trimmedQuery, enabled, 5)
 
-  const games = data?.pages.flatMap((page) => page.items) ?? []
-  const totalResults = data?.pages[0]?.total ?? games.length
-  const showLoading = isLoading || isDebouncing
+  const {
+    data: usersData,
+    isLoading: isLoadingUsers,
+    isError: isErrorUsers,
+  } = useSearchUsers(trimmedQuery, enabled, 5)
+
+  const games = gamesData?.pages.flatMap((page) => page.items) ?? []
+  const users = usersData?.pages.flatMap((page) => page.items) ?? []
+  const totalGames = gamesData?.pages[0]?.total ?? games.length
+  const totalUsers = usersData?.pages[0]?.total ?? users.length
+  const showGamesLoading = isLoadingGames || isDebouncing
+  const showUsersLoading = isLoadingUsers || isDebouncing
+  const showSpinner = showGamesLoading || showUsersLoading
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -79,13 +121,17 @@ function SearchNavbar() {
     }
   }
 
+  const viewAllHref = `/search?q=${encodeURIComponent(trimmedQuery)}`
+  const gamesViewAllHref = `${viewAllHref}&type=games`
+  const usersViewAllHref = `${viewAllHref}&type=users`
+
   return (
     <div className="relative w-full max-w-md flex-1" ref={ref}>
       <div className="group relative flex items-center">
         <Search className="pointer-events-none absolute left-3 size-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
         <Input
           value={title}
-          placeholder="Search games..."
+          placeholder="Search games or users..."
           type="text"
           onChange={(e) => {
             setTitle(e.target.value)
@@ -96,7 +142,7 @@ function SearchNavbar() {
           className="h-9 w-full rounded-lg border-border/60 bg-background/60 pr-9 pl-9 text-sm transition-all focus-visible:border-primary/60 focus-visible:bg-background focus-visible:ring-2 focus-visible:ring-primary/20"
         />
         <div className="absolute right-2.5 flex items-center gap-1">
-          {hasInput && showLoading && (
+          {hasInput && showSpinner && (
             <Loader2 className="size-3.5 animate-spin text-primary" />
           )}
           {title && (
@@ -114,47 +160,18 @@ function SearchNavbar() {
 
       {isOpen && hasInput && (
         <div className="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-xl border border-border/80 bg-popover/95 text-popover-foreground shadow-2xl ring-1 ring-black/20 backdrop-blur-md">
-          {showLoading && games.length === 0 ? (
-            <div className="flex flex-col gap-1 p-2">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-3 rounded-lg p-2"
-                >
-                  <div className="h-11 w-16 shrink-0 animate-pulse rounded-md bg-muted/60" />
-                  <div className="flex flex-1 flex-col gap-2">
-                    <div className="h-3.5 w-3/4 animate-pulse rounded bg-muted/60" />
-                    <div className="h-2.5 w-12 animate-pulse rounded bg-muted/40" />
-                  </div>
-                  <div className="h-5 w-7 shrink-0 animate-pulse rounded bg-muted/50" />
-                </div>
-              ))}
-            </div>
-          ) : isError ? (
-            <div className="flex flex-col items-center justify-center gap-1.5 px-4 py-6 text-center">
-              <AlertCircle className="size-5 text-destructive" />
-              <p className="text-xs font-medium text-foreground">
-                Could not load search results
-              </p>
-              <p className="text-[11px] text-muted-foreground">
-                Please try again in a moment.
-              </p>
-            </div>
-          ) : games.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-1.5 px-4 py-6 text-center">
-              <div className="rounded-full bg-muted/50 p-2 text-muted-foreground">
-                <SearchX className="size-4" />
-              </div>
-              <p className="text-xs font-medium text-foreground">
+          <div>
+            <SectionHeader label="Games" total={totalGames} />
+            {showGamesLoading && games.length === 0 ? (
+              <SectionSkeleton />
+            ) : isErrorGames ? (
+              <SectionMessage>Could not load games.</SectionMessage>
+            ) : games.length === 0 ? (
+              <SectionMessage>
                 No games found for &quot;{trimmedQuery}&quot;
-              </p>
-              <p className="text-[11px] text-muted-foreground">
-                Try another title or keyword.
-              </p>
-            </div>
-          ) : (
-            <div>
-              <div className="flex flex-col gap-0.5 p-1.5">
+              </SectionMessage>
+            ) : (
+              <div className="flex flex-col gap-0.5 px-1.5 pb-1.5">
                 {games.map((game) => {
                   const coverImage = game.imageUrl || game.backgroundImage
                   const releaseYear =
@@ -209,23 +226,74 @@ function SearchNavbar() {
                     </Link>
                   )
                 })}
+                {totalGames > games.length && (
+                  <Link
+                    href={gamesViewAllHref}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-primary"
+                  >
+                    <span>See all {totalGames} games</span>
+                    <ArrowRight className="size-3.5 shrink-0" />
+                  </Link>
+                )}
               </div>
+            )}
+          </div>
 
-              <div className="border-t border-border/60 bg-muted/20 p-1.5">
-                <Link
-                  href={`/search?q=${encodeURIComponent(trimmedQuery)}`}
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-primary"
-                >
-                  <span className="truncate">
-                    View all results
-                    {totalResults > 0 ? ` (${totalResults})` : ""}
-                  </span>
-                  <ArrowRight className="size-3.5 shrink-0" />
-                </Link>
+          <div className="border-t border-border/60">
+            <SectionHeader label="Users" total={totalUsers} />
+            {showUsersLoading && users.length === 0 ? (
+              <SectionSkeleton />
+            ) : isErrorUsers ? (
+              <SectionMessage>Could not load users.</SectionMessage>
+            ) : users.length === 0 ? (
+              <SectionMessage>
+                No users found for &quot;{trimmedQuery}&quot;
+              </SectionMessage>
+            ) : (
+              <div className="flex flex-col gap-0.5 px-1.5 pb-1.5">
+                {users.map((user) => (
+                  <Link
+                    key={user.username}
+                    href={`/users/${user.username}`}
+                    onClick={() => setIsOpen(false)}
+                    className="group flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent/80"
+                  >
+                    <Avatar className="size-9">
+                      <AvatarImage src={user.profilePhotoUrl} />
+                      <AvatarFallback className="font-bold uppercase">
+                        {user.username.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="min-w-0 flex-1 truncate font-heading text-xs font-bold tracking-wide text-foreground uppercase transition-colors group-hover:text-primary sm:text-sm">
+                      {user.username}
+                    </span>
+                  </Link>
+                ))}
+                {totalUsers > users.length && (
+                  <Link
+                    href={usersViewAllHref}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-primary"
+                  >
+                    <span>See all {totalUsers} users</span>
+                    <ArrowRight className="size-3.5 shrink-0" />
+                  </Link>
+                )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
+
+          <div className="border-t border-border/60 bg-muted/20 p-1.5">
+            <Link
+              href={viewAllHref}
+              onClick={() => setIsOpen(false)}
+              className="flex items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-primary"
+            >
+              <span className="truncate">View all results</span>
+              <ArrowRight className="size-3.5 shrink-0" />
+            </Link>
+          </div>
         </div>
       )}
     </div>

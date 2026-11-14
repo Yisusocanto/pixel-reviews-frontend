@@ -4,6 +4,7 @@ import {
   getUserFavGamesAction,
   getUserReviewsAction,
   getUserWishlistAction,
+  searchUsersAction,
   updateUserFavGamesAction,
 } from "@/features/users/actions"
 import {
@@ -26,6 +27,25 @@ export const useUserReviews = (username: string) => {
 
       return undefined
     },
+  })
+}
+
+export const useSearchUsers = (
+  username: string = "",
+  enabled: boolean = true,
+  limit: number = 20
+) => {
+  return useInfiniteQuery({
+    queryKey: ["searchUsers", username, limit],
+    queryFn: ({ pageParam }) => searchUsersAction(username, pageParam, limit),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page < lastPage.totalPages && lastPage.items.length > 0) {
+        return lastPage.page + 1
+      }
+      return undefined
+    },
+    enabled,
   })
 }
 
