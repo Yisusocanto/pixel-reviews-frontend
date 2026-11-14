@@ -2,13 +2,33 @@
 
 import { revalidatePath } from "next/cache"
 import { ReviewPagination } from "@/features/reviews/types"
-import { User, UserStats, UserUpdate } from "@/features/users/types"
+import {
+  User,
+  UserSearchPagination,
+  UserStats,
+  UserUpdate,
+} from "@/features/users/types"
 import { WishlistPagination } from "@/features/wishlists/types"
 import { apiClient } from "@/lib/api/client"
 import { Game } from "@/features/games/types"
 
 export async function getUserAction(username: string) {
   const res = await apiClient.get<User>(`/users/${username}`)
+  return res
+}
+
+export async function searchUsersAction(
+  username: string = "",
+  page: number = 1,
+  limit: number = 20
+): Promise<UserSearchPagination> {
+  const res = await apiClient.get<UserSearchPagination>("/users/search", {
+    params: {
+      query: username,
+      page,
+      limit,
+    },
+  })
   return res
 }
 

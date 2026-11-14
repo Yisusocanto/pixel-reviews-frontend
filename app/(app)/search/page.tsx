@@ -1,23 +1,20 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import GameSearchCard from "@/features/games/components/game-search-card"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import GameSearchCardSkeleton from "@/features/games/components/game-search-card-skeleton"
-import { useSearchGames } from "@/features/games/hooks/use-games"
-import {
-  AlertCircle,
-  Flame,
-  Loader2,
-  RefreshCw,
-  Search,
-  SearchX,
-  X,
-} from "lucide-react"
+import GamesResults from "@/features/games/components/games-results"
+import UsersResults from "@/features/users/components/users-results"
+import { Gamepad2, Loader2, Search, Users, X } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useRef, useState } from "react"
-import { useInView } from "react-intersection-observer"
 import { useDebounce } from "use-debounce"
+
+type SearchType = "games" | "users"
+
+function parseType(value: string | null): SearchType {
+  return value === "users" ? "users" : "games"
+}
 
 function SearchPageFallback() {
   return (
@@ -26,7 +23,7 @@ function SearchPageFallback() {
         <div className="relative w-full max-w-3xl">
           <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search any game by title..."
+            placeholder="Search games or users..."
             type="search"
             disabled
             className="h-11 w-full rounded-lg border-border/60 bg-background/50 pr-10 pl-10 text-sm focus-visible:ring-primary [&::-webkit-search-cancel-button]:hidden"
@@ -51,6 +48,8 @@ function SearchPageContent() {
   useEffect(() => {
     searchParamsRef.current = searchParams
   }, [searchParams])
+
+  const type = parseType(searchParams.get("type"))
 
   const [title, setTitle] = useState(
     () => searchParams.get("q") ?? searchParams.get("title") ?? ""
@@ -81,27 +80,6 @@ function SearchPageContent() {
     router.replace(targetUrl, { scroll: false })
   }, [debouncedTitle, pathname, router])
 
-  const {
-    data,
-    isLoading,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-    isError,
-    error,
-    refetch,
-  } = useSearchGames(debouncedTitle)
-
-  const { ref, inView } = useInView({
-    threshold: 0,
-  })
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
-
   const handleClear = () => {
     setTitle("")
     flush()
@@ -113,20 +91,28 @@ function SearchPageContent() {
     router.replace(targetUrl, { scroll: false })
   }
 
+  const handleTypeChange = (value: unknown) => {
+    const nextType = parseType(String(value))
+    const nextParams = new URLSearchParams(searchParamsRef.current.toString())
+    nextParams.set("type", nextType)
+    router.replace(`${pathname}?${nextParams.toString()}`, { scroll: false })
+  }
+
   const isDebouncing = title !== debouncedTitle
-  const showInitialLoading = isLoading
-  const isSearchActive = debouncedTitle.trim().length > 0
-  const games = data?.pages.flatMap((page) => page.items) ?? []
-  const totalResults = data?.pages[0]?.total ?? games.length
+  const query = debouncedTitle.trim()
 
   return (
     <div className="flex flex-1 flex-col bg-secondary px-6 pb-12 sm:px-8">
-      <div className="py-8">
+      <div className="flex flex-col gap-4 py-8">
         <div className="relative w-full max-w-3xl">
           <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={title}
-            placeholder="Search any game by title..."
+            placeholder={
+              type === "users"
+                ? "Search users by username..."
+                : "Search any game by title..."
+            }
             type="search"
             className="h-11 w-full rounded-lg border-border/60 bg-background/50 pr-10 pl-10 text-sm focus-visible:ring-primary [&::-webkit-search-cancel-button]:hidden"
             onChange={(e) => setTitle(e.target.value)}
@@ -147,130 +133,23 @@ function SearchPageContent() {
             )}
           </div>
         </div>
+
+        <Tabs value={type} onValueChange={handleTypeChange}>
+          <TabsList className="w-fit">
+            <TabsTrigger value="games" className="gap-1.5 px-4">
+              <Gamepad2 className="size-4" /> Games
+            </TabsTrigger>
+            <TabsTrigger value="users" className="gap-1.5 px-4">
+              <Users className="size-4" /> Users
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
-      {!isError && (
-        <div className="mb-6">
-          {showInitialLoading ? (
-            <div className="flex items-center gap-2">
-              <Loader2 className="size-4 animate-spin text-primary" />
-              <span className="text-sm text-muted-foreground">
-                {isSearchActive
-                  ? `Searching games for "${debouncedTitle || title}"...`
-                  : "Loading popular games..."}
-              </span>
-            </div>
-          ) : isSearchActive ? (
-            <p className="text-sm text-muted-foreground">
-              Found{" "}
-              <strong className="font-semibold text-primary">
-                {totalResults}
-              </strong>{" "}
-              {totalResults === 1 ? "result" : "results"} matching{" "}
-              <strong className="text-foreground italic">
-                &quot;{debouncedTitle}&quot;
-              </strong>
-            </p>
-          ) : (
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <Flame className="size-5 text-primary" />
-                <h2 className="font-heading text-xl font-bold tracking-wide uppercase">
-                  Popular Games
-                </h2>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Explore trending and top-rated games, or use the search bar
-                above to find a specific title.
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {isError && (
-        <div className="my-6 flex flex-col items-center justify-center rounded-xl border border-destructive/30 bg-destructive/10 p-8 text-center">
-          <div className="mb-3 rounded-full bg-destructive/20 p-3 text-destructive">
-            <AlertCircle className="size-8" />
-          </div>
-          <h3 className="font-heading text-lg font-bold text-foreground">
-            Failed to load games
-          </h3>
-          <p className="mt-1 max-w-md text-sm text-muted-foreground">
-            {error instanceof Error
-              ? error.message
-              : "An unexpected error occurred while fetching games. Please try again."}
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            className="mt-4 gap-2 border-destructive/40 hover:bg-destructive/20"
-          >
-            <RefreshCw className="size-4" /> Try again
-          </Button>
-        </div>
-      )}
-
-      {showInitialLoading && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <GameSearchCardSkeleton key={i} />
-          ))}
-        </div>
-      )}
-
-      {!showInitialLoading && !isError && games.length === 0 && (
-        <div className="my-6 flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-card/20 p-12 text-center">
-          <div className="mb-3 rounded-full bg-muted/40 p-4 text-muted-foreground">
-            <SearchX className="size-8" />
-          </div>
-          <h3 className="font-heading text-lg font-bold text-foreground">
-            No games found
-          </h3>
-          <p className="mt-1 max-w-md text-sm text-muted-foreground">
-            We couldn&apos;t find any games matching{" "}
-            <strong className="text-foreground">
-              &quot;{debouncedTitle}&quot;
-            </strong>
-            . Try checking for typos or searching with different keywords.
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleClear}
-            className="mt-4"
-          >
-            View popular games
-          </Button>
-        </div>
-      )}
-
-      {!showInitialLoading && !isError && games.length > 0 && (
-        <div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {games.map((game, index) => (
-              <GameSearchCard key={`${game.slug}-${index}`} game={game} />
-            ))}
-          </div>
-
-          <div
-            ref={ref}
-            className="flex flex-col items-center justify-center py-8"
-          >
-            {isFetchingNextPage && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="size-5 animate-spin text-primary" />
-                <span>Loading more games...</span>
-              </div>
-            )}
-            {!hasNextPage && games.length > 0 && (
-              <p className="text-xs text-muted-foreground">
-                You have reached the end of the results.
-              </p>
-            )}
-          </div>
-        </div>
+      {type === "users" ? (
+        <UsersResults query={query} onClear={handleClear} />
+      ) : (
+        <GamesResults query={query} onClear={handleClear} />
       )}
     </div>
   )

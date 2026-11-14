@@ -17,6 +17,19 @@ export interface UserUpdate {
   bio?: string
 }
 
+export interface UserSearch {
+  username: string
+  profilePhotoUrl?: string | null
+  bio?: string | null
+}
+
+export interface UserSearchPagination {
+  items: UserSearch[]
+  total: number
+  totalPages: number
+  page: number
+}
+
 export interface UserStats {
   totalReviews: number
   totalRatings: number
