@@ -33,6 +33,7 @@ import {
   LogOut,
   Search,
   Settings,
+  ShieldCheck,
   User,
 } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
@@ -44,6 +45,8 @@ function AppSidebar() {
   const { isMobile, setOpenMobile } = useSidebar()
   const router = useRouter()
   const pathname = usePathname()
+  const isAdmin = session?.user.role === "admin"
+
   const links: NavLink[] = [
     { label: "Feed", href: "/feed", icon: Home },
     { label: "Search", href: "/search", icon: Search },
@@ -53,6 +56,13 @@ function AppSidebar() {
       label: "Profile",
       href: `/users/${session?.user.username}`,
       icon: User,
+    },
+  ]
+  const adminLinks: NavLink[] = [
+    {
+      label: "Moderation",
+      href: "/admin/moderation",
+      icon: ShieldCheck,
     },
   ]
 
@@ -98,7 +108,7 @@ function AppSidebar() {
               {links.map((link) => (
                 <SidebarMenuItem key={link.label}>
                   <SidebarMenuButton
-                    isActive={pathname == link.href ? true : false}
+                    isActive={pathname == link.href}
                     render={<Link href={link.href} onClick={handleNavigate} />}
                     className="rounded-sm border-l-2 border-l-primary selection:bg-primary hover:bg-primary/7 data-selected:bg-primary"
                   >
@@ -118,7 +128,30 @@ function AppSidebar() {
                 {authLinks.map((link) => (
                   <SidebarMenuItem key={link.label}>
                     <SidebarMenuButton
-                      isActive={pathname == link.href ? true : false}
+                      isActive={pathname == link.href}
+                      render={
+                        <Link href={link.href} onClick={handleNavigate} />
+                      }
+                      className="rounded-sm border-l-2 border-l-primary selection:bg-primary hover:bg-primary/7 data-selected:bg-primary"
+                    >
+                      <link.icon className="text-primary" />
+                      <span className="text-lg">{link.label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+        {isAdmin && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Administration</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-2">
+                {adminLinks.map((link) => (
+                  <SidebarMenuItem key={link.label}>
+                    <SidebarMenuButton
+                      isActive={pathname.startsWith(link.href)}
                       render={
                         <Link href={link.href} onClick={handleNavigate} />
                       }
@@ -195,6 +228,14 @@ function AppSidebar() {
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
+                    {isAdmin && (
+                      <DropdownMenuItem
+                        onClick={() => router.push("/admin/moderation")}
+                      >
+                        <ShieldCheck />
+                        Moderation
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={() => router.push("/settings")}>
                       <Settings />
                       Settings

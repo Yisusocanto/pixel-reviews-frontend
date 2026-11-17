@@ -12,6 +12,7 @@ import StarRating from "@/components/ui/star-rating"
 import LikeButton from "@/features/likes/components/like-button"
 import ReviewDetailDialog from "@/features/reviews/components/review-detail-dialog"
 import ReviewDialog from "@/features/reviews/components/review-dialog"
+import ReviewModerationNotice from "@/features/reviews/components/review-moderation-notice"
 import { useDeleteReview } from "@/features/reviews/hooks"
 import { Review } from "@/features/reviews/types"
 import { cn } from "cn"
@@ -65,7 +66,8 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 sm:flex-2">
-        <div>
+        <div className="space-y-3">
+          {ownReview && <ReviewModerationNotice review={review} />}
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="leading-tight">
               <Link

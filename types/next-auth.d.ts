@@ -1,5 +1,5 @@
 import { DefaultSession } from "next-auth"
-import type { User as AppUser } from "@/features/users/types"
+import type { User as AppUser, UserRole } from "@/features/users/types"
 
 declare module "next-auth" {
   interface Session {
@@ -20,6 +20,7 @@ declare module "next-auth/jwt" {
     id: string
     email?: string | null
     username: string
+    role?: UserRole
     bio?: string | null
     profilePhotoUrl?: string | null
     createdAt?: string | null
