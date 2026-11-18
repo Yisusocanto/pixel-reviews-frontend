@@ -1,9 +1,12 @@
 import { RatingDistributionRow } from "@/components/ui/c-rating-6"
 
+export type UserRole = "user" | "admin"
+
 export interface User {
   id: string
   username: string
   email: string
+  role?: UserRole
   bio?: string | null
   profilePhotoUrl?: string | null
   createdAt?: string | null

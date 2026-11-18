@@ -52,6 +52,11 @@ export async function deleteReviewAction(reviewId: string): Promise<Review> {
   return res
 }
 
+export async function appealReviewAction(reviewId: string): Promise<Review> {
+  const res = await apiClient.post<Review>(`/reviews/${reviewId}/appeal`)
+  return res
+}
+
 export async function likeToggleAction(reviewId: string): Promise<LikeToggle> {
   const res = await apiClient.post<LikeToggle>(`/reviews/${reviewId}/like`)
   return res

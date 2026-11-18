@@ -1,5 +1,6 @@
 import { toast } from "@/components/ui/toast"
 import {
+  appealReviewAction,
   createReviewAction,
   deleteReviewAction,
   getAllReviewsAction,
@@ -81,6 +82,7 @@ export const useUpdateReview = () => {
       qc.setQueryData(["userReview", review.gameId], review)
       qc.invalidateQueries({ queryKey: ["reviews"] })
       qc.invalidateQueries({ queryKey: ["gameReviews"] })
+      qc.invalidateQueries({ queryKey: ["userReviews"] })
       qc.invalidateQueries({ queryKey: ["userReview", review.gameId] })
       toast.add({
         description: "Review updated successfully",
@@ -90,6 +92,32 @@ export const useUpdateReview = () => {
     onError: (error) => {
       toast.add({
         description: `Error updating the review: ${error.message}`,
+        type: "error",
+      })
+    },
+  })
+}
+
+export const useAppealReview = () => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (reviewId: string) => appealReviewAction(reviewId),
+    onSuccess: (review) => {
+      if (review?.gameId) {
+        qc.setQueryData(["userReview", review.gameId], review)
+      }
+      qc.invalidateQueries({ queryKey: ["reviews"] })
+      qc.invalidateQueries({ queryKey: ["gameReviews"] })
+      qc.invalidateQueries({ queryKey: ["userReviews"] })
+      qc.invalidateQueries({ queryKey: ["userReview"] })
+      toast.add({
+        description: "Your request for manual review has been sent.",
+        type: "success",
+      })
+    },
+    onError: (error) => {
+      toast.add({
+        description: `Could not submit appeal: ${error.message}`,
         type: "error",
       })
     },

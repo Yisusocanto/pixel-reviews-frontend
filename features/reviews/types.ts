@@ -1,6 +1,18 @@
 import { Game } from "@/features/games/types"
 import { User } from "@/features/users/types"
 
+export type ModerationStatus =
+  | "pending"
+  | "approved"
+  | "needs_review"
+  | "rejected"
+
+export interface ModerationInfo {
+  status: ModerationStatus
+  reason?: string | null
+  canAppeal: boolean
+}
+
 export interface Review {
   id: string
   gameId: string
@@ -13,6 +25,7 @@ export interface Review {
   likesCount: number
   likedByUser: boolean
   commentsCount: number
+  moderation?: ModerationInfo | null
 
   game?: Game
   user?: User

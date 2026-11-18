@@ -14,6 +14,7 @@ import StarRating from "@/components/ui/star-rating"
 import LikeButton from "@/features/likes/components/like-button"
 import ReviewDetailDialog from "@/features/reviews/components/review-detail-dialog"
 import ReviewDialog from "@/features/reviews/components/review-dialog"
+import ReviewModerationNotice from "@/features/reviews/components/review-moderation-notice"
 import { useDeleteReview } from "@/features/reviews/hooks"
 import { Review } from "@/features/reviews/types"
 import { cn } from "cn"
@@ -37,6 +38,7 @@ function GameReviewCard({ review, ownReview = false }: Props) {
           "rounded-2xl border-2 border-primary bg-card p-4 sm:p-6 md:p-8"
       )}
     >
+      {ownReview && <ReviewModerationNotice review={review} />}
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <div className="flex flex-wrap items-center gap-2">

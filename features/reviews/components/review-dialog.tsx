@@ -25,6 +25,7 @@ import { Spinner } from "@/components/ui/spinner"
 import StarRating from "@/components/ui/star-rating"
 import { Textarea } from "@/components/ui/textarea"
 import { Game } from "@/features/games/types"
+import ReviewModerationNotice from "@/features/reviews/components/review-moderation-notice"
 import {
   useCreateReview,
   useUpdateReview,
@@ -202,6 +203,9 @@ function ReviewDialog({
               : "Share your opinion with the community and upgrade your status"}
           </DialogDescription>
         </DialogHeader>
+        {isEditing && currentReview && (
+          <ReviewModerationNotice review={currentReview} compact />
+        )}
         <div>
           <form onSubmit={onSubmit} id="review-form">
             <div>

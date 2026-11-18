@@ -149,6 +149,7 @@ export const authConfig: NextAuthConfig = {
         user.id = backendAuth.user.id
         user.email = backendAuth.user.email
         user.username = backendAuth.user.username
+        user.role = backendAuth.user.role ?? "user"
         user.name = backendAuth.user.username
         user.bio = backendAuth.user.bio
         user.profilePhotoUrl = backendAuth.user.profilePhotoUrl
@@ -167,6 +168,7 @@ export const authConfig: NextAuthConfig = {
         token.id = user.id ?? token.id ?? ""
         token.email = user.email
         token.username = user.username
+        token.role = user.role ?? token.role ?? "user"
         token.bio = user.bio
         token.profilePhotoUrl = user.profilePhotoUrl
         token.createdAt = user.createdAt
@@ -204,6 +206,7 @@ export const authConfig: NextAuthConfig = {
           ...session.user,
           id: token.id,
           username: token.username,
+          role: token.role ?? "user",
           bio: token.bio ?? null,
           profilePhotoUrl: token.profilePhotoUrl ?? null,
           createdAt: token.createdAt ?? null,
