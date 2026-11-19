@@ -23,11 +23,17 @@ import {
   useQueryClient,
 } from "@tanstack/react-query"
 
-export const useReviews = () => {
+export const useReviews = (initialPage?: ReviewPagination) => {
   return useInfiniteQuery({
     queryKey: ["reviews"],
     queryFn: ({ pageParam }) => getAllReviewsAction(pageParam, 10),
     initialPageParam: 1,
+    initialData: initialPage
+      ? {
+          pages: [initialPage],
+          pageParams: [1],
+        }
+      : undefined,
     getNextPageParam: (lastPage) => {
       if (lastPage.page < lastPage.totalPages) {
         return lastPage.page + 1
