@@ -229,3 +229,60 @@
     animation: none;
   }
 }
+
+@layer components {
+  progress.loading-spinner {
+    --spinner-duration: 0.9s;
+    --thickness: 2px;
+    display: inline-block;
+    flex-shrink: 0;
+    appearance: none;
+    border: 0;
+    border-radius: 9999px;
+    background: conic-gradient(
+      from 90deg,
+      currentColor 0 25%,
+      color-mix(in oklab, currentColor 20%, transparent) 0
+    );
+    mask-image: radial-gradient(
+      farthest-side,
+      transparent calc(100% - var(--thickness)),
+      black calc(100% - var(--thickness))
+    );
+    animation: spinner-rotate var(--spinner-duration) linear infinite;
+  }
+
+  @media (forced-colors: active) {
+    progress.loading-spinner {
+      forced-color-adjust: none;
+      color: CanvasText;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    progress.loading-spinner {
+      --spinner-duration: 4s;
+    }
+  }
+}
+
+progress.loading-spinner::-webkit-progress-bar {
+  display: none;
+  background: none;
+}
+
+progress.loading-spinner::-webkit-progress-value {
+  display: none;
+  background: none;
+}
+
+progress.loading-spinner::-moz-progress-bar {
+  display: none;
+  background: none;
+}
+
+@keyframes spinner-rotate {
+  to {
+    rotate: 1turn;
+  }
+}

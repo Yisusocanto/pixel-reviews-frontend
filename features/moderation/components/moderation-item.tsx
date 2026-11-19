@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge-2"
 import { Button } from "@/components/ui/button"
+import { Skeleton, SkeletonGroup } from "@/components/ui/skeleton"
 import StarRating from "@/components/ui/star-rating"
 import DecisionButtons from "@/features/moderation/components/decision-buttons"
 import { useModerationHistory } from "@/features/moderation/hooks"
@@ -67,17 +68,17 @@ export function ModerationItem({ item }: Props) {
   const JudgeIcon = judgeInfo?.icon ?? ShieldAlert
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 sm:p-6 shadow-xs">
+    <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 shadow-xs sm:p-6">
       <div className="flex flex-col gap-2.5 border-b border-border/60 pb-3 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col gap-1 min-w-0">
+        <div className="flex min-w-0 flex-col gap-1">
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href={`/games/${item.game.slug}`}
-              className="font-heading text-lg font-bold uppercase transition-colors hover:text-primary sm:text-xl truncate"
+              className="truncate font-heading text-lg font-bold uppercase transition-colors hover:text-primary sm:text-xl"
             >
               {item.game.title}
             </Link>
-            <Badge variant="outline" size="sm" className="text-xs shrink-0">
+            <Badge variant="outline" size="sm" className="shrink-0 text-xs">
               v{item.contentVersion}
             </Badge>
             {item.isAppeal && (
@@ -85,7 +86,7 @@ export function ModerationItem({ item }: Props) {
                 variant="warning"
                 appearance="light"
                 size="sm"
-                className="text-xs shrink-0"
+                className="shrink-0 text-xs"
               >
                 User appeal
               </Badge>
@@ -100,7 +101,7 @@ export function ModerationItem({ item }: Props) {
               }
               appearance="light"
               size="sm"
-              className="text-xs capitalize shrink-0"
+              className="shrink-0 text-xs capitalize"
             >
               {item.moderationStatus.replace(/_/g, " ")}
             </Badge>
@@ -110,7 +111,7 @@ export function ModerationItem({ item }: Props) {
           </span>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0 pt-0.5 sm:pt-0">
+        <div className="flex shrink-0 items-center gap-2 pt-0.5 sm:pt-0">
           <Avatar className="size-6">
             <AvatarImage src={item.user.profilePhotoUrl ?? undefined} />
             <AvatarFallback className="text-[10px]">
@@ -119,7 +120,7 @@ export function ModerationItem({ item }: Props) {
           </Avatar>
           <Link
             href={`/users/${item.user.username}`}
-            className="text-xs sm:text-sm font-semibold hover:text-primary truncate"
+            className="truncate text-xs font-semibold hover:text-primary sm:text-sm"
           >
             @{item.user.username}
           </Link>
@@ -133,17 +134,17 @@ export function ModerationItem({ item }: Props) {
             {item.title}
           </h4>
         )}
-        <p className="whitespace-pre-wrap text-sm text-foreground/90 leading-relaxed bg-muted/20 p-3 sm:p-4 rounded-lg border border-border/40">
+        <p className="rounded-lg border border-border/40 bg-muted/20 p-3 text-sm leading-relaxed whitespace-pre-wrap text-foreground/90 sm:p-4">
           {item.content || "(No text body)"}
         </p>
       </div>
 
       {latest && (
-        <div className="rounded-xl border border-border/80 bg-muted/30 p-3.5 sm:p-4 space-y-3">
-          <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between border-b border-border/40 pb-2.5">
+        <div className="space-y-3 rounded-xl border border-border/80 bg-muted/30 p-3.5 sm:p-4">
+          <div className="flex flex-col gap-1.5 border-b border-border/40 pb-2.5 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2">
-              <ShieldAlert className="size-4 text-primary shrink-0" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <ShieldAlert className="size-4 shrink-0 text-primary" />
+              <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                 Latest Evaluation
               </span>
             </div>
@@ -152,9 +153,9 @@ export function ModerationItem({ item }: Props) {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5 rounded-lg bg-background/80 p-3 border border-border/50">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="flex flex-col gap-1.5 rounded-lg border border-border/50 bg-background/80 p-3">
+              <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Judge
               </span>
               <div className="flex items-center gap-2">
@@ -170,8 +171,8 @@ export function ModerationItem({ item }: Props) {
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5 rounded-lg bg-background/80 p-3 border border-border/50">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="flex flex-col gap-1.5 rounded-lg border border-border/50 bg-background/80 p-3">
+              <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Violation Reason
               </span>
               <div className="flex items-center gap-2">
@@ -195,14 +196,14 @@ export function ModerationItem({ item }: Props) {
 
           {latest.scores && Object.keys(latest.scores).length > 0 && (
             <div className="space-y-1.5 pt-1">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block">
+              <span className="block text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Category Confidence
               </span>
               <div className="flex flex-wrap gap-2">
                 {Object.entries(latest.scores).map(([k, v]) => (
                   <div
                     key={k}
-                    className="flex items-center gap-1.5 rounded-md bg-background px-2.5 py-1 text-xs border border-border/50"
+                    className="flex items-center gap-1.5 rounded-md border border-border/50 bg-background px-2.5 py-1 text-xs"
                   >
                     <span className="text-muted-foreground capitalize">
                       {k.replace(/_/g, " ")}:
@@ -226,11 +227,13 @@ export function ModerationItem({ item }: Props) {
           )}
 
           {latest.note && (
-            <div className="rounded-lg bg-background/60 p-2.5 border border-border/40 text-xs">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-0.5">
+            <div className="rounded-lg border border-border/40 bg-background/60 p-2.5 text-xs">
+              <span className="mb-0.5 block text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Note
               </span>
-              <p className="italic text-foreground/80">&ldquo;{latest.note}&rdquo;</p>
+              <p className="text-foreground/80 italic">
+                &ldquo;{latest.note}&rdquo;
+              </p>
             </div>
           )}
         </div>
@@ -241,14 +244,14 @@ export function ModerationItem({ item }: Props) {
           size="sm"
           variant="ghost"
           onClick={() => setShowHistory(!showHistory)}
-          className="text-xs text-muted-foreground hover:text-foreground justify-start sm:justify-center w-full sm:w-auto"
+          className="w-full justify-start text-xs text-muted-foreground hover:text-foreground sm:w-auto sm:justify-center"
         >
-          <History className="size-3.5 mr-1.5" />
+          <History className="mr-1.5 size-3.5" />
           {showHistory ? "Hide audit trail" : "Show audit trail"}
           {showHistory ? (
-            <ChevronUp className="size-3.5 ml-1" />
+            <ChevronUp className="ml-1 size-3.5" />
           ) : (
-            <ChevronDown className="size-3.5 ml-1" />
+            <ChevronDown className="ml-1 size-3.5" />
           )}
         </Button>
 
@@ -261,7 +264,13 @@ export function ModerationItem({ item }: Props) {
             Audit Trail
           </h5>
           {historyLoading ? (
-            <p className="text-xs text-muted-foreground">Loading history...</p>
+            <SkeletonGroup
+              label="Loading history"
+              className="flex flex-col gap-2"
+            >
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-4/5" />
+            </SkeletonGroup>
           ) : history && history.length > 0 ? (
             <div className="space-y-2.5">
               {history.map((h) => (
@@ -271,19 +280,28 @@ export function ModerationItem({ item }: Props) {
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="font-semibold capitalize">
-                      {h.judge} → <span className="uppercase text-primary">{h.verdict}</span> (v{h.contentVersion})
+                      {h.judge} →{" "}
+                      <span className="text-primary uppercase">
+                        {h.verdict}
+                      </span>{" "}
+                      (v{h.contentVersion})
                     </span>
-                    <span className="text-muted-foreground text-[11px]">
+                    <span className="text-[11px] text-muted-foreground">
                       {dayjs(h.createdAt).format("DD/MM/YYYY HH:mm")}
                     </span>
                   </div>
                   {h.reason && (
                     <span className="text-muted-foreground">
-                      Reason: <span className="font-mono text-destructive">{formatModerationReason(h.reason)}</span>
+                      Reason:{" "}
+                      <span className="font-mono text-destructive">
+                        {formatModerationReason(h.reason)}
+                      </span>
                     </span>
                   )}
                   {h.note && (
-                    <span className="italic text-muted-foreground">&ldquo;{h.note}&rdquo;</span>
+                    <span className="text-muted-foreground italic">
+                      &ldquo;{h.note}&rdquo;
+                    </span>
                   )}
                   {h.admin && (
                     <span className="text-[11px] text-muted-foreground">
@@ -294,7 +312,9 @@ export function ModerationItem({ item }: Props) {
               ))}
             </div>
           ) : (
-            <p className="text-xs text-muted-foreground">No prior moderation events.</p>
+            <p className="text-xs text-muted-foreground">
+              No prior moderation events.
+            </p>
           )}
         </div>
       )}

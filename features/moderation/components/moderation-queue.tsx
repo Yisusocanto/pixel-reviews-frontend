@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Spinner } from "@/components/ui/spinner"
+import ModerationQueueSkeleton from "@/features/moderation/components/moderation-queue-skeleton"
 import ModerationItem from "@/features/moderation/components/moderation-item"
 import { useModerationQueue } from "@/features/moderation/hooks"
 import { ModerationStatus } from "@/features/reviews/types"
@@ -12,7 +12,8 @@ export function ModerationQueue() {
   const [status, setStatus] = useState<ModerationStatus | "all">("needs_review")
   const [page, setPage] = useState(1)
 
-  const { data, isLoading, isError, error } = useModerationQueue(status, page, 10)
+  const { data, isLoading, isError, error, isPlaceholderData } =
+    useModerationQueue(status, page, 10)
 
   const handleTabChange = (newStatus: ModerationStatus | "all") => {
     setStatus(newStatus)
@@ -27,16 +28,17 @@ export function ModerationQueue() {
             Moderation Queue
           </h1>
           <p className="text-sm text-muted-foreground">
-            Review and resolve flagged user reviews, suspicious content, and community appeals.
+            Review and resolve flagged user reviews, suspicious content, and
+            community appeals.
           </p>
         </div>
 
-        <div className="flex w-full md:w-auto items-center overflow-x-auto no-scrollbar gap-1 rounded-xl border border-border bg-muted/30 p-1 text-xs">
+        <div className="no-scrollbar flex w-full items-center gap-1 overflow-x-auto rounded-xl border border-border bg-muted/30 p-1 text-xs md:w-auto">
           <Button
             size="sm"
             variant={status === "needs_review" ? "default" : "ghost"}
             onClick={() => handleTabChange("needs_review")}
-            className="text-xs shrink-0"
+            className="shrink-0 text-xs"
           >
             Needs Review
           </Button>
@@ -44,7 +46,7 @@ export function ModerationQueue() {
             size="sm"
             variant={status === "rejected" ? "default" : "ghost"}
             onClick={() => handleTabChange("rejected")}
-            className="text-xs shrink-0"
+            className="shrink-0 text-xs"
           >
             Rejected
           </Button>
@@ -52,7 +54,7 @@ export function ModerationQueue() {
             size="sm"
             variant={status === "approved" ? "default" : "ghost"}
             onClick={() => handleTabChange("approved")}
-            className="text-xs shrink-0"
+            className="shrink-0 text-xs"
           >
             Approved
           </Button>
@@ -60,7 +62,7 @@ export function ModerationQueue() {
             size="sm"
             variant={status === "pending" ? "default" : "ghost"}
             onClick={() => handleTabChange("pending")}
-            className="text-xs shrink-0"
+            className="shrink-0 text-xs"
           >
             Pending
           </Button>
@@ -68,7 +70,7 @@ export function ModerationQueue() {
             size="sm"
             variant={status === "all" ? "default" : "ghost"}
             onClick={() => handleTabChange("all")}
-            className="text-xs shrink-0"
+            className="shrink-0 text-xs"
           >
             All
           </Button>
@@ -76,19 +78,21 @@ export function ModerationQueue() {
       </div>
 
       {isLoading ? (
-        <div className="flex min-h-[300px] flex-col items-center justify-center gap-3">
-          <Spinner />
-          <p className="text-sm text-muted-foreground">Loading queue items...</p>
-        </div>
+        <ModerationQueueSkeleton />
       ) : isError ? (
         <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-6 text-center text-sm text-destructive">
-          Error loading moderation items: {error instanceof Error ? error.message : "Unknown error"}
+          Error loading moderation items:{" "}
+          {error instanceof Error ? error.message : "Unknown error"}
         </div>
       ) : data && data.items.length > 0 ? (
-        <div className="space-y-4">
+        <div
+          aria-busy={isPlaceholderData}
+          className="space-y-4 transition-opacity duration-200 aria-busy:opacity-50"
+        >
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>
-              Showing {data.items.length} of {data.total} review{data.total !== 1 ? "s" : ""}
+              Showing {data.items.length} of {data.total} review
+              {data.total !== 1 ? "s" : ""}
             </span>
             <span>
               Page {data.page} of {Math.max(1, data.totalPages)}
@@ -106,20 +110,20 @@ export function ModerationQueue() {
               <Button
                 size="sm"
                 variant="outline"
-                disabled={page <= 1}
+                disabled={page <= 1 || isPlaceholderData}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
-                <ChevronLeft className="size-4 mr-1" />
+                <ChevronLeft className="mr-1 size-4" />
                 Previous
               </Button>
               <Button
                 size="sm"
                 variant="outline"
-                disabled={page >= data.totalPages}
+                disabled={page >= data.totalPages || isPlaceholderData}
                 onClick={() => setPage((p) => p + 1)}
               >
                 Next
-                <ChevronRight className="size-4 ml-1" />
+                <ChevronRight className="ml-1 size-4" />
               </Button>
             </div>
           )}

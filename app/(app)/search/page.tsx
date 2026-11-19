@@ -1,11 +1,13 @@
 "use client"
 
 import { Input } from "@/components/ui/input"
+import { SkeletonGroup } from "@/components/ui/skeleton"
+import { Spinner } from "@/components/ui/spinner"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import GameSearchCardSkeleton from "@/features/games/components/game-search-card-skeleton"
 import GamesResults from "@/features/games/components/games-results"
 import UsersResults from "@/features/users/components/users-results"
-import { Gamepad2, Loader2, Search, Users, X } from "lucide-react"
+import { Gamepad2, Search, Users, X } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useRef, useState } from "react"
 import { useDebounce } from "use-debounce"
@@ -30,11 +32,14 @@ function SearchPageFallback() {
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <SkeletonGroup
+        label="Loading games"
+        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {Array.from({ length: 9 }).map((_, i) => (
           <GameSearchCardSkeleton key={i} />
         ))}
-      </div>
+      </SkeletonGroup>
     </div>
   )
 }
@@ -118,9 +123,7 @@ function SearchPageContent() {
             onChange={(e) => setTitle(e.target.value)}
           />
           <div className="absolute top-1/2 right-3.5 flex -translate-y-1/2 items-center gap-1.5">
-            {isDebouncing && (
-              <Loader2 className="size-4 animate-spin text-muted-foreground" />
-            )}
+            {isDebouncing && <Spinner className="text-muted-foreground" />}
             {title && (
               <button
                 type="button"

@@ -1,6 +1,8 @@
 "use client"
 
+import { Skeleton, SkeletonGroup } from "@/components/ui/skeleton"
 import UserReviewCard from "@/features/reviews/components/user-review-card"
+import UserReviewCardSkeleton from "@/features/reviews/components/user-review-card-skeleton"
 import { useUserReviews } from "@/features/users/hooks"
 import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
@@ -22,6 +24,7 @@ function UserReviewSection({ username, ownReview = false }: Props) {
 
   const { ref, inView } = useInView({
     threshold: 0,
+    rootMargin: "400px 0px",
   })
 
   useEffect(() => {
@@ -32,9 +35,15 @@ function UserReviewSection({ username, ownReview = false }: Props) {
 
   if (isLoading) {
     return (
-      <div>
-        <h2>Loading...</h2>
-      </div>
+      <SkeletonGroup
+        label="Loading reviews"
+        className="border-t border-t-border"
+      >
+        <Skeleton className="mt-3 h-8 w-28" />
+        {Array.from({ length: 2 }, (_, i) => (
+          <UserReviewCardSkeleton key={i} />
+        ))}
+      </SkeletonGroup>
     )
   }
 
@@ -55,7 +64,7 @@ function UserReviewSection({ username, ownReview = false }: Props) {
         />
       ))}
       <div ref={ref} className="py-4 text-center">
-        {isFetchingNextPage && <p>Loading reviews...</p>}
+        {isFetchingNextPage && <UserReviewCardSkeleton />}
         {!hasNextPage && reviews.length > 0 && (
           <p className="text-sm text-muted-foreground">No more reviews</p>
         )}

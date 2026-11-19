@@ -1,10 +1,12 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { SkeletonGroup } from "@/components/ui/skeleton"
+import { Spinner } from "@/components/ui/spinner"
 import UserSearchCard from "@/features/users/components/user-search-card"
 import UserSearchCardSkeleton from "@/features/users/components/user-search-card-skeleton"
 import { useSearchUsers } from "@/features/users/hooks"
-import { AlertCircle, Loader2, RefreshCw, SearchX, Users } from "lucide-react"
+import { AlertCircle, RefreshCw, SearchX, Users } from "lucide-react"
 import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 
@@ -19,6 +21,7 @@ function UsersResults({ query, onClear }: Props) {
   const {
     data,
     isLoading,
+    isPlaceholderData,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
@@ -27,7 +30,7 @@ function UsersResults({ query, onClear }: Props) {
     refetch,
   } = useSearchUsers(query, isSearchActive)
 
-  const { ref, inView } = useInView({ threshold: 0 })
+  const { ref, inView } = useInView({ threshold: 0, rootMargin: "400px 0px" })
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -83,17 +86,20 @@ function UsersResults({ query, onClear }: Props) {
   if (isLoading) {
     return (
       <div>
-        <div className="mb-6 flex items-center gap-2">
-          <Loader2 className="size-4 animate-spin text-primary" />
+        <div className="mb-6 flex items-center gap-2" role="status">
+          <Spinner className="text-primary" />
           <span className="text-sm text-muted-foreground">
             Searching users for &quot;{query}&quot;...
           </span>
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <SkeletonGroup
+          label="Loading users"
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {Array.from({ length: 9 }).map((_, i) => (
             <UserSearchCardSkeleton key={i} />
           ))}
-        </div>
+        </SkeletonGroup>
       </div>
     )
   }
@@ -128,19 +134,27 @@ function UsersResults({ query, onClear }: Props) {
         <strong className="text-foreground italic">&quot;{query}&quot;</strong>
       </p>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        aria-busy={isPlaceholderData}
+        className="grid grid-cols-1 gap-6 transition-opacity duration-200 aria-busy:opacity-50 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {users.map((user) => (
           <UserSearchCard key={user.username} user={user} />
         ))}
       </div>
 
+      {isFetchingNextPage && (
+        <SkeletonGroup
+          label="Loading more users"
+          className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {Array.from({ length: 3 }).map((_, i) => (
+            <UserSearchCardSkeleton key={i} />
+          ))}
+        </SkeletonGroup>
+      )}
+
       <div ref={ref} className="flex flex-col items-center justify-center py-8">
-        {isFetchingNextPage && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="size-5 animate-spin text-primary" />
-            <span>Loading more users...</span>
-          </div>
-        )}
         {!hasNextPage && (
           <p className="text-xs text-muted-foreground">
             You have reached the end of the results.

@@ -1,10 +1,12 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { SkeletonGroup } from "@/components/ui/skeleton"
+import { Spinner } from "@/components/ui/spinner"
 import GameSearchCard from "@/features/games/components/game-search-card"
 import GameSearchCardSkeleton from "@/features/games/components/game-search-card-skeleton"
 import { useSearchGames } from "@/features/games/hooks/use-games"
-import { AlertCircle, Flame, Loader2, RefreshCw, SearchX } from "lucide-react"
+import { AlertCircle, Flame, RefreshCw, SearchX } from "lucide-react"
 import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 
@@ -17,6 +19,7 @@ function GamesResults({ query, onClear }: Props) {
   const {
     data,
     isLoading,
+    isPlaceholderData,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
@@ -25,7 +28,7 @@ function GamesResults({ query, onClear }: Props) {
     refetch,
   } = useSearchGames(query)
 
-  const { ref, inView } = useInView({ threshold: 0 })
+  const { ref, inView } = useInView({ threshold: 0, rootMargin: "400px 0px" })
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -33,6 +36,7 @@ function GamesResults({ query, onClear }: Props) {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
 
+  const isSearching = isLoading || isPlaceholderData
   const isSearchActive = query.trim().length > 0
   const games = data?.pages.flatMap((page) => page.items) ?? []
   const totalResults = data?.pages[0]?.total ?? games.length
@@ -41,9 +45,9 @@ function GamesResults({ query, onClear }: Props) {
     <div>
       {!isError && (
         <div className="mb-6">
-          {isLoading ? (
-            <div className="flex items-center gap-2">
-              <Loader2 className="size-4 animate-spin text-primary" />
+          {isSearching ? (
+            <div className="flex items-center gap-2" role="status">
+              <Spinner className="text-primary" />
               <span className="text-sm text-muted-foreground">
                 {isSearchActive
                   ? `Searching games for "${query}"...`
@@ -103,11 +107,14 @@ function GamesResults({ query, onClear }: Props) {
       )}
 
       {isLoading && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <SkeletonGroup
+          label="Loading games"
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {Array.from({ length: 9 }).map((_, i) => (
             <GameSearchCardSkeleton key={i} />
           ))}
-        </div>
+        </SkeletonGroup>
       )}
 
       {!isLoading && !isError && games.length === 0 && (
@@ -136,22 +143,30 @@ function GamesResults({ query, onClear }: Props) {
 
       {!isLoading && !isError && games.length > 0 && (
         <div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            aria-busy={isPlaceholderData}
+            className="grid grid-cols-1 gap-6 transition-opacity duration-200 aria-busy:opacity-50 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {games.map((game, index) => (
               <GameSearchCard key={`${game.slug}-${index}`} game={game} />
             ))}
           </div>
 
+          {isFetchingNextPage && (
+            <SkeletonGroup
+              label="Loading more games"
+              className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {Array.from({ length: 3 }).map((_, i) => (
+                <GameSearchCardSkeleton key={i} />
+              ))}
+            </SkeletonGroup>
+          )}
+
           <div
             ref={ref}
             className="flex flex-col items-center justify-center py-8"
           >
-            {isFetchingNextPage && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="size-5 animate-spin text-primary" />
-                <span>Loading more games...</span>
-              </div>
-            )}
             {!hasNextPage && (
               <p className="text-xs text-muted-foreground">
                 You have reached the end of the results.

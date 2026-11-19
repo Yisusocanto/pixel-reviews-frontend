@@ -2,7 +2,7 @@ import {
   getGameReviewsAction,
   searchGamesAction,
 } from "@/features/games/actions"
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query"
 
 export const useGameReviews = (gameSlug: string) => {
   return useInfiniteQuery({
@@ -34,5 +34,6 @@ export const useSearchGames = (
       return undefined
     },
     enabled,
+    placeholderData: keepPreviousData,
   })
 }

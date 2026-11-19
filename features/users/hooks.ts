@@ -46,6 +46,7 @@ export const useSearchUsers = (
       return undefined
     },
     enabled,
+    placeholderData: keepPreviousData,
   })
 }
 
