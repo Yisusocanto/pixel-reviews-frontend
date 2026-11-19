@@ -12,9 +12,9 @@ export default function AppLayout({
       <AppSidebar />
       <SidebarInset className="flex min-h-svh min-w-0 flex-1 flex-col bg-secondary">
         <NavBar />
-        <div className="flex min-w-0 flex-1 flex-col bg-secondary">
+        <main className="flex min-w-0 flex-1 flex-col bg-secondary">
           {children}
-        </div>
+        </main>
       </SidebarInset>
     </>
   )

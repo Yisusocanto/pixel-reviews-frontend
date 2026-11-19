@@ -4,8 +4,12 @@ import { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: "Moderation Queue | Pixel Reviews Admin",
+  title: "Moderation Queue",
   description: "Administrative moderation panel for managing community reviews",
+  robots: {
+    index: false,
+    follow: false,
+  },
 }
 
 export default async function AdminModerationPage() {

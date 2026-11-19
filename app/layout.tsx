@@ -21,14 +21,34 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_APP_URL || "https://pixelreviews.vercel.app"
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pixelreviews.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Pixel Reviews | For those who play",
+    default: "Pixel Reviews: Community Video Game Reviews & Ratings",
     template: "%s | Pixel Reviews",
   },
   description:
-    "The gaming community review platform - Your circle. No filters.",
+    "Rate the games you finish, read unfiltered player reviews, track your gaming wishlist, and see real community rating distributions on Pixel Reviews.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Pixel Reviews",
+    title: "Pixel Reviews: Community Video Game Reviews & Ratings",
+    description:
+      "Rate the games you finish, read unfiltered player reviews, track your gaming wishlist, and see real community rating distributions on Pixel Reviews.",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pixel Reviews: Community Video Game Reviews & Ratings",
+    description:
+      "Rate the games you finish, read unfiltered player reviews, track your gaming wishlist, and see real community rating distributions on Pixel Reviews.",
+  },
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },

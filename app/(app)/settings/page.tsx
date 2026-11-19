@@ -3,7 +3,17 @@ import DangerZoneSection from "@/features/settings/components/danger-zone-sectio
 import SecuritySection from "@/features/settings/components/security-section"
 import UserInfoSection from "@/features/settings/components/user-info-section"
 import { getUserAction } from "@/features/users/actions"
+import type { Metadata } from "next"
 import { redirect } from "next/navigation"
+
+export const metadata: Metadata = {
+  title: "Account Settings",
+  description: "Manage your identity and account security on Pixel Reviews.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 async function SettingsPage() {
   const session = await auth()
