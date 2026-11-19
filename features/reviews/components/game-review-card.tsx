@@ -31,7 +31,7 @@ function GameReviewCard({ review, ownReview = false }: Props) {
   const { mutate: deleteReview } = useDeleteReview()
 
   return (
-    <div
+    <article
       className={cn(
         "flex flex-col gap-4 border-b border-b-border py-4 sm:py-6",
         ownReview &&
@@ -43,7 +43,14 @@ function GameReviewCard({ review, ownReview = false }: Props) {
         <div className="flex flex-col">
           <div className="flex flex-wrap items-center gap-2">
             <Avatar className="size-7 sm:size-8">
-              <AvatarImage src={review.user?.profilePhotoUrl} />
+              <AvatarImage
+                src={review.user?.profilePhotoUrl}
+                alt={
+                  review.user?.username
+                    ? `${review.user.username}'s profile photo`
+                    : "User profile photo"
+                }
+              />
               <AvatarFallback className="text-[10px] uppercase sm:text-xs">
                 <span>{review.user?.username?.slice(0, 2) ?? "U"}</span>
               </AvatarFallback>
@@ -56,9 +63,16 @@ function GameReviewCard({ review, ownReview = false }: Props) {
             </Link>
             {ownReview && <Badge className="w-fit text-xs">Your review</Badge>}
           </div>
-          <span className="text-[11px] text-muted-foreground sm:text-xs">
+          <time
+            dateTime={
+              dayjs(review.createdAt).isValid()
+                ? dayjs(review.createdAt).toISOString()
+                : undefined
+            }
+            className="text-[11px] text-muted-foreground sm:text-xs"
+          >
             {dayjs(review.createdAt).format("DD/MM/YYYY")}
-          </span>
+          </time>
         </div>
         {ownReview && (
           <div>
@@ -107,7 +121,7 @@ function GameReviewCard({ review, ownReview = false }: Props) {
           <ReviewDialog game={review.game} review={review} />
         )}
       </div>
-    </div>
+    </article>
   )
 }
 

@@ -15,15 +15,17 @@ interface Props {
   review: Review
   onCommentButtonClick: (review: Review) => void
   commentsSelected?: boolean
+  priority?: boolean
 }
 
 function ReviewCard({
   review,
   onCommentButtonClick,
   commentsSelected = false,
+  priority = false,
 }: Props) {
   return (
-    <div
+    <article
       className={cn(
         "flex flex-col gap-4 border-b border-b-border py-8 transition-colors",
         commentsSelected && "bg-muted/15"
@@ -31,7 +33,14 @@ function ReviewCard({
     >
       <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground sm:text-sm">
         <Avatar className="size-6 sm:size-7">
-          <AvatarImage src={review.user?.profilePhotoUrl} />
+          <AvatarImage
+            src={review.user?.profilePhotoUrl}
+            alt={
+              review.user?.username
+                ? `${review.user.username}'s profile photo`
+                : "User profile photo"
+            }
+          />
           <AvatarFallback className="text-[10px] sm:text-xs">
             <span>{review.user?.username?.slice(0, 2) ?? "U"}</span>
           </AvatarFallback>
@@ -43,9 +52,16 @@ function ReviewCard({
           {review.user?.username}
         </Link>
         <span>reviewed a game on</span>
-        <strong className="text-foreground">
+        <time
+          dateTime={
+            dayjs(review.createdAt).isValid()
+              ? dayjs(review.createdAt).toISOString()
+              : undefined
+          }
+          className="font-bold text-foreground"
+        >
           {dayjs(review.createdAt).format("DD/MM/YYYY")}
-        </strong>
+        </time>
       </div>
       {review.game?.imageUrl && (
         <Link
@@ -54,11 +70,15 @@ function ReviewCard({
         >
           <Image
             src={review.game.imageUrl}
-            alt={review.game.title || "Game cover"}
+            alt={
+              review.game.title
+                ? `${review.game.title} cover art`
+                : "Game cover"
+            }
             fill
             sizes="100vw"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-            priority
+            priority={priority}
           />
         </Link>
       )}
@@ -80,9 +100,9 @@ function ReviewCard({
           </div>
           <StarRating value={review.score} showValue readOnly size="md" />
           <div className="space-y-1">
-            <h3 className="text-lg font-bold break-words sm:text-2xl">
+            <h2 className="text-lg font-bold break-words sm:text-2xl">
               {review.title}
-            </h3>
+            </h2>
             <ExpandableText content={review.content} />
           </div>
           <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -110,17 +130,21 @@ function ReviewCard({
             {review.game?.imageUrl && (
               <Image
                 src={review.game.imageUrl}
-                alt={review.game.title || "Game cover"}
+                alt={
+                  review.game.title
+                    ? `${review.game.title} cover art`
+                    : "Game cover"
+                }
                 fill
                 sizes="(max-width: 640px) 96px, (max-width: 1024px) 128px, 144px"
                 className="object-cover"
-                priority
+                priority={priority}
               />
             )}
           </div>
         </div>
       </div>
-    </div>
+    </article>
   )
 }
 
