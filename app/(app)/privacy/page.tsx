@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
     "How Pixel Reviews collects, uses, stores, and protects your personal data and Google account information.",
+  alternates: {
+    canonical: "/privacy",
+  },
 }
 
 const LAST_UPDATED = "November 11, 2026"

@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Terms of Service",
   description:
     "Terms of Service, community rules, and third-party data attributions for Pixel Reviews.",
+  alternates: {
+    canonical: "/terms",
+  },
 }
 
 const LAST_UPDATED = "November 11, 2026"

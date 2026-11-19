@@ -30,7 +30,7 @@ interface Props {
 function UserReviewCard({ review, className, ownReview = false }: Props) {
   const { mutate: deleteReview } = useDeleteReview()
   return (
-    <div
+    <article
       className={cn(
         "flex flex-col justify-between gap-4 p-4 sm:flex-row sm:p-6 lg:p-8",
         className
@@ -44,7 +44,11 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
           <Image
             className="absolute inset-0 object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             src={review.game.imageUrl}
-            alt={review.game.title ?? ""}
+            alt={
+              review.game.title
+                ? `${review.game.title} cover art`
+                : "Game cover"
+            }
             fill
             sizes="100vw"
           />
@@ -57,7 +61,11 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
             <Image
               className="absolute inset-0 object-cover"
               src={review.game.imageUrl}
-              alt={review.game.title ?? ""}
+              alt={
+                review.game.title
+                  ? `${review.game.title} cover art`
+                  : "Game cover"
+              }
               fill
               sizes="(max-width: 768px) 144px, (max-width: 1024px) 176px, 200px"
             />
@@ -127,7 +135,7 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
           )}
         </div>
       </div>
-    </div>
+    </article>
   )
 }
 

@@ -10,69 +10,6 @@ export interface CarouselItem {
   title: string
 }
 
-export const items: CarouselItem[] = [
-  {
-    id: 1,
-    url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-    title: "Misty Mountain Majesty",
-  },
-  {
-    id: 2,
-    url: "https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=1200&q=80",
-    title: "Winter Wonderland",
-  },
-  {
-    id: 3,
-    url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-    title: "Autumn Mountain Retreat",
-  },
-  {
-    id: 4,
-    url: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80",
-    title: "Tranquil Lake Reflection",
-  },
-  {
-    id: 5,
-    url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-    title: "Misty Mountain Peaks",
-  },
-  {
-    id: 6,
-    url: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
-    title: "Golden Hour Glow",
-  },
-  {
-    id: 7,
-    url: "https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&w=1200&q=80",
-    title: "Snowy Mountain Highway",
-  },
-  {
-    id: 8,
-    url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80",
-    title: "Foggy Mountain Forest",
-  },
-  {
-    id: 9,
-    url: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80",
-    title: "Sunset Mountain Silhouette",
-  },
-  {
-    id: 10,
-    url: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1200&q=80",
-    title: "Alpine Meadow Bliss",
-  },
-  {
-    id: 11,
-    url: "https://images.unsplash.com/photo-1439853941329-a99ce04a558a?auto=format&fit=crop&w=1200&q=80",
-    title: "Mountain Lake Serenity",
-  },
-  {
-    id: 12,
-    url: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1200&q=80",
-    title: "Icy Mountain Stream",
-  },
-]
-
 const FULL_WIDTH_PX = 120
 const COLLAPSED_WIDTH_PX = 35
 const GAP_PX = 2
@@ -86,7 +23,7 @@ export interface FramerThumbnailCarouselProps {
 }
 
 export function Component({
-  items: propItems = items,
+  items: propItems = [],
   className = "",
   initialIndex = 0,
   onIndexChange,
@@ -118,7 +55,6 @@ export function Component({
   return (
     <div className={`mx-auto max-w-3xl ${className}`}>
       <div className="flex flex-col gap-3">
-        {/* Main Carousel */}
         <div className="relative overflow-hidden rounded-lg" ref={containerRef}>
           <motion.div
             className="flex"
@@ -134,22 +70,18 @@ export function Component({
 
               let newIndex = index
 
-              // If fast swipe, use velocity
               if (Math.abs(velocity) > 500) {
                 newIndex = velocity > 0 ? index - 1 : index + 1
-              }
-              // Otherwise use offset threshold (30% of container width)
-              else if (Math.abs(offset) > containerWidth * 0.3) {
+              } else if (Math.abs(offset) > containerWidth * 0.3) {
                 newIndex = offset > 0 ? index - 1 : index + 1
               }
 
-              // Clamp index
               newIndex = Math.max(0, Math.min(propItems.length - 1, newIndex))
               handleIndexChange(newIndex)
             }}
             style={{ x }}
           >
-            {propItems.map((item) => (
+            {propItems.map((item, i) => (
               <div
                 key={item.id}
                 className="h-64 w-full shrink-0 sm:h-80 md:h-[400px]"
@@ -157,6 +89,8 @@ export function Component({
                 <img
                   src={item.url}
                   alt={item.title}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  decoding="async"
                   className="pointer-events-none h-full w-full rounded-lg object-cover select-none"
                   draggable={false}
                 />
@@ -164,7 +98,6 @@ export function Component({
             ))}
           </motion.div>
 
-          {/* Navigation Buttons */}
           <motion.button
             type="button"
             aria-label="Previous slide"
@@ -179,7 +112,6 @@ export function Component({
             <ChevronLeft className="size-4 text-black sm:size-6" />
           </motion.button>
 
-          {/* Next Button */}
           <motion.button
             type="button"
             aria-label="Next slide"
@@ -269,7 +201,9 @@ function Thumbnails({
           >
             <img
               src={item.url}
-              alt={item.title}
+              alt={`${item.title} thumbnail`}
+              loading="lazy"
+              decoding="async"
               className="pointer-events-none h-full w-full object-cover select-none"
             />
           </motion.button>

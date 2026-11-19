@@ -1,7 +1,12 @@
 import { auth } from "@/auth"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import RatingDistributionCard from "@/components/ui/rating-distribution-card"
-import { getUserAction, getUserStatsAction } from "@/features/users/actions"
+import { ReviewPagination } from "@/features/reviews/types"
+import {
+  getUserAction,
+  getUserReviewsAction,
+  getUserStatsAction,
+} from "@/features/users/actions"
 import FavGamesSection from "@/features/users/components/fav-games-section"
 import ProfilePhotoDialog from "@/features/users/components/profile-photo-dialog"
 import UpdateUserDialog from "@/features/users/components/update-user-dialog"
@@ -9,27 +14,110 @@ import UserReviewSection from "@/features/users/components/users-reviews-section
 import UsersWishlistSection from "@/features/users/components/users-wishlist-section"
 import { User, UserStats } from "@/features/users/types"
 import dayjs from "dayjs"
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { cache } from "react"
+
+const getCachedUserData = cache(
+  async (
+    username: string
+  ): Promise<{
+    user: User
+    userStats?: UserStats
+    initialReviews?: ReviewPagination
+  }> => {
+    const [user, userStats, initialReviews] = await Promise.all([
+      getUserAction(username),
+      getUserStatsAction(username).catch(() => undefined),
+      getUserReviewsAction(username, 1, 10).catch(() => undefined),
+    ])
+
+    return { user, userStats, initialReviews }
+  }
+)
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ username: string }>
+}): Promise<Metadata> {
+  const { username } = await params
+
+  try {
+    const { user, userStats } = await getCachedUserData(username)
+
+    if (!user) {
+      return {
+        title: "Player Not Found",
+        robots: { index: false },
+      }
+    }
+
+    const pageTitle = `@${user.username}'s Game Reviews & Wishlist`
+    const reviewSummary =
+      userStats && userStats.totalReviews > 0
+        ? `${userStats.totalReviews} game ${userStats.totalReviews === 1 ? "review" : "reviews"} and ${userStats.totalRatings} ratings`
+        : "video game reviews, favorite games, and wishlist"
+
+    const bioSnippet = user.bio ? ` ${user.bio.trim()}` : ""
+    const rawDescription = `Explore @${user.username}'s ${reviewSummary} on Pixel Reviews.${bioSnippet}`
+    const description =
+      rawDescription.length > 158
+        ? `${rawDescription.slice(0, 157).trimEnd()}…`
+        : rawDescription
+
+    return {
+      title: pageTitle,
+      description,
+      alternates: {
+        canonical: `/users/${user.username}`,
+      },
+      openGraph: {
+        type: "profile",
+        title: `${pageTitle} | Pixel Reviews`,
+        description,
+        url: `/users/${user.username}`,
+        images: user.profilePhotoUrl
+          ? [
+              {
+                url: user.profilePhotoUrl,
+                alt: `@${user.username}'s profile photo`,
+              },
+            ]
+          : undefined,
+      },
+      twitter: {
+        card: "summary",
+        title: `${pageTitle} | Pixel Reviews`,
+        description,
+        images: user.profilePhotoUrl ? [user.profilePhotoUrl] : undefined,
+      },
+    }
+  } catch {
+    return {
+      title: "Player Not Found",
+      robots: {
+        index: false,
+      },
+    }
+  }
+}
 
 async function UserPage({ params }: { params: Promise<{ username: string }> }) {
   const session = await auth()
   const { username } = await params
   let user: User | undefined = undefined
   let userStats: UserStats | undefined = undefined
+  let initialReviews: ReviewPagination | undefined = undefined
+
   try {
-    user = await getUserAction(username)
+    ;({ user, userStats, initialReviews } = await getCachedUserData(username))
   } catch {
     notFound()
   }
 
   if (!user) {
     notFound()
-  }
-
-  try {
-    userStats = await getUserStatsAction(username)
-  } catch (error) {
-    console.error(error)
   }
 
   const ownProfile = session?.user.username == username
@@ -43,7 +131,7 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
               <Avatar className="size-20 sm:size-24 md:size-28">
                 <AvatarImage
                   src={user?.profilePhotoUrl ?? undefined}
-                  alt={user?.username}
+                  alt={`@${user.username}'s profile photo`}
                   className="object-cover"
                 />
                 <AvatarFallback className="text-2xl font-bold uppercase sm:text-3xl md:text-4xl">
@@ -61,7 +149,16 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
                 @{user?.username}
               </h1>
               <span className="mt-1 block text-xs text-muted-foreground sm:text-sm">
-                joined {dayjs(user?.createdAt).format("DD/MM/YYYY")}
+                joined{" "}
+                <time
+                  dateTime={
+                    user.createdAt && dayjs(user.createdAt).isValid()
+                      ? dayjs(user.createdAt).toISOString()
+                      : undefined
+                  }
+                >
+                  {dayjs(user?.createdAt).format("DD/MM/YYYY")}
+                </time>
               </span>
             </div>
           </div>
@@ -98,26 +195,25 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
         </div>
       </header>
 
-      {/* Body */}
       <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-8">
         <FavGamesSection username={username} />
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:gap-10">
-          {/* Rating stats & Reviews */}
           <div className="order-2 flex min-w-0 flex-2 flex-col gap-8 sm:gap-10 lg:order-1">
-            {/* Rating stats section */}
             <RatingDistributionCard
               avgRating={userStats?.avgRating}
               totalReviews={userStats?.totalReviews}
               distribution={userStats?.ratingDistribution}
             />
 
-            {/* Reviews */}
             <div>
-              <UserReviewSection username={username} ownReview={ownProfile} />
+              <UserReviewSection
+                username={username}
+                ownReview={ownProfile}
+                initialReviews={initialReviews}
+              />
             </div>
           </div>
 
-          {/* Wishlist */}
           <div className="order-1 min-w-0 flex-1 lg:order-2">
             <UsersWishlistSection username={username} />
           </div>

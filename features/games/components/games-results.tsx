@@ -6,6 +6,7 @@ import { Spinner } from "@/components/ui/spinner"
 import GameSearchCard from "@/features/games/components/game-search-card"
 import GameSearchCardSkeleton from "@/features/games/components/game-search-card-skeleton"
 import { useSearchGames } from "@/features/games/hooks/use-games"
+import { GameSearchPagination } from "@/features/games/types"
 import { AlertCircle, Flame, RefreshCw, SearchX } from "lucide-react"
 import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
@@ -13,9 +14,10 @@ import { useInView } from "react-intersection-observer"
 interface Props {
   query: string
   onClear: () => void
+  initialData?: GameSearchPagination
 }
 
-function GamesResults({ query, onClear }: Props) {
+function GamesResults({ query, onClear, initialData }: Props) {
   const {
     data,
     isLoading,
@@ -26,7 +28,7 @@ function GamesResults({ query, onClear }: Props) {
     isError,
     error,
     refetch,
-  } = useSearchGames(query)
+  } = useSearchGames(query, true, 20, initialData)
 
   const { ref, inView } = useInView({ threshold: 0, rootMargin: "400px 0px" })
 

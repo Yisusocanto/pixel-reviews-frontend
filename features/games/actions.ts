@@ -12,7 +12,7 @@ export async function getGameAction(slug: string): Promise<Game> {
 export async function getGameReviewsAction(
   gameSlug: string,
   page: number = 1,
-  limit: number = 1
+  limit: number = 10
 ): Promise<ReviewPagination> {
   const res = await apiClient<ReviewPagination>(`/games/${gameSlug}/reviews`, {
     params: {

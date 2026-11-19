@@ -13,7 +13,10 @@ function UserSearchCard({ user }: Props) {
       className="group flex items-center gap-4 border border-t-2 border-border/50 border-t-primary bg-card/60 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-xl hover:shadow-primary/5"
     >
       <Avatar className="size-14">
-        <AvatarImage src={user.profilePhotoUrl} />
+        <AvatarImage
+          src={user.profilePhotoUrl}
+          alt={`${user.username}'s profile photo`}
+        />
         <AvatarFallback className="text-lg font-bold uppercase">
           {user.username.charAt(0)}
         </AvatarFallback>

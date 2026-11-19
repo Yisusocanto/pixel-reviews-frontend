@@ -1,20 +1,25 @@
 import { auth } from "@/auth"
 import LoginModal from "@/components/auth/login-modal"
+import ExpandableText from "@/components/expandable-text"
 import { Button } from "@/components/ui/button"
 import { CarouselItem } from "@/components/ui/framer-thumbnail-carousel"
-import { getGameAction, getGameStatsAction } from "@/features/games/actions"
+import {
+  getGameAction,
+  getGameReviewsAction,
+  getGameStatsAction,
+} from "@/features/games/actions"
 import GameCommunitySection from "@/features/games/components/game-community-section"
 import GameMetacriticCard from "@/features/games/components/game-metacritic-card"
 import GameRatingSection from "@/features/games/components/game-rating-section"
 import GameScreenshotsSection from "@/features/games/components/game-screenshots-section"
 import GameStoresSection from "@/features/games/components/game-stores-section"
 import GameTrailerSection from "@/features/games/components/game-trailer-section"
+import { Game, GameStats } from "@/features/games/types"
 import { GameGenresList } from "@/features/genres/components/game-genres-list"
 import { GamePlatformsList } from "@/features/platforms/components/game-platforms-list"
-import { Game, GameStats } from "@/features/games/types"
 import { getUserGameReviewAction } from "@/features/reviews/actions"
 import ReviewDialog from "@/features/reviews/components/review-dialog"
-import { Review } from "@/features/reviews/types"
+import { Review, ReviewPagination } from "@/features/reviews/types"
 import { getUserGameWishlistAction } from "@/features/wishlists/actions"
 import WishlistButton from "@/features/wishlists/components/wishlist-button"
 import { InUserWishlist } from "@/features/wishlists/types"
@@ -25,15 +30,112 @@ import {
   Calendar,
   Code2,
   Cpu,
-  Eye,
   ExternalLink,
+  Eye,
   Gamepad2,
   Globe,
   Sparkles,
 } from "lucide-react"
+import type { Metadata } from "next"
 import Image from "next/image"
 import { notFound } from "next/navigation"
-import ExpandableText from "@/components/expandable-text"
+import { cache } from "react"
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_APP_URL || "https://pixelreviews.vercel.app"
+
+const getCachedGameData = cache(
+  async (
+    slug: string
+  ): Promise<{
+    game: Game
+    gameStats: GameStats
+    initialReviews?: ReviewPagination
+  }> => {
+    const [game, gameStats, initialReviews] = await Promise.all([
+      getGameAction(slug),
+      getGameStatsAction(slug),
+      getGameReviewsAction(slug, 1, 10).catch(() => undefined),
+    ])
+
+    return { game, gameStats, initialReviews }
+  }
+)
+
+function truncateDescription(text: string, maxLength: number = 155): string {
+  const cleaned = text.replace(/\s+/g, " ").trim()
+  if (cleaned.length <= maxLength) {
+    return cleaned
+  }
+  return `${cleaned.slice(0, maxLength - 1).trimEnd()}…`
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+
+  try {
+    const { game, gameStats } = await getCachedGameData(slug)
+    const releaseYear =
+      game.releaseDate && dayjs(game.releaseDate).isValid()
+        ? dayjs(game.releaseDate).format("YYYY")
+        : null
+
+    const pageTitle = releaseYear
+      ? `${game.title} (${releaseYear}) Reviews & Ratings`
+      : `${game.title} Reviews & Ratings`
+
+    const ratingSummary =
+      gameStats.totalReviews > 0
+        ? `Read ${gameStats.totalReviews} community ${gameStats.totalReviews === 1 ? "review" : "reviews"} (${gameStats.avgRatings.toFixed(1)}/5★) for ${game.title}. `
+        : `Read community reviews, player ratings, and specs for ${game.title}. `
+
+    const description = truncateDescription(
+      `${ratingSummary}${game.description || ""}`,
+      158
+    )
+
+    const ogImage = game.backgroundImage || game.imageUrl
+
+    return {
+      title: pageTitle,
+      description,
+      alternates: {
+        canonical: `/games/${game.slug}`,
+      },
+      openGraph: {
+        type: "website",
+        title: `${pageTitle} | Pixel Reviews`,
+        description,
+        url: `/games/${game.slug}`,
+        images: ogImage
+          ? [
+              {
+                url: ogImage,
+                alt: `${game.title} cover art`,
+              },
+            ]
+          : undefined,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${pageTitle} | Pixel Reviews`,
+        description,
+        images: ogImage ? [ogImage] : undefined,
+      },
+    }
+  } catch {
+    return {
+      title: "Game Not Found",
+      robots: {
+        index: false,
+      },
+    }
+  }
+}
 
 function TechnicalSpecificationsSection({
   game,
@@ -192,12 +294,10 @@ async function GameDetailPage({
   const session = await auth()
   let game: Game
   let gameStats: GameStats
+  let initialReviews: ReviewPagination | undefined
   let review: Review | undefined = undefined
   try {
-    ;[game, gameStats] = await Promise.all([
-      getGameAction(slug),
-      getGameStatsAction(slug),
-    ])
+    ;({ game, gameStats, initialReviews } = await getCachedGameData(slug))
   } catch {
     notFound()
   }
@@ -215,22 +315,101 @@ async function GameDetailPage({
     }
   }
 
-  const screenshots: CarouselItem[] = game.screenshots.map((s) => ({
+  const screenshots: CarouselItem[] = game.screenshots.map((s, index) => ({
     id: s,
     url: s,
-    title: s,
+    title: `${game.title} gameplay screenshot ${index + 1}`,
   }))
 
   const backgroundImage = game.backgroundImage || game.imageUrl
   const website = game.website?.trim()
 
+  const writtenReviews = (initialReviews?.items ?? []).filter((r) =>
+    Boolean(r.title?.trim() && r.content?.trim())
+  )
+
+  const videoGameJsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    name: game.title,
+    url: `${SITE_URL}/games/${game.slug}`,
+    description: game.description,
+    image: game.imageUrl || backgroundImage,
+    ...(game.releaseDate && dayjs(game.releaseDate).isValid()
+      ? { datePublished: dayjs(game.releaseDate).format("YYYY-MM-DD") }
+      : {}),
+    ...(game.genres.length > 0
+      ? { genre: game.genres.map((g) => g.name) }
+      : {}),
+    ...(game.platforms.length > 0
+      ? { gamePlatform: game.platforms.map((p) => p.name) }
+      : {}),
+    ...(game.developers.length > 0
+      ? {
+          author: game.developers.map((dev) => ({
+            "@type": "Organization",
+            name: dev.name,
+          })),
+        }
+      : {}),
+    ...(game.publishers.length > 0
+      ? {
+          publisher: game.publishers.map((pub) => ({
+            "@type": "Organization",
+            name: pub.name,
+          })),
+        }
+      : {}),
+    ...(gameStats.totalReviews > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: Number(gameStats.avgRatings.toFixed(2)),
+            reviewCount: gameStats.totalReviews,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+    ...(writtenReviews.length > 0
+      ? {
+          review: writtenReviews.slice(0, 5).map((r) => ({
+            "@type": "Review",
+            name: r.title,
+            reviewBody: r.content,
+            datePublished: dayjs(r.createdAt).isValid()
+              ? dayjs(r.createdAt).format("YYYY-MM-DD")
+              : undefined,
+            author: {
+              "@type": "Person",
+              name: r.user?.username || "Player",
+              ...(r.user?.username
+                ? { url: `${SITE_URL}/users/${r.user.username}` }
+                : {}),
+            },
+            reviewRating: {
+              "@type": "Rating",
+              ratingValue: r.score,
+              bestRating: 5,
+              worstRating: 1,
+            },
+          })),
+        }
+      : {}),
+  }
+
   return (
     <div className="relative min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(videoGameJsonLd) }}
+      />
       <div className="relative min-h-95 w-full overflow-hidden border-b border-b-border bg-zinc-950 sm:h-96">
         {backgroundImage && (
           <Image
             src={backgroundImage}
-            alt={game.title}
+            alt=""
+            aria-hidden="true"
             fill
             priority
             className="absolute inset-0 h-full w-full scale-105 object-cover object-center opacity-50 blur-[1px] saturate-110"
@@ -244,7 +423,7 @@ async function GameDetailPage({
             {game.imageUrl && (
               <Image
                 src={game.imageUrl}
-                alt={game.title}
+                alt={`${game.title} official cover art`}
                 fill
                 sizes="(max-width: 640px) 144px, (max-width: 768px) 192px, 224px"
                 className="object-cover"
@@ -291,8 +470,8 @@ async function GameDetailPage({
         </div>
       </div>
 
-      <div className="flex flex-col justify-between gap-10 p-4 sm:p-6 lg:flex-row lg:gap-16 lg:p-12">
-        <div className="flex flex-2 flex-col gap-12 sm:gap-16">
+      <div className="grid grid-cols-1 gap-10 p-4 sm:p-6 lg:grid-cols-3 lg:items-start lg:gap-16 lg:p-12">
+        <div className="flex flex-col gap-12 sm:gap-16 lg:col-span-2">
           <section>
             <h2 className="mb-4 font-heading text-sm font-bold tracking-widest text-primary uppercase">
               Description
@@ -329,27 +508,9 @@ async function GameDetailPage({
           )}
 
           <GameRatingSection gameStats={gameStats} />
-
-          <div className="flex flex-col gap-10 lg:hidden">
-            <GameMetacriticCard
-              score={game.criticScore}
-              count={game.criticScoreCount}
-              url={game.igdbUrl}
-            />
-            <TechnicalSpecificationsSection game={game} website={website} />
-            <GameStoresSection stores={game.stores} />
-          </div>
-
-          <section>
-            <GameCommunitySection
-              gameId={game.id}
-              gameSlug={game.slug}
-              initialUserReview={review}
-            />
-          </section>
         </div>
 
-        <div className="hidden flex-1 flex-col gap-10 lg:flex">
+        <aside className="flex flex-col gap-10 lg:col-start-3 lg:row-span-2 lg:row-start-1">
           <GameMetacriticCard
             score={game.criticScore}
             count={game.criticScoreCount}
@@ -357,7 +518,16 @@ async function GameDetailPage({
           />
           <TechnicalSpecificationsSection game={game} website={website} />
           <GameStoresSection stores={game.stores} />
-        </div>
+        </aside>
+
+        <section className="lg:col-span-2">
+          <GameCommunitySection
+            gameId={game.id}
+            gameSlug={game.slug}
+            initialUserReview={review}
+            initialReviews={initialReviews}
+          />
+        </section>
       </div>
     </div>
   )

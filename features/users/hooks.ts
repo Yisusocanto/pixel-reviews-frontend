@@ -1,5 +1,6 @@
 import { toast } from "@/components/ui/toast"
 import { Game } from "@/features/games/types"
+import { ReviewPagination } from "@/features/reviews/types"
 import {
   getUserFavGamesAction,
   getUserReviewsAction,
@@ -15,11 +16,20 @@ import {
   useQueryClient,
 } from "@tanstack/react-query"
 
-export const useUserReviews = (username: string) => {
+export const useUserReviews = (
+  username: string,
+  initialPage?: ReviewPagination
+) => {
   return useInfiniteQuery({
     queryKey: ["userReviews", username],
     queryFn: ({ pageParam }) => getUserReviewsAction(username, pageParam),
     initialPageParam: 1,
+    initialData: initialPage
+      ? {
+          pages: [initialPage],
+          pageParams: [1],
+        }
+      : undefined,
     getNextPageParam: (lastPage) => {
       if (lastPage.page < lastPage.totalPages) {
         return lastPage.page + 1

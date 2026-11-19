@@ -1,6 +1,7 @@
 import { Platform } from "@/features/platforms/types"
 import { PlatformIcon } from "./platform-icon"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 interface Props {
   platforms: Platform[]
@@ -13,8 +14,9 @@ export function GamePlatformsList({ platforms, className }: Props) {
   return (
     <div className={cn("flex flex-wrap gap-1.5", className)}>
       {platforms.map((platform) => (
-        <span
+        <Link
           key={platform.slug || platform.id}
+          href={`/search?q=${encodeURIComponent(platform.name)}`}
           className="group inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-secondary/60 px-2.5 py-1 text-xs font-medium text-foreground transition-all duration-200 hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
         >
           <span className="flex size-3.5 shrink-0 items-center justify-center text-muted-foreground transition-colors group-hover:text-primary">
@@ -25,7 +27,7 @@ export function GamePlatformsList({ platforms, className }: Props) {
             />
           </span>
           <span>{platform.name}</span>
-        </span>
+        </Link>
       ))}
     </div>
   )

@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator"
 import GameReviewCard from "@/features/reviews/components/game-review-card"
 import { useGameReviews } from "@/features/games/hooks/use-games"
 import { useUserGameReview } from "@/features/reviews/hooks"
-import { Review } from "@/features/reviews/types"
+import { Review, ReviewPagination } from "@/features/reviews/types"
 import { useInView } from "react-intersection-observer"
 import { useEffect } from "react"
 import { SkeletonGroup } from "@/components/ui/skeleton"
@@ -14,15 +14,21 @@ interface Props {
   gameId: string
   gameSlug: string
   initialUserReview?: Review | null
+  initialReviews?: ReviewPagination
 }
 
-function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
+function GameCommunitySection({
+  gameId,
+  gameSlug,
+  initialUserReview,
+  initialReviews,
+}: Props) {
   const { data: userReview } = useUserGameReview(gameId, initialUserReview)
   const currentUserReview =
     userReview !== undefined ? userReview : initialUserReview
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useGameReviews(gameSlug)
+    useGameReviews(gameSlug, initialReviews)
 
   const { ref, inView } = useInView({
     threshold: 0,
