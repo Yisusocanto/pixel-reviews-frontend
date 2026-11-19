@@ -4,7 +4,8 @@ import LoginModal from "@/components/auth/login-modal"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Skeleton } from "@/components/ui/skeleton"
+import { SkeletonGroup } from "@/components/ui/skeleton"
+import CommentSkeleton from "@/features/comments/components/comment-skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { Textarea } from "@/components/ui/textarea"
 import CommentCard from "@/features/comments/components/comment-card"
@@ -125,17 +126,14 @@ function FeedCommentsSection({ selectedReview, onClose }: Props) {
         <ScrollArea onScroll={handleScroll} className="h-full">
           <div className="flex flex-col gap-6 px-4 py-4">
             {isLoading ? (
-              Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <Skeleton className="size-6 rounded-full" />
-                    <Skeleton className="h-3 w-24" />
-                    <Skeleton className="h-3 w-16" />
-                  </div>
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
-              ))
+              <SkeletonGroup
+                label="Loading comments"
+                className="flex flex-col gap-6"
+              >
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <CommentSkeleton key={index} />
+                ))}
+              </SkeletonGroup>
             ) : comments && comments.length > 0 ? (
               <>
                 {comments.map((comment) => {

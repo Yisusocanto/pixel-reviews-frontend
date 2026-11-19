@@ -6,7 +6,12 @@ import {
 } from "@/features/moderation/actions"
 import { AdminDecisionPayload } from "@/features/moderation/types"
 import { ModerationStatus } from "@/features/reviews/types"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 
 export const useModerationQueue = (
   status: ModerationStatus | "all" = "needs_review",
@@ -16,6 +21,7 @@ export const useModerationQueue = (
   return useQuery({
     queryKey: ["moderationQueue", status, page, limit],
     queryFn: () => getModerationQueueAction(status, page, limit),
+    placeholderData: keepPreviousData,
   })
 }
 

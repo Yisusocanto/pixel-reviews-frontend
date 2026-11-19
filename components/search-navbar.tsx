@@ -2,11 +2,13 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
+import { Skeleton, SkeletonGroup } from "@/components/ui/skeleton"
+import { Spinner } from "@/components/ui/spinner"
 import { useSearchGames } from "@/features/games/hooks/use-games"
 import { useSearchUsers } from "@/features/users/hooks"
 import { cn } from "@/lib/utils"
 import dayjs from "dayjs"
-import { ArrowRight, Gamepad2, Loader2, Search, X } from "lucide-react"
+import { ArrowRight, Gamepad2, Search, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -41,17 +43,20 @@ function SectionHeader({ label, total }: { label: string; total?: number }) {
 
 function SectionSkeleton() {
   return (
-    <div className="flex flex-col gap-1 px-2 pb-2">
+    <SkeletonGroup
+      label="Loading results"
+      className="flex flex-col gap-1 px-2 pb-2"
+    >
       {Array.from({ length: 2 }).map((_, index) => (
         <div key={index} className="flex items-center gap-3 rounded-lg p-2">
-          <div className="h-10 w-14 shrink-0 animate-pulse rounded-md bg-muted/60" />
+          <Skeleton className="h-10 w-14 shrink-0" />
           <div className="flex flex-1 flex-col gap-2">
-            <div className="h-3.5 w-3/4 animate-pulse rounded bg-muted/60" />
-            <div className="h-2.5 w-12 animate-pulse rounded bg-muted/40" />
+            <Skeleton className="h-3.5 w-3/4 rounded" />
+            <Skeleton className="h-2.5 w-12 rounded" />
           </div>
         </div>
       ))}
-    </div>
+    </SkeletonGroup>
   )
 }
 
@@ -143,7 +148,7 @@ function SearchNavbar() {
         />
         <div className="absolute right-2.5 flex items-center gap-1">
           {hasInput && showSpinner && (
-            <Loader2 className="size-3.5 animate-spin text-primary" />
+            <Spinner className="size-3.5 text-primary" />
           )}
           {title && (
             <button

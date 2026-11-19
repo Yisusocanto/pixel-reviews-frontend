@@ -27,7 +27,9 @@ import { useCreateComment } from "@/features/comments/hooks"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
+import { SkeletonGroup } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
+import CommentSkeleton from "@/features/comments/components/comment-skeleton"
 import LoginModal from "@/components/auth/login-modal"
 import MessageCommentCard from "@/features/comments/components/message-comment-card"
 import ExpandableText from "@/components/expandable-text"
@@ -52,7 +54,7 @@ function ReviewDetailDialog({ review }: Props) {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   })
-  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } =
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useReviewComments(review.id)
   const comments = data?.pages.flatMap((page) => page.items)
 
@@ -180,6 +182,17 @@ function ReviewDetailDialog({ review }: Props) {
           <Separator />
 
           <div className="flex flex-col gap-6">
+            {isLoading && (
+              <SkeletonGroup
+                label="Loading comments"
+                className="flex flex-col gap-6"
+              >
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <CommentSkeleton key={index} />
+                ))}
+              </SkeletonGroup>
+            )}
+
             {comments && comments.length === 0 && (
               <div className="py-8 text-center text-sm text-muted-foreground">
                 No comments yet. Be the first to comment!
@@ -202,7 +215,7 @@ function ReviewDetailDialog({ review }: Props) {
             })}
 
             <div ref={ref} className="py-4 text-center">
-              {isFetchingNextPage && <Spinner />}
+              {isFetchingNextPage && <CommentSkeleton />}
               {!hasNextPage && comments && comments.length > 0 && (
                 <p className="text-sm text-muted-foreground">
                   No more comments

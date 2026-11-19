@@ -1,9 +1,10 @@
 "use client"
 
 import { Separator } from "@/components/ui/separator"
-import { Spinner } from "@/components/ui/spinner"
+import { SkeletonGroup } from "@/components/ui/skeleton"
 import FeedCommentsSection from "@/features/comments/components/feed-comments-section"
 import ReviewCard from "@/features/reviews/components/review-card"
+import ReviewCardSkeleton from "@/features/reviews/components/review-card-skeleton"
 import { useReviews } from "@/features/reviews/hooks"
 import { Review } from "@/features/reviews/types"
 import dayjs from "dayjs"
@@ -12,13 +13,15 @@ import { useInView } from "react-intersection-observer"
 
 export default function Page() {
   const [selectedReview, setSelectedReview] = useState<Review | undefined>()
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } = useReviews()
+  const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
+    useReviews()
   const reviews = data?.pages
     .flatMap((page) => page.items)
     .filter((review) => Boolean(review.title?.trim() && review.content?.trim()))
 
   const { ref, inView } = useInView({
     threshold: 0,
+    rootMargin: "400px 0px",
   })
 
   useEffect(() => {
@@ -56,7 +59,13 @@ export default function Page() {
           </div>
         </div>
         <Separator />
-        {reviews && reviews.length > 0 ? (
+        {isLoading ? (
+          <SkeletonGroup label="Loading reviews">
+            {Array.from({ length: 3 }, (_, i) => (
+              <ReviewCardSkeleton key={i} />
+            ))}
+          </SkeletonGroup>
+        ) : reviews && reviews.length > 0 ? (
           <div>
             {reviews.map((review) => (
               <ReviewCard
@@ -67,7 +76,7 @@ export default function Page() {
               />
             ))}
             <div ref={ref} className="py-4 text-center">
-              {isFetchingNextPage && <Spinner />}
+              {isFetchingNextPage && <ReviewCardSkeleton />}
               {!hasNextPage && reviews.length > 0 && (
                 <p className="text-sm text-muted-foreground">No more reviews</p>
               )}

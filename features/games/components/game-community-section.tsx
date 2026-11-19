@@ -7,7 +7,8 @@ import { useUserGameReview } from "@/features/reviews/hooks"
 import { Review } from "@/features/reviews/types"
 import { useInView } from "react-intersection-observer"
 import { useEffect } from "react"
-import { Spinner } from "@/components/ui/spinner"
+import { SkeletonGroup } from "@/components/ui/skeleton"
+import GameReviewCardSkeleton from "@/features/reviews/components/game-review-card-skeleton"
 
 interface Props {
   gameId: string
@@ -20,11 +21,12 @@ function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
   const currentUserReview =
     userReview !== undefined ? userReview : initialUserReview
 
-  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } =
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useGameReviews(gameSlug)
 
   const { ref, inView } = useInView({
     threshold: 0,
+    rootMargin: "400px 0px",
   })
 
   useEffect(() => {
@@ -60,13 +62,19 @@ function GameCommunitySection({ gameId, gameSlug, initialUserReview }: Props) {
         </>
       )}
 
-      {reviews && reviews.length > 0 ? (
+      {isLoading ? (
+        <SkeletonGroup label="Loading reviews" className="flex flex-col gap-8">
+          {Array.from({ length: 3 }, (_, i) => (
+            <GameReviewCardSkeleton key={i} />
+          ))}
+        </SkeletonGroup>
+      ) : reviews && reviews.length > 0 ? (
         <div className="flex flex-col gap-8">
           {reviews.map((review) => (
             <GameReviewCard review={review} key={review.id} />
           ))}
           <div ref={ref} className="py-4 text-center">
-            {isFetchingNextPage && <Spinner />}
+            {isFetchingNextPage && <GameReviewCardSkeleton />}
             {!hasNextPage && reviews.length > 0 && (
               <p className="text-sm text-muted-foreground">No more reviews</p>
             )}

@@ -11,22 +11,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton, SkeletonGroup } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "@/components/ui/toast"
 import FavGameCard from "@/features/games/components/fav-game-card"
 import { useSearchGames } from "@/features/games/hooks/use-games"
 import { Game, GameSearch } from "@/features/games/types"
 import { useUpdateUserFavGames } from "@/features/users/hooks"
-import {
-  AlertCircle,
-  Flame,
-  Loader2,
-  RefreshCw,
-  Search,
-  SearchX,
-  X,
-} from "lucide-react"
+import { AlertCircle, Flame, RefreshCw, Search, SearchX, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { useDebounce } from "use-debounce"
@@ -72,11 +64,12 @@ function FavGamesSelector({
     isError,
     error,
     refetch,
+    isPlaceholderData,
   } = useSearchGames(trimmedQuery, isOpen, 20)
 
   const { ref, inView } = useInView({
     threshold: 0,
-    rootMargin: "120px",
+    rootMargin: "400px",
   })
 
   useEffect(() => {
@@ -191,9 +184,7 @@ function FavGamesSelector({
               className="h-9 pr-9 pl-9 text-sm sm:h-10 [&::-webkit-search-cancel-button]:hidden"
             />
             <div className="absolute top-1/2 right-3 flex -translate-y-1/2 items-center gap-1.5">
-              {isDebouncing && (
-                <Loader2 className="size-4 animate-spin text-muted-foreground" />
-              )}
+              {isDebouncing && <Spinner className="text-muted-foreground" />}
               {searchTerm && (
                 <button
                   type="button"
@@ -209,9 +200,9 @@ function FavGamesSelector({
 
           {!isError && (
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              {isLoading ? (
-                <div className="flex items-center gap-1.5">
-                  <Loader2 className="size-3.5 animate-spin text-primary" />
+              {isLoading || isPlaceholderData ? (
+                <div className="flex items-center gap-1.5" role="status">
+                  <Spinner className="size-3.5 text-primary" />
                   <span>
                     {isSearchActive
                       ? `Searching games for "${trimmedQuery}"...`
@@ -262,11 +253,14 @@ function FavGamesSelector({
           )}
 
           {isLoading && (
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
+            <SkeletonGroup
+              label="Loading games"
+              className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5"
+            >
               {Array.from({ length: 10 }).map((_, i) => (
                 <Skeleton key={i} className="aspect-2/3 w-full rounded-lg" />
               ))}
-            </div>
+            </SkeletonGroup>
           )}
 
           {!isLoading && !isError && searchGames.length === 0 && (
@@ -293,7 +287,10 @@ function FavGamesSelector({
 
           {!isLoading && !isError && searchGames.length > 0 && (
             <>
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
+              <div
+                aria-busy={isPlaceholderData}
+                className="grid grid-cols-2 gap-2.5 transition-opacity duration-200 aria-busy:opacity-50 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5"
+              >
                 {searchGames.map((game, index) => {
                   const selectedIndex = selectedGames.findIndex(
                     (g) => g.slug === game.slug
@@ -319,10 +316,17 @@ function FavGamesSelector({
                 className="flex flex-col items-center justify-center py-4"
               >
                 {isFetchingNextPage && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Loader2 className="size-4 animate-spin text-primary" />
-                    <span>Loading more games...</span>
-                  </div>
+                  <SkeletonGroup
+                    label="Loading more games"
+                    className="mb-3 grid w-full grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5"
+                  >
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Skeleton
+                        key={i}
+                        className="aspect-2/3 w-full rounded-lg"
+                      />
+                    ))}
+                  </SkeletonGroup>
                 )}
                 {!hasNextPage && searchGames.length > 0 && (
                   <p className="text-xs text-muted-foreground">

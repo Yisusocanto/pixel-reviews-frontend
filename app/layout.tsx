@@ -7,6 +7,7 @@ import Providers from "@/components/providers/providers"
 import { Toaster } from "@/components/ui/toast"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 const merriweatherHeading = Merriweather({
   subsets: ["latin"],
@@ -71,6 +72,7 @@ export default function RootLayout({
       <body className="bg-secondary">
         <Providers>
           <Toaster />
+          <ReactQueryDevtools initialIsOpen={false} />
           {children}
         </Providers>
         <SpeedInsights />
