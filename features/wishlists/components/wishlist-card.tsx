@@ -1,5 +1,6 @@
 import WishlistButton from "@/features/wishlists/components/wishlist-button"
 import { Wishlist } from "@/features/wishlists/types"
+import { getIgdbImageUrl } from "@/lib/igdb-image"
 import { cn } from "cn"
 import dayjs from "dayjs"
 import Image from "next/image"
@@ -20,8 +21,8 @@ function WishlistCard({ wishlist, ownWishlist = false, className }: Props) {
         <div className="relative aspect-2/3 w-12 shrink-0 overflow-hidden rounded-md border">
           <Image
             className="absolute inset-0 object-cover"
-            src={wishlist.game?.imageUrl}
-            alt={wishlist.game?.title}
+            src={getIgdbImageUrl(wishlist.game?.imageUrl, "t_cover_small")}
+            alt={wishlist.game?.title || "Game cover"}
             fill
             sizes="48px"
           />

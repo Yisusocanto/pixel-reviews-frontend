@@ -23,6 +23,7 @@ import { Review, ReviewPagination } from "@/features/reviews/types"
 import { getUserGameWishlistAction } from "@/features/wishlists/actions"
 import WishlistButton from "@/features/wishlists/components/wishlist-button"
 import { InUserWishlist } from "@/features/wishlists/types"
+import { getIgdbImageUrl } from "@/lib/igdb-image"
 import dayjs from "dayjs"
 import {
   BookOpen,
@@ -407,11 +408,12 @@ async function GameDetailPage({
       <div className="relative min-h-95 w-full overflow-hidden border-b border-b-border bg-zinc-950 sm:h-96">
         {backgroundImage && (
           <Image
-            src={backgroundImage}
+            src={getIgdbImageUrl(backgroundImage, "t_720p")}
             alt=""
             aria-hidden="true"
             fill
             priority
+            fetchPriority="high"
             className="absolute inset-0 h-full w-full scale-105 object-cover object-center opacity-50 blur-[1px] saturate-110"
           />
         )}
@@ -422,12 +424,13 @@ async function GameDetailPage({
           <div className="relative aspect-2/3 w-36 shrink-0 overflow-hidden rounded-lg border border-white/15 bg-card shadow-2xl ring-1 ring-black/40 sm:w-48 md:w-56">
             {game.imageUrl && (
               <Image
-                src={game.imageUrl}
+                src={getIgdbImageUrl(game.imageUrl, "t_cover_big")}
                 alt={`${game.title} official cover art`}
                 fill
                 sizes="(max-width: 640px) 144px, (max-width: 768px) 192px, 224px"
                 className="object-cover"
                 priority
+                fetchPriority="high"
               />
             )}
           </div>

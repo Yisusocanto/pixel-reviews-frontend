@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import StarRating from "@/components/ui/star-rating"
 import LikeButton from "@/features/likes/components/like-button"
 import { Review } from "@/features/reviews/types"
+import { getIgdbImageUrl } from "@/lib/igdb-image"
 import { cn } from "cn"
 import dayjs from "dayjs"
 import { MessageSquare } from "lucide-react"
@@ -69,7 +70,7 @@ function ReviewCard({
           className="group relative block aspect-21/9 w-full overflow-hidden rounded-lg border border-border/60 bg-card/40 shadow-md transition-all duration-300 hover:border-primary/50 sm:hidden"
         >
           <Image
-            src={review.game.imageUrl}
+            src={getIgdbImageUrl(review.game.imageUrl, "t_cover_big")}
             alt={
               review.game.title
                 ? `${review.game.title} cover art`
@@ -79,6 +80,7 @@ function ReviewCard({
             sizes="100vw"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             priority={priority}
+            {...(priority ? { fetchPriority: "high" } : {})}
           />
         </Link>
       )}
@@ -129,7 +131,7 @@ function ReviewCard({
           <div className="relative aspect-2/3 w-24 overflow-hidden rounded-md border bg-card/10 shadow-2xl sm:w-28 md:w-32 lg:w-36">
             {review.game?.imageUrl && (
               <Image
-                src={review.game.imageUrl}
+                src={getIgdbImageUrl(review.game.imageUrl, "t_cover_big")}
                 alt={
                   review.game.title
                     ? `${review.game.title} cover art`
@@ -139,6 +141,7 @@ function ReviewCard({
                 sizes="(max-width: 640px) 96px, (max-width: 1024px) 128px, 144px"
                 className="object-cover"
                 priority={priority}
+                {...(priority ? { fetchPriority: "high" } : {})}
               />
             )}
           </div>
