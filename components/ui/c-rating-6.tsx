@@ -50,7 +50,6 @@ export function RatingDistribution({
   className,
   ...props
 }: RatingDistributionProps) {
-  // Normalize distribution: filter out 0 stars if present, order 5 down to 1, fill missing stars
   const rowsSource =
     distribution && distribution.length > 0 ? distribution : defaultDistribution
 
@@ -61,14 +60,12 @@ export function RatingDistribution({
     }
   }
 
-  // Standard 5-star scale descending (5 to 1)
   const normalizedDistribution: RatingDistributionRow[] = []
   for (let s = 5; s >= 1; s--) {
     const existing = map.get(s)
     normalizedDistribution.push(existing ?? { stars: s, count: 0 })
   }
 
-  // Calculate total count across all rows for automatic percentage
   const totalCount = normalizedDistribution.reduce(
     (acc, row) => acc + (row.count || 0),
     0
@@ -91,21 +88,22 @@ export function RatingDistribution({
             className="group flex items-center gap-3 py-0.5 text-sm"
             title={`${row.count} ${row.count === 1 ? "review" : "reviews"} (${percentage}%)`}
           >
-            {/* Stars label */}
             <div className="flex w-7 shrink-0 items-center justify-end gap-1 text-xs font-semibold text-foreground/80">
               <span>{row.stars}</span>
               {showStarIcon && (
-                <Star className="size-3.5 shrink-0 fill-primary text-primary" />
+                <Star
+                  aria-hidden="true"
+                  className="size-3.5 shrink-0 fill-primary text-primary"
+                />
               )}
             </div>
 
-            {/* Progress Bar (stretches full width) */}
             <Progress
               value={percentage}
+              aria-label={`${row.stars} star ratings: ${percentage}% (${row.count} ${row.count === 1 ? "review" : "reviews"})`}
               className={cn("h-2 flex-1", progressClassName)}
             />
 
-            {/* Percentage & Review count */}
             <div className="flex min-w-16 shrink-0 items-center justify-end gap-1.5 text-right text-xs tabular-nums">
               {showPercentage && (
                 <span className="font-medium text-foreground/90">
@@ -125,6 +123,5 @@ export function RatingDistribution({
   )
 }
 
-// Backwards-compatibility aliases
 export const Pattern = RatingDistribution
 export default RatingDistribution

@@ -25,9 +25,13 @@ function NavBar() {
         <SidebarTrigger />
         <Link
           href={session ? "/feed" : "/"}
+          aria-label="Pixel Reviews Home"
           className="flex items-center gap-2 truncate text-base leading-none font-extrabold tracking-tight md:hidden"
         >
-          <PixelGamepadIcon className="h-5 w-10 shrink-0 text-primary" />
+          <PixelGamepadIcon
+            aria-hidden="true"
+            className="h-5 w-10 shrink-0 text-primary"
+          />
           <span className="hidden font-black tracking-tight sm:inline">
             <span className="text-primary">Pixel</span> Reviews
           </span>

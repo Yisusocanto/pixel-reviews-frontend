@@ -32,7 +32,7 @@ export function StoreIcon({ slug, domain, name, className }: StoreIconProps) {
     d.includes("steampowered") ||
     n.includes("steam")
   ) {
-    return <SiSteam className={className} />
+    return <SiSteam aria-hidden="true" className={className} />
   }
   if (
     s.includes("playstation") ||
@@ -41,7 +41,7 @@ export function StoreIcon({ slug, domain, name, className }: StoreIconProps) {
     s.includes("ps-store") ||
     s.includes("psn")
   ) {
-    return <SiPlaystation className={className} />
+    return <SiPlaystation aria-hidden="true" className={className} />
   }
   if (
     s.includes("xbox") ||
@@ -49,7 +49,7 @@ export function StoreIcon({ slug, domain, name, className }: StoreIconProps) {
     d.includes("microsoft") ||
     n.includes("xbox")
   ) {
-    return <FaXbox className={className} />
+    return <FaXbox aria-hidden="true" className={className} />
   }
   if (
     s.includes("nintendo") ||
@@ -57,13 +57,13 @@ export function StoreIcon({ slug, domain, name, className }: StoreIconProps) {
     n.includes("nintendo") ||
     s.includes("eshop")
   ) {
-    return <BsNintendoSwitch className={className} />
+    return <BsNintendoSwitch aria-hidden="true" className={className} />
   }
   if (s.includes("epic") || d.includes("epicgames") || n.includes("epic")) {
-    return <SiEpicgames className={className} />
+    return <SiEpicgames aria-hidden="true" className={className} />
   }
   if (s.includes("gog") || d.includes("gog.com") || n.includes("gog")) {
-    return <SiGogdotcom className={className} />
+    return <SiGogdotcom aria-hidden="true" className={className} />
   }
   if (
     s.includes("apple") ||
@@ -72,7 +72,7 @@ export function StoreIcon({ slug, domain, name, className }: StoreIconProps) {
     d.includes("apple.com") ||
     n.includes("app store")
   ) {
-    return <SiApple className={className} />
+    return <SiApple aria-hidden="true" className={className} />
   }
   if (
     s.includes("google") ||
@@ -80,13 +80,13 @@ export function StoreIcon({ slug, domain, name, className }: StoreIconProps) {
     d.includes("play.google") ||
     n.includes("google play")
   ) {
-    return <SiGoogleplay className={className} />
+    return <SiGoogleplay aria-hidden="true" className={className} />
   }
   if (s.includes("itch") || d.includes("itch.io") || n.includes("itch")) {
-    return <SiItchdotio className={className} />
+    return <SiItchdotio aria-hidden="true" className={className} />
   }
   if (s.includes("ubisoft") || d.includes("ubisoft") || n.includes("ubisoft")) {
-    return <SiUbisoft className={className} />
+    return <SiUbisoft aria-hidden="true" className={className} />
   }
   if (
     s.includes("ea") ||
@@ -94,7 +94,7 @@ export function StoreIcon({ slug, domain, name, className }: StoreIconProps) {
     d.includes("ea.com") ||
     n.includes("electronic arts")
   ) {
-    return <SiEa className={className} />
+    return <SiEa aria-hidden="true" className={className} />
   }
   if (
     s.includes("battle") ||
@@ -102,21 +102,21 @@ export function StoreIcon({ slug, domain, name, className }: StoreIconProps) {
     d.includes("battle.net") ||
     n.includes("battle.net")
   ) {
-    return <FaBattleNet className={className} />
+    return <FaBattleNet aria-hidden="true" className={className} />
   }
   if (s.includes("oculus") || d.includes("oculus") || n.includes("oculus")) {
-    return <SiOculus className={className} />
+    return <SiOculus aria-hidden="true" className={className} />
   }
   if (
     s.includes("humble") ||
     d.includes("humblebundle") ||
     n.includes("humble")
   ) {
-    return <SiHumblebundle className={className} />
+    return <SiHumblebundle aria-hidden="true" className={className} />
   }
   if (s.includes("amazon") || d.includes("amazon") || n.includes("amazon")) {
-    return <FaAmazon className={className} />
+    return <FaAmazon aria-hidden="true" className={className} />
   }
 
-  return <ShoppingBag className={className} />
+  return <ShoppingBag aria-hidden="true" className={className} />
 }
