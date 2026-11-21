@@ -11,10 +11,18 @@ export const metadata: Metadata = {
     canonical: "/search",
   },
   openGraph: {
+    type: "website",
+    siteName: "Pixel Reviews",
     title: "Explore & Search Video Games by Rating | Pixel Reviews",
     description:
       "Browse popular, trending, and top-rated video games across PC, PlayStation, Xbox, and Nintendo Switch. Read honest player reviews before you buy.",
     url: "/search",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Explore & Search Video Games by Rating | Pixel Reviews",
+    description:
+      "Browse popular, trending, and top-rated video games across PC, PlayStation, Xbox, and Nintendo Switch. Read honest player reviews before you buy.",
   },
 }
 
