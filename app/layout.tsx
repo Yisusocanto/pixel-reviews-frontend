@@ -11,7 +11,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 const merriweatherHeading = Merriweather({
   subsets: ["latin"],
-  weight: ["700", "900"],
   display: "swap",
   variable: "--font-heading",
 })
