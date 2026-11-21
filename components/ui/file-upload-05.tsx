@@ -16,7 +16,9 @@ import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
 
 const FRAME_SIZE = 208
-const OUTPUT_SIZE = 320
+const OUTPUT_SIZE = 256
+const OUTPUT_MIME = "image/webp"
+const OUTPUT_QUALITY = 0.82
 const BUTTON_CLASS = "h-8 rounded-lg px-3 cursor-pointer"
 const ENTRANCE_ANIMATION = "animate-in fade-in zoom-in-95 duration-300"
 
@@ -203,20 +205,24 @@ const FileUpload = ({
       ctx.drawImage(img, -naturalSize.width / 2, -naturalSize.height / 2)
       ctx.restore()
 
-      const croppedUrl = canvas.toDataURL("image/png")
+      const croppedUrl = canvas.toDataURL(OUTPUT_MIME, OUTPUT_QUALITY)
       setResultUrl(croppedUrl)
       setStage("done")
       onCropComplete?.(croppedUrl)
 
-      canvas.toBlob((blob) => {
-        if (!blob) return
-        const fileName = (originalFileName.current || "avatar.png").replace(
-          /\.[^/.]+$/,
-          ".png"
-        )
-        const file = new File([blob], fileName, { type: "image/png" })
-        onFileSelect?.(file, croppedUrl)
-      }, "image/png")
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) return
+          const fileName = (originalFileName.current || "avatar.webp").replace(
+            /\.[^/.]+$/,
+            ".webp"
+          )
+          const file = new File([blob], fileName, { type: OUTPUT_MIME })
+          onFileSelect?.(file, croppedUrl)
+        },
+        OUTPUT_MIME,
+        OUTPUT_QUALITY
+      )
     })
   }
 

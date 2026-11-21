@@ -11,13 +11,20 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 const merriweatherHeading = Merriweather({
   subsets: ["latin"],
+  display: "swap",
   variable: "--font-heading",
 })
 
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" })
+const outfit = Outfit({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+})
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
   variable: "--font-mono",
 })
 
@@ -92,7 +99,9 @@ export default function RootLayout({
       <body className="bg-secondary">
         <Providers>
           <Toaster />
-          <ReactQueryDevtools initialIsOpen={false} />
+          {process.env.NODE_ENV === "development" && (
+            <ReactQueryDevtools initialIsOpen={false} />
+          )}
           {children}
         </Providers>
         <SpeedInsights />

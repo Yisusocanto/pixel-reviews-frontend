@@ -1,4 +1,5 @@
 import { GameSearch } from "@/features/games/types"
+import { getIgdbImageUrl } from "@/lib/igdb-image"
 import { cn } from "@/lib/utils"
 import dayjs from "dayjs"
 import { Gamepad2 } from "lucide-react"
@@ -15,7 +16,11 @@ function GameSearchCard({ game }: Props) {
       ? dayjs(game.releaseDate).format("YYYY")
       : null
 
-  const coverOrBackdrop = game.backgroundImage || game.imageUrl
+  const coverOrBackdrop = game.backgroundImage
+    ? getIgdbImageUrl(game.backgroundImage, "t_screenshot_big")
+    : game.imageUrl
+      ? getIgdbImageUrl(game.imageUrl, "t_cover_big")
+      : null
   const score = game.criticScore
 
   const scoreBadgeColor =

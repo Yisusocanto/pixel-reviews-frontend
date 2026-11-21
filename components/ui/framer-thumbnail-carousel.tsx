@@ -3,10 +3,12 @@
 import React, { useEffect, useRef, useState } from "react"
 import { motion, useMotionValue, animate } from "motion/react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { getIgdbImageUrl } from "@/lib/igdb-image"
 
 export interface CarouselItem {
   id: number | string
   url: string
+  thumbnailUrl?: string
   title: string
 }
 
@@ -87,9 +89,10 @@ export function Component({
                 className="h-64 w-full shrink-0 sm:h-80 md:h-[400px]"
               >
                 <img
-                  src={item.url}
+                  src={getIgdbImageUrl(item.url, "t_screenshot_big")}
                   alt={item.title}
                   loading={i === 0 ? "eager" : "lazy"}
+                  {...(i > 0 ? { fetchPriority: "low" } : {})}
                   decoding="async"
                   className="pointer-events-none h-full w-full rounded-lg object-cover select-none"
                   draggable={false}
@@ -200,7 +203,10 @@ function Thumbnails({
             className="relative h-full shrink-0 overflow-hidden rounded"
           >
             <img
-              src={item.url}
+              src={
+                item.thumbnailUrl ??
+                getIgdbImageUrl(item.url, "t_screenshot_med")
+              }
               alt={`${item.title} thumbnail`}
               loading="lazy"
               decoding="async"

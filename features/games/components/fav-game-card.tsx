@@ -1,4 +1,5 @@
 import { GameSearch } from "@/features/games/types"
+import { getIgdbImageUrl } from "@/lib/igdb-image"
 import { cn } from "@/lib/utils"
 import dayjs from "dayjs"
 import { Check, Gamepad2, X } from "lucide-react"
@@ -13,6 +14,7 @@ interface Props {
   selectionOrder?: number
   removable?: boolean
   compact?: boolean
+  priority?: boolean
   className?: string
 }
 
@@ -24,9 +26,13 @@ function FavGameCard({
   selectionOrder,
   removable = false,
   compact = false,
+  priority = false,
   className,
 }: Props) {
-  const gameCover = game.imageUrl || game.backgroundImage
+  const rawCover = game.imageUrl || game.backgroundImage
+  const gameCover = rawCover
+    ? getIgdbImageUrl(rawCover, compact ? "t_cover_small" : "t_cover_big")
+    : null
   const releaseYear =
     game.releaseDate && dayjs(game.releaseDate).isValid()
       ? dayjs(game.releaseDate).format("YYYY")
@@ -40,6 +46,8 @@ function FavGameCard({
           src={gameCover}
           alt={`${game.title} cover`}
           fill
+          priority={priority}
+          {...(priority ? { fetchPriority: "high" } : {})}
           sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
           className="absolute inset-0 w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
         />

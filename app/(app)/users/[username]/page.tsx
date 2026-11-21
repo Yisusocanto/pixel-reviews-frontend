@@ -1,9 +1,11 @@
 import { auth } from "@/auth"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import RatingDistributionCard from "@/components/ui/rating-distribution-card"
+import { Game } from "@/features/games/types"
 import { ReviewPagination } from "@/features/reviews/types"
 import {
   getUserAction,
+  getUserFavGamesAction,
   getUserReviewsAction,
   getUserStatsAction,
 } from "@/features/users/actions"
@@ -25,14 +27,17 @@ const getCachedUserData = cache(
     user: User
     userStats?: UserStats
     initialReviews?: ReviewPagination
+    initialFavGames?: Game[]
   }> => {
-    const [user, userStats, initialReviews] = await Promise.all([
-      getUserAction(username),
-      getUserStatsAction(username).catch(() => undefined),
-      getUserReviewsAction(username, 1, 10).catch(() => undefined),
-    ])
+    const [user, userStats, initialReviews, initialFavGames] =
+      await Promise.all([
+        getUserAction(username),
+        getUserStatsAction(username).catch(() => undefined),
+        getUserReviewsAction(username, 1, 10).catch(() => undefined),
+        getUserFavGamesAction(username).catch(() => undefined),
+      ])
 
-    return { user, userStats, initialReviews }
+    return { user, userStats, initialReviews, initialFavGames }
   }
 )
 
@@ -109,9 +114,11 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
   let user: User | undefined = undefined
   let userStats: UserStats | undefined = undefined
   let initialReviews: ReviewPagination | undefined = undefined
+  let initialFavGames: Game[] | undefined = undefined
 
   try {
-    ;({ user, userStats, initialReviews } = await getCachedUserData(username))
+    ;({ user, userStats, initialReviews, initialFavGames } =
+      await getCachedUserData(username))
   } catch {
     notFound()
   }
@@ -196,7 +203,7 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
       </header>
 
       <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-8">
-        <FavGamesSection username={username} />
+        <FavGamesSection username={username} initialGames={initialFavGames} />
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:gap-10">
           <div className="order-2 flex min-w-0 flex-2 flex-col gap-8 sm:gap-10 lg:order-1">
             <RatingDistributionCard

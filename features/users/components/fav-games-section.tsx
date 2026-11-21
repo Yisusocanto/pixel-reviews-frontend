@@ -2,6 +2,7 @@
 
 import { Skeleton } from "@/components/ui/skeleton"
 import FavGameCard from "@/features/games/components/fav-game-card"
+import { Game } from "@/features/games/types"
 import FavGamesSelector from "@/features/users/components/fav-games-selector"
 import { useUserFavGames } from "@/features/users/hooks"
 import { Gamepad2, PlusCircle } from "lucide-react"
@@ -10,12 +11,13 @@ import { useState } from "react"
 
 interface Props {
   username: string
+  initialGames?: Game[]
 }
 
-function FavGamesSection({ username }: Props) {
+function FavGamesSection({ username, initialGames }: Props) {
   const { data: session } = useSession()
   const [selectorOpen, setSelectorOpen] = useState(false)
-  const { data, isLoading, isError } = useUserFavGames(username)
+  const { data, isLoading, isError } = useUserFavGames(username, initialGames)
 
   const ownProfile = session?.user.username === username
 
@@ -79,6 +81,7 @@ function FavGamesSection({ username }: Props) {
                   game={game}
                   key={game.slug}
                   href={`/games/${game.slug}`}
+                  priority={i < 2}
                 />
               )
             })}

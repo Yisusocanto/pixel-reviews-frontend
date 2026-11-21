@@ -72,10 +72,14 @@ export const useUserWishlist = (
   })
 }
 
-export const useUserFavGames = (username: string) => {
+export const useUserFavGames = (
+  username: string,
+  initialGames?: Game[]
+) => {
   return useQuery({
     queryKey: ["userFavGames", username],
     queryFn: () => getUserFavGamesAction(username),
+    initialData: initialGames,
   })
 }
 

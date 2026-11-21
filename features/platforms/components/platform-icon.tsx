@@ -33,7 +33,7 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     n.includes("playstation 5") ||
     n.includes("ps5")
   ) {
-    return <SiPlaystation5 className={className} />
+    return <SiPlaystation5 aria-hidden="true" className={className} />
   }
   if (
     s.includes("playstation-4") ||
@@ -41,7 +41,7 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     n.includes("playstation 4") ||
     n.includes("ps4")
   ) {
-    return <SiPlaystation4 className={className} />
+    return <SiPlaystation4 aria-hidden="true" className={className} />
   }
   if (
     s.includes("playstation-3") ||
@@ -49,7 +49,7 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     n.includes("playstation 3") ||
     n.includes("ps3")
   ) {
-    return <SiPlaystation3 className={className} />
+    return <SiPlaystation3 aria-hidden="true" className={className} />
   }
   if (
     s.includes("playstation-2") ||
@@ -57,28 +57,28 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     n.includes("playstation 2") ||
     n.includes("ps2")
   ) {
-    return <SiPlaystation2 className={className} />
+    return <SiPlaystation2 aria-hidden="true" className={className} />
   }
   if (s.includes("ps-vita") || s.includes("vita") || n.includes("vita")) {
-    return <SiPlaystationvita className={className} />
+    return <SiPlaystationvita aria-hidden="true" className={className} />
   }
   if (
     s.includes("psp") ||
     n.includes("psp") ||
     n.includes("playstation portable")
   ) {
-    return <SiPlaystationportable className={className} />
+    return <SiPlaystationportable aria-hidden="true" className={className} />
   }
   if (
     s.includes("playstation") ||
     s.includes("ps") ||
     n.includes("playstation")
   ) {
-    return <SiPlaystation className={className} />
+    return <SiPlaystation aria-hidden="true" className={className} />
   }
 
   if (s.includes("xbox") || n.includes("xbox")) {
-    return <FaXbox className={className} />
+    return <FaXbox aria-hidden="true" className={className} />
   }
 
   if (
@@ -97,7 +97,7 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     n.includes("game boy") ||
     n.includes("ds")
   ) {
-    return <BsNintendoSwitch className={className} />
+    return <BsNintendoSwitch aria-hidden="true" className={className} />
   }
 
   if (
@@ -106,11 +106,11 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     n.includes("pc") ||
     n.includes("windows")
   ) {
-    return <FaWindows className={className} />
+    return <FaWindows aria-hidden="true" className={className} />
   }
 
   if (s.includes("linux") || n.includes("linux")) {
-    return <SiLinux className={className} />
+    return <SiLinux aria-hidden="true" className={className} />
   }
 
   if (
@@ -121,11 +121,11 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     n.includes("mac") ||
     n.includes("ios")
   ) {
-    return <SiApple className={className} />
+    return <SiApple aria-hidden="true" className={className} />
   }
 
   if (s.includes("android") || n.includes("android")) {
-    return <SiAndroid className={className} />
+    return <SiAndroid aria-hidden="true" className={className} />
   }
 
   if (
@@ -134,11 +134,11 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     s.includes("dreamcast") ||
     s.includes("genesis")
   ) {
-    return <SiSega className={className} />
+    return <SiSega aria-hidden="true" className={className} />
   }
 
   if (s.includes("atari") || n.includes("atari")) {
-    return <SiAtari className={className} />
+    return <SiAtari aria-hidden="true" className={className} />
   }
 
   if (
@@ -147,8 +147,8 @@ export function PlatformIcon({ slug, name, className }: PlatformIconProps) {
     n.includes("commodore") ||
     n.includes("amiga")
   ) {
-    return <SiCommodore className={className} />
+    return <SiCommodore aria-hidden="true" className={className} />
   }
 
-  return <Gamepad2 className={className} />
+  return <Gamepad2 aria-hidden="true" className={className} />
 }

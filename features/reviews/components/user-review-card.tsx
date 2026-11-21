@@ -15,6 +15,7 @@ import ReviewDialog from "@/features/reviews/components/review-dialog"
 import ReviewModerationNotice from "@/features/reviews/components/review-moderation-notice"
 import { useDeleteReview } from "@/features/reviews/hooks"
 import { Review } from "@/features/reviews/types"
+import { getIgdbImageUrl } from "@/lib/igdb-image"
 import { cn } from "cn"
 import dayjs from "dayjs"
 import { Ellipsis, Trash } from "lucide-react"
@@ -43,7 +44,7 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
         >
           <Image
             className="absolute inset-0 object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-            src={review.game.imageUrl}
+            src={getIgdbImageUrl(review.game.imageUrl, "t_cover_big")}
             alt={
               review.game.title
                 ? `${review.game.title} cover art`
@@ -60,7 +61,7 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
           {review.game?.imageUrl && (
             <Image
               className="absolute inset-0 object-cover"
-              src={review.game.imageUrl}
+              src={getIgdbImageUrl(review.game.imageUrl, "t_cover_big")}
               alt={
                 review.game.title
                   ? `${review.game.title} cover art`
