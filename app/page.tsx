@@ -5,7 +5,7 @@ import LandingShell from "@/features/landing/components/landing-shell"
 import VerdictTape from "@/features/landing/components/verdict-tape"
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_APP_URL || "https://pixelreviews.vercel.app"
+  process.env.NEXT_PUBLIC_APP_URL || "https://www.pixelreviews.app"
 
 const websiteJsonLd = {
   "@context": "https://schema.org",

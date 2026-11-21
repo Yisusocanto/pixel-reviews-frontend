@@ -43,7 +43,7 @@ import { notFound } from "next/navigation"
 import { cache } from "react"
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_APP_URL || "https://pixelreviews.vercel.app"
+  process.env.NEXT_PUBLIC_APP_URL || "https://www.pixelreviews.app"
 
 const getCachedGameData = cache(
   async (

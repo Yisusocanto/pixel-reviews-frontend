@@ -29,7 +29,7 @@ const fontMono = Geist_Mono({
 })
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_APP_URL || "https://pixelreviews.vercel.app"
+  process.env.NEXT_PUBLIC_APP_URL || "https://www.pixelreviews.app"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -58,9 +58,12 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
       { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/favicon.ico", sizes: "any" },
     ],
+    shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",

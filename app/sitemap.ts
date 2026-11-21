@@ -3,7 +3,7 @@ import { searchGamesAction } from "@/features/games/actions"
 import { getAllReviewsAction } from "@/features/reviews/actions"
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_APP_URL || "https://pixelreviews.vercel.app"
+  process.env.NEXT_PUBLIC_APP_URL || "https://www.pixelreviews.app"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
