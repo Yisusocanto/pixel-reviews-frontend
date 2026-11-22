@@ -28,6 +28,7 @@ import {
 import { PixelGamepadIcon } from "@/components/ui/pixel-gamepad-icon"
 import { NavLink } from "@/types/link"
 import {
+  ChartArea,
   ChevronsUpDown,
   Home,
   LogOut,
@@ -50,6 +51,7 @@ function AppSidebar() {
   const links: NavLink[] = [
     { label: "Feed", href: "/feed", icon: Home },
     { label: "Search", href: "/search", icon: Search },
+    { label: "Charts", href: "/charts", icon: ChartArea },
   ]
   const authLinks: NavLink[] = [
     {
