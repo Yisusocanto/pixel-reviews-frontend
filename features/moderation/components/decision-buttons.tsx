@@ -12,71 +12,87 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { Textarea } from "@/components/ui/textarea"
-import { useModerationDecision } from "@/features/moderation/hooks"
-import { AdminModerationReviewItem } from "@/features/moderation/types"
+import {
+  useCommentModerationDecision,
+  useModerationDecision,
+} from "@/features/moderation/hooks"
 import { Check, X } from "lucide-react"
 
-interface Props {
-  item: AdminModerationReviewItem
+interface ModeratableItem {
+  id: string
+  contentVersion: number
+  moderationReason?: string | null
 }
 
-export function DecisionButtons({ item }: Props) {
-  const { mutate: submitDecision, isPending } = useModerationDecision()
+interface Props {
+  item: ModeratableItem
+  entityType?: "review" | "comment"
+}
+
+export function DecisionButtons({ item, entityType = "review" }: Props) {
+  const reviewMutation = useModerationDecision()
+  const commentMutation = useCommentModerationDecision()
+  const isPending =
+    entityType === "comment"
+      ? commentMutation.isPending
+      : reviewMutation.isPending
+
   const [rejectOpen, setRejectOpen] = useState(false)
-  const [reason, setReason] = useState(item.moderationReason ?? "policy_violation")
+  const [reason, setReason] = useState(
+    item.moderationReason ?? "policy_violation"
+  )
   const [note, setNote] = useState("")
 
+  const formId = `reject-form-${entityType}-${item.id}`
+
   const handleApprove = () => {
-    submitDecision({
-      reviewId: item.id,
-      payload: {
-        decision: "approve",
-        version: item.contentVersion,
-        note: "Approved by moderator",
-      },
-    })
+    const payload = {
+      decision: "approve" as const,
+      version: item.contentVersion,
+      note: "Approved by moderator",
+    }
+    if (entityType === "comment") {
+      commentMutation.mutate({ commentId: item.id, payload })
+    } else {
+      reviewMutation.mutate({ reviewId: item.id, payload })
+    }
   }
 
   const handleRejectConfirm = (e: React.FormEvent) => {
     e.preventDefault()
-    submitDecision(
-      {
-        reviewId: item.id,
-        payload: {
-          decision: "reject",
-          version: item.contentVersion,
-          reason: reason || "policy_violation",
-          note: note || undefined,
-        },
-      },
-      {
-        onSuccess: (res) => {
-          if (res.ok) {
-            setRejectOpen(false)
-          }
-        },
+    const payload = {
+      decision: "reject" as const,
+      version: item.contentVersion,
+      reason: reason || "policy_violation",
+      note: note || undefined,
+    }
+    const onSuccess = (res: { ok: boolean }) => {
+      if (res.ok) {
+        setRejectOpen(false)
       }
-    )
+    }
+
+    if (entityType === "comment") {
+      commentMutation.mutate({ commentId: item.id, payload }, { onSuccess })
+    } else {
+      reviewMutation.mutate({ reviewId: item.id, payload }, { onSuccess })
+    }
   }
 
   return (
-    <div className="flex items-center gap-2 w-full sm:w-auto">
+    <div className="flex w-full items-center gap-2 sm:w-auto">
       <Button
         size="sm"
         variant="default"
         disabled={isPending}
         onClick={handleApprove}
-        className="flex-1 sm:flex-initial h-9 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-medium"
+        className="h-9 flex-1 bg-green-600 text-xs font-medium text-white hover:bg-green-700 sm:flex-initial sm:text-sm"
       >
-        {isPending ? <Spinner /> : <Check className="size-4 mr-1.5" />}
+        {isPending ? <Spinner /> : <Check className="mr-1.5 size-4" />}
         Approve
       </Button>
 
@@ -87,22 +103,26 @@ export function DecisionButtons({ item }: Props) {
               size="sm"
               variant="destructive"
               disabled={isPending}
-              className="flex-1 sm:flex-initial h-9 text-xs sm:text-sm font-medium"
+              className="h-9 flex-1 text-xs font-medium sm:flex-initial sm:text-sm"
             >
-              <X className="size-4 mr-1.5" />
+              <X className="mr-1.5 size-4" />
               Reject
             </Button>
           }
         />
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Reject review</DialogTitle>
+            <DialogTitle>Reject {entityType}</DialogTitle>
             <DialogDescription>
               Provide a reason and an optional internal note for this decision.
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleRejectConfirm} id="reject-form" className="space-y-4">
+          <form
+            onSubmit={handleRejectConfirm}
+            id={formId}
+            className="space-y-4"
+          >
             <FieldGroup>
               <Field>
                 <FieldLabel>Violation reason</FieldLabel>
@@ -124,10 +144,16 @@ export function DecisionButtons({ item }: Props) {
             </FieldGroup>
           </form>
 
-          <DialogFooter className="flex-col-reverse sm:flex-row gap-2">
-            <DialogClose render={<Button variant="outline" className="w-full sm:w-auto">Cancel</Button>} />
+          <DialogFooter className="flex-col-reverse gap-2 sm:flex-row">
+            <DialogClose
+              render={
+                <Button variant="outline" className="w-full sm:w-auto">
+                  Cancel
+                </Button>
+              }
+            />
             <Button
-              form="reject-form"
+              form={formId}
               type="submit"
               variant="destructive"
               disabled={isPending}

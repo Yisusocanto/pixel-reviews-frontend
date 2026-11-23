@@ -24,3 +24,8 @@ export async function deleteCommentAction(commentId: string) {
   const res = await apiClient.delete<Comment>(`/comments/${commentId}`)
   return res
 }
+
+export async function appealCommentAction(commentId: string) {
+  const res = await apiClient.post<Comment>(`/comments/${commentId}/appeal`)
+  return res
+}

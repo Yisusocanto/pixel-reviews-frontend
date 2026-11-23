@@ -2,18 +2,21 @@
 
 import {
   AdminDecisionPayload,
+  AdminModerationCommentItem,
+  AdminModerationCommentQueuePagination,
   AdminModerationQueuePagination,
   AdminModerationReviewItem,
+  CommentModerationHistoryItem,
   ModerationHistoryItem,
 } from "@/features/moderation/types"
 import { ModerationStatus } from "@/features/reviews/types"
 import { apiClient, ApiError } from "@/lib/api/client"
 
-export interface DecisionActionResult {
+export interface DecisionActionResult<T = AdminModerationReviewItem> {
   ok: boolean
   conflict?: boolean
   error?: string
-  item?: AdminModerationReviewItem
+  item?: T
 }
 
 export async function getModerationQueueAction(
@@ -46,12 +49,64 @@ export async function getModerationHistoryAction(
 export async function submitModerationDecisionAction(
   reviewId: string,
   payload: AdminDecisionPayload
-): Promise<DecisionActionResult> {
+): Promise<DecisionActionResult<AdminModerationReviewItem>> {
   try {
     const item = await apiClient.post<
       AdminModerationReviewItem,
       AdminDecisionPayload
     >(`/admin/moderation/reviews/${reviewId}/decision`, payload)
+    return { ok: true, item }
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 409) {
+      return {
+        ok: false,
+        conflict: true,
+        error: err.message,
+      }
+    }
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : "Failed to submit decision",
+    }
+  }
+}
+
+export async function getCommentModerationQueueAction(
+  status?: ModerationStatus | "all",
+  page: number = 1,
+  limit: number = 10
+): Promise<AdminModerationCommentQueuePagination> {
+  const params: Record<string, string | number | undefined> = {
+    page,
+    limit,
+  }
+  if (status && status !== "all") {
+    params.status = status
+  }
+
+  return await apiClient.get<AdminModerationCommentQueuePagination>(
+    "/admin/moderation/comments",
+    { params }
+  )
+}
+
+export async function getCommentModerationHistoryAction(
+  commentId: string
+): Promise<CommentModerationHistoryItem[]> {
+  return await apiClient.get<CommentModerationHistoryItem[]>(
+    `/admin/moderation/comments/${commentId}/history`
+  )
+}
+
+export async function submitCommentModerationDecisionAction(
+  commentId: string,
+  payload: AdminDecisionPayload
+): Promise<DecisionActionResult<AdminModerationCommentItem>> {
+  try {
+    const item = await apiClient.post<
+      AdminModerationCommentItem,
+      AdminDecisionPayload
+    >(`/admin/moderation/comments/${commentId}/decision`, payload)
     return { ok: true, item }
   } catch (err) {
     if (err instanceof ApiError && err.status === 409) {

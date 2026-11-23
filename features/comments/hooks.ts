@@ -1,5 +1,6 @@
 import { toast } from "@/components/ui/toast"
 import {
+  appealCommentAction,
   createCommentAction,
   deleteCommentAction,
   updateCommentAction,
@@ -174,6 +175,32 @@ export const useUpdateComment = () => {
     onError: (error: Error) => {
       toast.add({
         description: error.message || "Failed to update comment",
+        type: "error",
+      })
+    },
+  })
+}
+
+export const useAppealComment = () => {
+  const qc = useQueryClient()
+
+  return useMutation({
+    mutationFn: (commentId: string) => appealCommentAction(commentId),
+    onSuccess: (data) => {
+      if (data?.reviewId) {
+        qc.invalidateQueries({ queryKey: ["comments", data.reviewId] })
+      } else {
+        qc.invalidateQueries({ queryKey: ["comments"] })
+      }
+      toast.add({
+        description:
+          "Your appeal has been submitted for manual review by a moderator.",
+        type: "success",
+      })
+    },
+    onError: (error: Error) => {
+      toast.add({
+        description: error.message || "Failed to submit appeal",
         type: "error",
       })
     },

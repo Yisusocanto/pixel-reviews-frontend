@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import CommentModerationNotice from "@/features/comments/components/comment-moderation-notice"
 import { useDeleteComments } from "@/features/comments/hooks"
 import { Comment } from "@/features/comments/types"
 import { formatTimeAgo } from "@/lib/format-time"
@@ -86,6 +87,11 @@ function CommentCard({ comment, isAuthor = false }: Props) {
       <p className="pl-8 text-sm leading-relaxed text-foreground/90">
         {comment.content}
       </p>
+      {comment.moderation && (
+        <div className="pl-8 pt-1">
+          <CommentModerationNotice comment={comment} />
+        </div>
+      )}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Review } from "@/features/reviews/types"
+import { ModerationInfo, Review } from "@/features/reviews/types"
 import { User } from "@/features/users/types"
 
 export interface Comment {
@@ -8,6 +8,7 @@ export interface Comment {
   reviewId: string
   createdAt: Date
   updatedAt: Date
+  moderation?: ModerationInfo | null
 
   user: User
   review: Review

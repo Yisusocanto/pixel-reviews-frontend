@@ -5,7 +5,8 @@ import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "Moderation Queue",
-  description: "Administrative moderation panel for managing community reviews",
+  description:
+    "Administrative moderation panel for managing community reviews and comments",
   robots: {
     index: false,
     follow: false,
