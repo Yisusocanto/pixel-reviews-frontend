@@ -16,6 +16,7 @@ import {
   MessageContent,
   MessageFooter,
 } from "@/components/ui/message"
+import CommentModerationNotice from "@/features/comments/components/comment-moderation-notice"
 import { useDeleteComments } from "@/features/comments/hooks"
 import { Comment } from "@/features/comments/types"
 import { formatTimeAgo } from "@/lib/format-time"
@@ -67,6 +68,11 @@ function MessageCommentCard({ comment, isAuthor, isOwnComment }: Props) {
             </div>
           </BubbleContent>
         </Bubble>
+        {comment.moderation && (
+          <div className="mt-1.5 max-w-sm">
+            <CommentModerationNotice comment={comment} compact />
+          </div>
+        )}
         <MessageFooter>
           <span className="text-xs text-muted-foreground">
             {formatTimeAgo(comment.createdAt)}
