@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import StarRating from "@/components/ui/star-rating"
 import LikeButton from "@/features/likes/components/like-button"
+import ReportButton from "@/features/reports/components/report-button"
 import ReviewDetailDialog from "@/features/reviews/components/review-detail-dialog"
 import ReviewDialog from "@/features/reviews/components/review-dialog"
 import ReviewModerationNotice from "@/features/reviews/components/review-moderation-notice"
@@ -108,6 +109,13 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
               likedByUser={Boolean(review.likedByUser)}
             />
             <ReviewDetailDialog review={review} />
+            {!ownReview && (
+              <ReportButton
+                targetId={review.id}
+                targetType="review"
+                authorId={review.userId}
+              />
+            )}
           </div>
           {ownReview && (
             <div className="flex items-center gap-2">

@@ -19,6 +19,7 @@ import {
 import CommentModerationNotice from "@/features/comments/components/comment-moderation-notice"
 import { useDeleteComments } from "@/features/comments/hooks"
 import { Comment } from "@/features/comments/types"
+import ReportButton from "@/features/reports/components/report-button"
 import { formatTimeAgo } from "@/lib/format-time"
 import { Ellipsis, Trash } from "lucide-react"
 import Link from "next/link"
@@ -77,7 +78,7 @@ function MessageCommentCard({ comment, isAuthor, isOwnComment }: Props) {
           <span className="text-xs text-muted-foreground">
             {formatTimeAgo(comment.createdAt)}
           </span>
-          {isOwnComment && (
+          {isOwnComment ? (
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
@@ -93,6 +94,13 @@ function MessageCommentCard({ comment, isAuthor, isOwnComment }: Props) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          ) : (
+            <ReportButton
+              targetId={comment.id}
+              targetType="comment"
+              authorId={comment.userId}
+              compact
+            />
           )}
         </MessageFooter>
       </MessageContent>

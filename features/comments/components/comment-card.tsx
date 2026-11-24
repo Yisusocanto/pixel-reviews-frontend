@@ -11,6 +11,7 @@ import {
 import CommentModerationNotice from "@/features/comments/components/comment-moderation-notice"
 import { useDeleteComments } from "@/features/comments/hooks"
 import { Comment } from "@/features/comments/types"
+import ReportButton from "@/features/reports/components/report-button"
 import { formatTimeAgo } from "@/lib/format-time"
 import { Ellipsis, Trash } from "lucide-react"
 import Link from "next/link"
@@ -50,7 +51,7 @@ function CommentCard({ comment, isAuthor = false }: Props) {
             <span>{formatTimeAgo(comment.createdAt)}</span>
           </div>
 
-          {isAuthor && (
+          {isAuthor ? (
             <div className="ml-auto">
               <DropdownMenu>
                 <DropdownMenuTrigger
@@ -80,6 +81,15 @@ function CommentCard({ comment, isAuthor = false }: Props) {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            </div>
+          ) : (
+            <div className="ml-auto">
+              <ReportButton
+                targetId={comment.id}
+                targetType="comment"
+                authorId={comment.userId}
+                compact
+              />
             </div>
           )}
         </div>

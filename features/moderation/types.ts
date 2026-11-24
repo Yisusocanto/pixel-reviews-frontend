@@ -2,7 +2,7 @@ import { Game } from "@/features/games/types"
 import { ModerationStatus } from "@/features/reviews/types"
 import { User } from "@/features/users/types"
 
-export type ModerationEntityType = "reviews" | "comments"
+export type ModerationEntityType = "reviews" | "comments" | "reports"
 export type Verdict = "approve" | "reject" | "doubt"
 export type Judge = "rules" | "ai_model" | "admin" | "system" | "user_appeal"
 
