@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import StarRating from "@/components/ui/star-rating"
 import LikeButton from "@/features/likes/components/like-button"
+import ReportButton from "@/features/reports/components/report-button"
 import { Review } from "@/features/reviews/types"
 import { getIgdbImageUrl } from "@/lib/igdb-image"
 import { cn } from "cn"
@@ -124,6 +125,11 @@ function ReviewCard({
               <MessageSquare className="h-4 w-4 transition-transform duration-200 active:scale-125" />
               {review.commentsCount} comments
             </Button>
+            <ReportButton
+              targetId={review.id}
+              targetType="review"
+              authorId={review.userId}
+            />
           </div>
         </div>
 
