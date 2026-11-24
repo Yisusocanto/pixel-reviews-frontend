@@ -34,77 +34,93 @@ function MessageCommentCard({ comment, isAuthor, isOwnComment }: Props) {
   const { mutate: deleteComment } = useDeleteComments()
 
   return (
-    <Message key={comment.id} align={isOwnComment ? "end" : "start"}>
-      <MessageAvatar>
-        <Avatar>
-          <AvatarImage
-            src={comment.user.profilePhotoUrl ?? undefined}
-            alt={comment.user.username}
-          />
-          <AvatarFallback className="uppercase">
-            {comment.user.username.slice(0, 2)}
-          </AvatarFallback>
-        </Avatar>
-      </MessageAvatar>
-      <MessageContent>
-        <Bubble variant={"secondary"}>
-          <BubbleContent>
-            <div className="flex flex-col gap-0.5">
-              <div className="flex items-center gap-1.5">
-                <Link
-                  href={`/users/${comment.user.username}`}
-                  className="font-bold transition-colors hover:underline"
-                >
-                  {comment.user.username}
-                </Link>
-                {isAuthor && (
-                  <Badge className="ml-1 h-fit w-fit bg-primary/30">
-                    Author
-                  </Badge>
-                )}
-              </div>
-              <p className="leading-relaxed whitespace-pre-wrap">
-                {comment.content}
-              </p>
-            </div>
-          </BubbleContent>
-        </Bubble>
-        {comment.moderation && (
-          <div className="mt-1.5 max-w-sm">
-            <CommentModerationNotice comment={comment} compact />
-          </div>
-        )}
-        <MessageFooter>
-          <span className="text-xs text-muted-foreground">
-            {formatTimeAgo(comment.createdAt)}
-          </span>
-          {isOwnComment ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <Button variant={"ghost"}>
-                    <Ellipsis />
-                  </Button>
-                }
-              />
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => deleteComment(comment.id)}>
-                  <Trash />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <ReportButton
-              targetId={comment.id}
-              targetType="comment"
-              authorId={comment.userId}
-              compact
+    <div className="flex flex-col gap-2">
+      <Message key={comment.id} align={isOwnComment ? "end" : "start"}>
+        <MessageAvatar>
+          <Avatar>
+            <AvatarImage
+              src={comment.user.profilePhotoUrl ?? undefined}
+              alt={comment.user.username}
             />
-          )}
-        </MessageFooter>
-      </MessageContent>
-    </Message>
+            <AvatarFallback className="uppercase">
+              {comment.user.username.slice(0, 2)}
+            </AvatarFallback>
+          </Avatar>
+        </MessageAvatar>
+        <MessageContent>
+          <Bubble variant={"secondary"}>
+            <BubbleContent>
+              <div className="flex flex-col gap-0.5">
+                <div className="flex items-center gap-1.5">
+                  <Link
+                    href={`/users/${comment.user.username}`}
+                    className="font-bold transition-colors hover:underline"
+                  >
+                    {comment.user.username}
+                  </Link>
+                  {isAuthor && (
+                    <Badge className="ml-1 h-fit w-fit bg-primary/30">
+                      Author
+                    </Badge>
+                  )}
+                </div>
+                <p className="leading-relaxed whitespace-pre-wrap">
+                  {comment.content}
+                </p>
+              </div>
+            </BubbleContent>
+          </Bubble>
+          <MessageFooter>
+            <span className="text-xs text-muted-foreground">
+              {formatTimeAgo(comment.createdAt)}
+            </span>
+            {isOwnComment ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button variant={"ghost"}>
+                      <Ellipsis />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      deleteComment({
+                        commentId: comment.id,
+                        reviewId: comment.reviewId,
+                      })
+                    }
+                    className="text-destructive focus:bg-destructive/15 focus:text-destructive"
+                  >
+                    <Trash className="text-destructive" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <ReportButton
+                targetId={comment.id}
+                targetType="comment"
+                authorId={comment.userId}
+                compact
+              />
+            )}
+          </MessageFooter>
+        </MessageContent>
+      </Message>
+      {comment.moderation && (
+        <div
+          className={
+            isOwnComment
+              ? "ml-auto w-full max-w-md pr-12"
+              : "w-full max-w-md pl-12"
+          }
+        >
+          <CommentModerationNotice comment={comment} compact />
+        </div>
+      )}
+    </div>
   )
 }
 

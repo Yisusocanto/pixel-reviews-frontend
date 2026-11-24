@@ -5,21 +5,21 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { ChevronDown, LucideIcon } from "lucide-react"
 
 const buttonVariants = cva(
-  "group inline-flex cursor-pointer items-center justify-center text-sm font-medium whitespace-nowrap ring-offset-background transition-[color,box-shadow] focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-60 has-data-[arrow=true]:justify-between [&_svg]:shrink-0",
+  "group inline-flex cursor-pointer items-center justify-center text-sm font-medium whitespace-nowrap ring-offset-background transition-all duration-150 active:scale-[0.98] focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-60 has-data-[arrow=true]:justify-between [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90 data-[state=open]:bg-primary/90",
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 data-[state=open]:bg-primary/90",
         primary:
-          "bg-primary text-primary-foreground hover:bg-primary/90 data-[state=open]:bg-primary/90",
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 data-[state=open]:bg-primary/90",
         mono: "bg-zinc-950 text-white hover:bg-zinc-950/90 data-[state=open]:bg-zinc-950/90 dark:bg-zinc-300 dark:text-black dark:hover:bg-zinc-300/90 dark:data-[state=open]:bg-zinc-300/90",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 data-[state=open]:bg-destructive/90",
+          "bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90 hover:shadow-md hover:shadow-destructive/20 data-[state=open]:bg-destructive/90",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/90 data-[state=open]:bg-secondary/90",
         outline:
-          "border border-input bg-background text-accent-foreground hover:bg-accent data-[state=open]:bg-accent",
+          "border border-input bg-background/80 text-accent-foreground hover:border-foreground/20 hover:bg-accent data-[state=open]:bg-accent",
         dashed:
           "border border-dashed border-input bg-background text-accent-foreground hover:bg-accent hover:text-accent-foreground data-[state=open]:text-accent-foreground",
         ghost:

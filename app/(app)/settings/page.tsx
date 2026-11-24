@@ -24,22 +24,33 @@ async function SettingsPage() {
   const user = await getUserAction(session.user.username)
 
   return (
-    <div className="flex flex-col gap-4 p-4 sm:p-6 lg:p-8">
-      <div>
-        <h1 className="text-4xl font-bold">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your identity and account security on Pixel Reviews.
-        </p>
-      </div>
-      <div className="flex flex-col gap-4 md:flex-row md:justify-between md:gap-10">
-        <div className="flex-2">
-          <UserInfoSection user={user} />
+    <div className="flex flex-1 flex-col">
+      <header className="relative isolate overflow-hidden border-b border-border/80 bg-background/60 px-4 py-8 sm:px-6 sm:py-10 lg:px-10">
+        <div className="app-grid pointer-events-none absolute inset-0 -z-10" />
+        <div className="pointer-events-none absolute -top-24 right-[-10%] -z-10 size-72 rounded-full bg-primary/10 blur-[90px]" />
+
+        <div className="mx-auto w-full max-w-5xl">
+          <span className="inline-block font-mono text-xs font-semibold tracking-[0.25em] text-primary uppercase">
+            Account
+          </span>
+          <h1 className="mt-2 font-heading text-3xl font-black tracking-tight sm:text-4xl">
+            Settings
+          </h1>
+          <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
+            Manage your identity and account security on Pixel Reviews.
+          </p>
         </div>
-        <div className="flex-1">
-          <SecuritySection />
+      </header>
+
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 p-4 sm:p-6 lg:p-10">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5 lg:gap-8">
+          <div className="lg:col-span-3">
+            <UserInfoSection user={user} />
+          </div>
+          <div className="lg:col-span-2">
+            <SecuritySection />
+          </div>
         </div>
-      </div>
-      <div>
         <DangerZoneSection user={user} />
       </div>
     </div>

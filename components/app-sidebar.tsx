@@ -86,15 +86,15 @@ function AppSidebar() {
             <Link
               href={session ? "/feed" : "/"}
               onClick={handleNavigate}
-              className="flex items-center gap-3 overflow-hidden rounded-md p-1 transition-colors outline-none group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
+              className="group flex items-center gap-3 overflow-hidden rounded-lg p-1.5 transition-colors outline-none group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0 hover:bg-sidebar-accent/60"
             >
-              <PixelGamepadIcon className="h-6 w-12 shrink-0 text-primary transition-transform hover:scale-105" />
+              <PixelGamepadIcon className="h-6 w-12 shrink-0 text-primary transition-transform duration-200 group-hover:scale-105" />
               <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-                <div className="flex items-baseline gap-1 text-xl leading-none font-black tracking-tight">
+                <div className="flex items-baseline gap-1 text-lg leading-none font-black tracking-tight">
                   <span className="text-primary">Pixel</span>
                   <span className="text-foreground">Reviews</span>
                 </div>
-                <span className="mt-1 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
+                <span className="mt-1 font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
                   For those who play
                 </span>
               </div>
@@ -102,68 +102,105 @@ function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <Separator className={"my-4"} />
+      <Separator className="my-2 opacity-60" />
       <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupLabel className="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground/80 uppercase">
+            Explore
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-2">
-              {links.map((link) => (
-                <SidebarMenuItem key={link.label}>
-                  <SidebarMenuButton
-                    isActive={pathname == link.href}
-                    render={<Link href={link.href} onClick={handleNavigate} />}
-                    className="rounded-sm border-l-2 border-l-primary selection:bg-primary hover:bg-primary/7 data-selected:bg-primary"
-                  >
-                    <link.icon className="text-primary" />
-                    <span className="text-lg">{link.label}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+            <SidebarMenu className="gap-1">
+              {links.map((link) => {
+                const isActive = pathname === link.href
+                return (
+                  <SidebarMenuItem key={link.label}>
+                    <SidebarMenuButton
+                      isActive={isActive}
+                      tooltip={link.label}
+                      render={<Link href={link.href} onClick={handleNavigate} />}
+                      className="h-10 rounded-md border-l-2 border-l-transparent text-muted-foreground transition-all hover:bg-sidebar-accent hover:text-foreground data-[active=true]:border-l-primary data-[active=true]:bg-primary/10 data-[active=true]:font-semibold data-[active=true]:text-foreground"
+                    >
+                      <link.icon
+                        className={
+                          isActive
+                            ? "size-4 text-primary"
+                            : "size-4 text-muted-foreground transition-colors group-hover/menu-item:text-primary"
+                        }
+                      />
+                      <span className="text-sm">{link.label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         {session && (
           <SidebarGroup>
-            <SidebarGroupLabel>Library</SidebarGroupLabel>
+            <SidebarGroupLabel className="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground/80 uppercase">
+              Library
+            </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className="gap-2">
-                {authLinks.map((link) => (
-                  <SidebarMenuItem key={link.label}>
-                    <SidebarMenuButton
-                      isActive={pathname == link.href}
-                      render={
-                        <Link href={link.href} onClick={handleNavigate} />
-                      }
-                      className="rounded-sm border-l-2 border-l-primary selection:bg-primary hover:bg-primary/7 data-selected:bg-primary"
-                    >
-                      <link.icon className="text-primary" />
-                      <span className="text-lg">{link.label}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+              <SidebarMenu className="gap-1">
+                {authLinks.map((link) => {
+                  const isActive = pathname === link.href
+                  return (
+                    <SidebarMenuItem key={link.label}>
+                      <SidebarMenuButton
+                        isActive={isActive}
+                        tooltip={link.label}
+                        render={
+                          <Link href={link.href} onClick={handleNavigate} />
+                        }
+                        className="h-10 rounded-md border-l-2 border-l-transparent text-muted-foreground transition-all hover:bg-sidebar-accent hover:text-foreground data-[active=true]:border-l-primary data-[active=true]:bg-primary/10 data-[active=true]:font-semibold data-[active=true]:text-foreground"
+                      >
+                        <link.icon
+                          className={
+                            isActive
+                              ? "size-4 text-primary"
+                              : "size-4 text-muted-foreground transition-colors group-hover/menu-item:text-primary"
+                          }
+                        />
+                        <span className="text-sm">{link.label}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         )}
         {isAdmin && (
           <SidebarGroup>
-            <SidebarGroupLabel>Administration</SidebarGroupLabel>
+            <SidebarGroupLabel className="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground/80 uppercase">
+              Administration
+            </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className="gap-2">
-                {adminLinks.map((link) => (
-                  <SidebarMenuItem key={link.label}>
-                    <SidebarMenuButton
-                      isActive={pathname.startsWith(link.href)}
-                      render={
-                        <Link href={link.href} onClick={handleNavigate} />
-                      }
-                      className="rounded-sm border-l-2 border-l-primary selection:bg-primary hover:bg-primary/7 data-selected:bg-primary"
-                    >
-                      <link.icon className="text-primary" />
-                      <span className="text-lg">{link.label}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+              <SidebarMenu className="gap-1">
+                {adminLinks.map((link) => {
+                  const isActive = pathname.startsWith(link.href)
+                  return (
+                    <SidebarMenuItem key={link.label}>
+                      <SidebarMenuButton
+                        isActive={isActive}
+                        tooltip={link.label}
+                        render={
+                          <Link href={link.href} onClick={handleNavigate} />
+                        }
+                        className="h-10 rounded-md border-l-2 border-l-transparent text-muted-foreground transition-all hover:bg-sidebar-accent hover:text-foreground data-[active=true]:border-l-primary data-[active=true]:bg-primary/10 data-[active=true]:font-semibold data-[active=true]:text-foreground"
+                      >
+                        <link.icon
+                          className={
+                            isActive
+                              ? "size-4 text-primary"
+                              : "size-4 text-muted-foreground transition-colors group-hover/menu-item:text-primary"
+                          }
+                        />
+                        <span className="text-sm">{link.label}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

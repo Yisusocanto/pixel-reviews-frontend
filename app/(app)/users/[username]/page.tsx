@@ -130,79 +130,94 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
   const ownProfile = session?.user.username == username
 
   return (
-    <div>
-      <header className="relative flex flex-col gap-4 border-b border-b-border p-4 sm:p-6 lg:p-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="relative inline-block shrink-0">
-              <Avatar className="size-20 sm:size-24 md:size-28">
-                <AvatarImage
-                  src={user?.profilePhotoUrl ?? undefined}
-                  alt={`@${user.username}'s profile photo`}
-                  className="object-cover"
-                />
-                <AvatarFallback className="text-2xl font-bold uppercase sm:text-3xl md:text-4xl">
-                  {user?.username?.slice(0, 2) ?? "U"}
-                </AvatarFallback>
-              </Avatar>
-              {ownProfile && (
-                <div className="absolute right-0 bottom-0 z-10 translate-x-1 translate-y-1">
-                  <ProfilePhotoDialog initialImageUrl={user?.profilePhotoUrl} />
-                </div>
-              )}
+    <div className="flex flex-1 flex-col">
+      <header className="relative isolate overflow-hidden border-b border-border/80 bg-background/60 px-4 py-8 sm:px-6 sm:py-10 lg:px-10">
+        <div className="app-grid pointer-events-none absolute inset-0 -z-10" />
+        <div className="pointer-events-none absolute -top-24 right-[-10%] -z-10 size-80 rounded-full bg-primary/12 blur-[100px]" />
+
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-5">
+              <div className="relative inline-block shrink-0">
+                <Avatar className="size-20 sm:size-24 md:size-28">
+                  <AvatarImage
+                    src={user?.profilePhotoUrl ?? undefined}
+                    alt={`@${user.username}'s profile photo`}
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="bg-card text-2xl font-black uppercase sm:text-3xl md:text-4xl">
+                    {user?.username?.slice(0, 2) ?? "U"}
+                  </AvatarFallback>
+                </Avatar>
+                {ownProfile && (
+                  <div className="absolute right-0 bottom-0 z-10 translate-x-1 translate-y-1">
+                    <ProfilePhotoDialog initialImageUrl={user?.profilePhotoUrl} />
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0">
+                <span className="inline-block font-mono text-[11px] font-semibold tracking-[0.22em] text-primary uppercase">
+                  Player Profile
+                </span>
+                <h1 className="mt-1 truncate font-heading text-2xl font-black tracking-tight sm:text-3xl md:text-4xl">
+                  @{user?.username}
+                </h1>
+                <span className="mt-1.5 block font-mono text-xs tracking-wider text-muted-foreground uppercase">
+                  Joined{" "}
+                  <time
+                    dateTime={
+                      user.createdAt && dayjs(user.createdAt).isValid()
+                        ? dayjs(user.createdAt).toISOString()
+                        : undefined
+                    }
+                    className="text-foreground/80"
+                  >
+                    {dayjs(user?.createdAt).format("DD/MM/YYYY")}
+                  </time>
+                </span>
+              </div>
             </div>
-            <div className="min-w-0">
-              <h1 className="truncate text-2xl font-extrabold sm:text-3xl md:text-4xl">
-                @{user?.username}
-              </h1>
-              <span className="mt-1 block text-xs text-muted-foreground sm:text-sm">
-                joined{" "}
-                <time
-                  dateTime={
-                    user.createdAt && dayjs(user.createdAt).isValid()
-                      ? dayjs(user.createdAt).toISOString()
-                      : undefined
-                  }
-                >
-                  {dayjs(user?.createdAt).format("DD/MM/YYYY")}
-                </time>
-              </span>
+            <div className="self-start sm:self-auto">
+              {ownProfile && <UpdateUserDialog user={user} />}
             </div>
           </div>
-          <div className="self-start sm:self-auto">
-            {ownProfile && <UpdateUserDialog user={user} />}
-          </div>
-        </div>
-        {user?.bio && (
-          <div>
-            <p className="text-sm text-muted-foreground sm:text-base">
+
+          {user?.bio && (
+            <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
               {user.bio}
             </p>
+          )}
+
+          <div className="flex flex-wrap items-stretch gap-3">
+            <div className="rounded-lg border border-border bg-card/90 px-4 py-2.5 shadow-xs">
+              <p className="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+                Reviews
+              </p>
+              <p className="mt-0.5 font-heading text-xl font-black text-primary tabular-nums sm:text-2xl">
+                {userStats?.totalReviews ?? 0}
+              </p>
+            </div>
+            <div className="rounded-lg border border-border bg-card/90 px-4 py-2.5 shadow-xs">
+              <p className="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+                Ratings
+              </p>
+              <p className="mt-0.5 font-heading text-xl font-black text-foreground tabular-nums sm:text-2xl">
+                {userStats?.totalRatings ?? 0}
+              </p>
+            </div>
+            <div className="rounded-lg border border-border bg-card/90 px-4 py-2.5 shadow-xs">
+              <p className="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+                Likes
+              </p>
+              <p className="mt-0.5 font-heading text-xl font-black text-foreground tabular-nums sm:text-2xl">
+                {userStats?.totalLikes ?? 0}
+              </p>
+            </div>
           </div>
-        )}
-        <div className="flex flex-wrap items-center gap-3 pt-1 sm:gap-6">
-          <span className="text-sm text-muted-foreground uppercase sm:text-base">
-            <strong className="text-primary">
-              {userStats?.totalReviews ?? 0}
-            </strong>{" "}
-            Reviews
-          </span>
-          <span className="text-sm text-muted-foreground uppercase sm:text-base">
-            <strong className="text-primary">
-              {userStats?.totalRatings ?? 0}
-            </strong>{" "}
-            Ratings
-          </span>
-          <span className="text-sm text-muted-foreground uppercase sm:text-base">
-            <strong className="text-primary">
-              {userStats?.totalLikes ?? 0}
-            </strong>{" "}
-            Likes
-          </span>
         </div>
       </header>
 
-      <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-8">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 p-4 sm:p-6 lg:p-10">
         <FavGamesSection username={username} initialGames={initialFavGames} />
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:gap-10">
           <div className="order-2 flex min-w-0 flex-2 flex-col gap-8 sm:gap-10 lg:order-1">

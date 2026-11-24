@@ -36,6 +36,7 @@ import {
   Gamepad2,
   Globe,
   Sparkles,
+  Star,
 } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
@@ -152,10 +153,10 @@ function TechnicalSpecificationsSection({
 
   return (
     <section>
-      <h2 className="mb-4 font-heading text-sm font-bold tracking-widest text-primary uppercase">
+      <h2 className="mb-4 font-mono text-xs font-semibold tracking-[0.22em] text-primary uppercase">
         Technical Specifications
       </h2>
-      <div className="divide-y divide-border/70 rounded-xl border border-border bg-card p-5 shadow-xs">
+      <div className="divide-y divide-border/70 rounded-xl border border-border bg-card p-5 shadow-sm">
         <div className="flex items-center justify-between gap-6 py-3 first:pt-0 last:pb-0">
           <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             <Calendar className="size-3.5 shrink-0 text-primary" />
@@ -452,6 +453,35 @@ async function GameDetailPage({
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-2.5 sm:justify-start sm:gap-3">
+              <a
+                href="#community-ratings"
+                className="group inline-flex items-center gap-2.5 rounded-lg border border-white/15 bg-zinc-950/75 px-3 py-1.5 backdrop-blur-md transition-colors hover:border-primary/60"
+              >
+                <Star
+                  className="size-4 shrink-0 fill-primary text-primary"
+                  aria-hidden="true"
+                />
+                {gameStats.totalReviews > 0 ? (
+                  <>
+                    <span className="font-heading text-lg leading-none font-black text-white tabular-nums">
+                      {gameStats.avgRatings.toFixed(1)}
+                    </span>
+                    <span className="font-mono text-xs text-zinc-400">/ 5</span>
+                    <span className="h-3.5 w-px bg-white/15" aria-hidden="true" />
+                    <span className="font-mono text-xs text-zinc-300 transition-colors group-hover:text-white">
+                      {gameStats.totalReviews.toLocaleString()}{" "}
+                      {gameStats.totalReviews === 1 ? "review" : "reviews"}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-mono text-xs text-zinc-300">
+                    No community ratings yet
+                  </span>
+                )}
+              </a>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-2.5 sm:justify-start sm:gap-3">
               {session ? (
                 <>
                   <ReviewDialog game={game} review={review} />
@@ -473,10 +503,10 @@ async function GameDetailPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-10 p-4 sm:p-6 lg:grid-cols-3 lg:items-start lg:gap-16 lg:p-12">
-        <div className="flex flex-col gap-12 sm:gap-16 lg:col-span-2">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 p-4 sm:p-6 lg:grid-cols-3 lg:items-start lg:gap-14 lg:p-10">
+        <div className="flex flex-col gap-12 sm:gap-14 lg:col-span-2">
           <section>
-            <h2 className="mb-4 font-heading text-sm font-bold tracking-widest text-primary uppercase">
+            <h2 className="mb-4 font-mono text-xs font-semibold tracking-[0.22em] text-primary uppercase">
               Description
             </h2>
             <p className="leading-relaxed whitespace-pre-line text-foreground/90">
@@ -485,10 +515,10 @@ async function GameDetailPage({
           </section>
 
           {game.storyline && (
-            <section className="rounded-xl border border-primary/20 bg-card/60 p-5 sm:p-6">
+            <section className="rounded-xl border border-primary/25 bg-card p-5 shadow-sm sm:p-6">
               <div className="mb-3 flex items-center gap-2">
                 <BookOpen className="size-4 text-primary" />
-                <h2 className="font-heading text-sm font-bold tracking-widest text-primary uppercase">
+                <h2 className="font-mono text-xs font-semibold tracking-[0.22em] text-primary uppercase">
                   Storyline
                 </h2>
               </div>
