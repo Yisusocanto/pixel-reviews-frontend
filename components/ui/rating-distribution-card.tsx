@@ -35,29 +35,27 @@ export function RatingDistributionCard({
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-6 rounded-2xl border border-border/60 bg-card/40 p-4 backdrop-blur-sm sm:flex-row sm:gap-8 sm:p-6 md:gap-10",
+        "flex flex-col items-center gap-6 rounded-xl border border-border bg-card p-5 shadow-sm sm:flex-row sm:gap-8 sm:p-6 md:gap-10",
         className
       )}
     >
-      {/* Left: Score & Star display */}
-      <div className="flex w-full shrink-0 flex-col items-center justify-center border-b border-border/40 pb-4 sm:w-auto sm:min-w-44 sm:border-r sm:border-b-0 sm:pr-8 sm:pb-0">
+      <div className="flex w-full shrink-0 flex-col items-center justify-center border-b border-border/70 pb-5 sm:w-auto sm:min-w-44 sm:border-r sm:border-b-0 sm:pr-8 sm:pb-0">
         <div className="flex items-baseline gap-1.5">
-          <span className="font-heading text-5xl font-black tracking-tight text-foreground">
+          <span className="font-heading text-5xl font-black tracking-tight text-foreground tabular-nums">
             {formattedAvg}
           </span>
-          <span className="text-xl font-semibold text-muted-foreground/70">
+          <span className="font-mono text-base font-semibold text-muted-foreground">
             / 5
           </span>
         </div>
         <div className="mt-2.5">
           <StarRating value={numericAvg} size="md" readOnly />
         </div>
-        <span className="mt-2 text-xs font-medium text-muted-foreground">
+        <span className="mt-2.5 font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
           {countText}
         </span>
       </div>
 
-      {/* Right: Distribution bars */}
       <div className="w-full flex-1">
         <RatingDistribution
           distribution={distribution}

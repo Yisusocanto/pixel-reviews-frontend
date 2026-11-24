@@ -18,6 +18,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { toast } from "@/components/ui/toast"
 import { deleteAccountAction } from "@/features/users/actions"
 import { User } from "@/features/users/types"
+import { AlertTriangle } from "lucide-react"
 import { signOut } from "next-auth/react"
 import { useState } from "react"
 
@@ -69,20 +70,32 @@ function DangerZoneSection({ user }: Props) {
   }
 
   return (
-    <div>
-      <h2 className="mb-2 text-2xl font-bold text-destructive">Danger zone</h2>
-      <Card className="max-w-xl">
-        <CardHeader>
-          <CardTitle className="text-destructive">Delete account</CardTitle>
+    <section>
+      <div className="mb-3 flex items-center gap-2">
+        <AlertTriangle className="size-4 text-destructive" aria-hidden="true" />
+        <span className="font-mono text-xs font-semibold tracking-[0.22em] text-destructive uppercase">
+          Danger Zone
+        </span>
+      </div>
+      <Card className="border-destructive/35 bg-destructive/6">
+        <CardHeader className="border-b border-destructive/20">
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertTriangle className="size-4 shrink-0" aria-hidden="true" />
+            <span>Delete account</span>
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="mb-2">
+        <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
             Once your account is deleted, all your reviews, ratings, wishlist,
             and accumulated social history will be irreversibly lost. This
             action cannot be undone or restored under any circumstances.
           </p>
           <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-            <DialogTrigger render={<Button variant="destructive" />}>
+            <DialogTrigger
+              render={
+                <Button variant="destructive" className="w-fit shrink-0" />
+              }
+            >
               Delete account
             </DialogTrigger>
             <DialogContent>
@@ -143,7 +156,7 @@ function DangerZoneSection({ user }: Props) {
           </Dialog>
         </CardContent>
       </Card>
-    </div>
+    </section>
   )
 }
 

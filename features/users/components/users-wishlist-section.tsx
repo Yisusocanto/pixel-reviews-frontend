@@ -47,8 +47,15 @@ function UsersWishlistSection({ username }: Props) {
   }
 
   return (
-    <div>
-      <h2 className="font-heading text-2xl font-bold">Wishlist</h2>
+    <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+      <div className="mb-4">
+        <span className="font-mono text-xs font-semibold tracking-[0.2em] text-primary uppercase">
+          Up Next
+        </span>
+        <h2 className="mt-0.5 font-heading text-2xl font-black tracking-tight">
+          Wishlist
+        </h2>
+      </div>
       <div
         aria-busy={isPlaceholderData}
         className="flex flex-col gap-2 transition-opacity duration-200 aria-busy:opacity-50"

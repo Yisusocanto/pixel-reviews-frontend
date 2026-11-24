@@ -28,8 +28,15 @@ function FavGamesSection({ username, initialGames }: Props) {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between gap-2">
-        <h2 className="font-heading text-2xl font-bold">Favorite Games</h2>
+      <div className="mb-4 flex items-end justify-between gap-2">
+        <div>
+          <span className="font-mono text-xs font-semibold tracking-[0.2em] text-primary uppercase">
+            Hall of Fame
+          </span>
+          <h2 className="mt-0.5 font-heading text-2xl font-black tracking-tight">
+            Favorite Games
+          </h2>
+        </div>
         {ownProfile && (
           <FavGamesSelector
             games={data ?? []}

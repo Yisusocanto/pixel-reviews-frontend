@@ -34,9 +34,8 @@ function GameReviewCard({ review, ownReview = false }: Props) {
   return (
     <article
       className={cn(
-        "flex flex-col gap-4 border-b border-b-border py-4 sm:py-6",
-        ownReview &&
-          "rounded-2xl border-2 border-primary bg-card p-4 sm:p-6 md:p-8"
+        "flex flex-col gap-4 rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-foreground/18 sm:p-6",
+        ownReview && "border-primary/70 ring-1 ring-primary/20"
       )}
     >
       {ownReview && <ReviewModerationNotice review={review} />}
@@ -88,7 +87,7 @@ function GameReviewCard({ review, ownReview = false }: Props) {
               <DropdownMenuContent>
                 <DropdownMenuItem
                   onClick={() => deleteReview(review.id)}
-                  className={"text-destructive hover:bg-destructive/50"}
+                  className="text-destructive focus:bg-destructive/15 focus:text-destructive"
                 >
                   <Trash className="size-4 text-destructive" />
                   <span>Delete</span>

@@ -15,10 +15,10 @@ export function TopRatedSection({ games }: TopRatedSectionProps) {
   return (
     <section className="flex flex-col">
       <div className="mb-4">
-        <span className="text-xs font-semibold tracking-widest text-primary uppercase">
+        <span className="font-mono text-xs font-semibold tracking-[0.2em] text-primary uppercase">
           Rankings
         </span>
-        <h2 className="font-heading text-2xl font-extrabold tracking-tight uppercase">
+        <h2 className="mt-1 font-heading text-2xl font-black tracking-tight uppercase">
           Top Rated of All Time
         </h2>
       </div>
@@ -41,7 +41,7 @@ export function TopRatedSection({ games }: TopRatedSectionProps) {
                   <li key={item.game.id}>
                     <Link
                       href={`/games/${item.game.slug}`}
-                      className="group/row flex items-center justify-between gap-3 rounded-2xl px-3 py-3 transition-colors hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                      className="group/row flex items-center justify-between gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-muted/70 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                     >
                       <div className="flex min-w-0 flex-1 items-center gap-3">
                         <span

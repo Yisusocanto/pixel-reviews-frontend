@@ -103,10 +103,13 @@ export function ModerationQueue() {
       <div className="flex flex-col gap-4 border-b border-border pb-4">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="font-heading text-2xl font-black tracking-tight sm:text-3xl">
+            <span className="inline-block font-mono text-xs font-semibold tracking-[0.22em] text-primary uppercase">
+              Administration
+            </span>
+            <h1 className="mt-1 font-heading text-2xl font-black tracking-tight sm:text-3xl">
               Moderation Queue
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-muted-foreground">
               Review and resolve flagged user reviews, comments, community
               reports, and appeals.
             </p>

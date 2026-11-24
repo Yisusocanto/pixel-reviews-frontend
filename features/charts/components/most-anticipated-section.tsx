@@ -14,16 +14,16 @@ export function MostAnticipatedSection({ games }: MostAnticipatedSectionProps) {
   return (
     <section>
       <div className="mb-4">
-        <span className="text-xs font-semibold tracking-widest text-primary uppercase">
+        <span className="font-mono text-xs font-semibold tracking-[0.2em] text-primary uppercase">
           Radar
         </span>
-        <h2 className="font-heading text-2xl font-extrabold tracking-tight uppercase">
+        <h2 className="mt-1 font-heading text-2xl font-black tracking-tight uppercase">
           Most Anticipated
         </h2>
       </div>
 
       {games.length === 0 ? (
-        <div className="rounded-4xl border border-border bg-card px-6 py-10 text-center text-sm text-muted-foreground">
+        <div className="rounded-xl border border-border bg-card px-6 py-10 text-center text-sm text-muted-foreground">
           No wishlisted games yet.
         </div>
       ) : (
@@ -38,11 +38,11 @@ export function MostAnticipatedSection({ games }: MostAnticipatedSectionProps) {
               <Link
                 key={item.game.id}
                 href={`/games/${item.game.slug}`}
-                className="group/row block rounded-3xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                className="group/row block rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
               >
                 <article
                   className={cn(
-                    "flex h-full gap-4 rounded-3xl border border-border bg-card p-4 shadow-md transition-colors hover:border-primary/40 hover:bg-card/80",
+                    "flex h-full gap-4 rounded-xl border border-border bg-card p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-md",
                     i < 3 && "border-l-4 border-l-primary"
                   )}
                 >

@@ -57,11 +57,14 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
         </Link>
       )}
 
-      <div className="hidden shrink-0 sm:block sm:w-36 md:w-44 lg:w-50">
-        <div className="relative aspect-2/3 w-full overflow-hidden rounded-md border">
+      <Link
+        href={`/games/${review.game?.slug}`}
+        className="group/cover hidden shrink-0 sm:block sm:w-32 md:w-36 lg:w-40"
+      >
+        <div className="relative aspect-2/3 w-full overflow-hidden rounded-lg border border-border/80 bg-muted/30 shadow-md transition-all duration-300 group-hover/cover:border-primary/60">
           {review.game?.imageUrl && (
             <Image
-              className="absolute inset-0 object-cover"
+              className="absolute inset-0 object-cover transition-transform duration-500 group-hover/cover:scale-105"
               src={getIgdbImageUrl(review.game.imageUrl, "t_cover_big")}
               alt={
                 review.game.title
@@ -69,11 +72,11 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
                   : "Game cover"
               }
               fill
-              sizes="(max-width: 768px) 144px, (max-width: 1024px) 176px, 200px"
+              sizes="(max-width: 768px) 128px, (max-width: 1024px) 144px, 160px"
             />
           )}
         </div>
-      </div>
+      </Link>
 
       <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 sm:flex-2">
         <div className="space-y-3">
@@ -133,7 +136,7 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
                 <DropdownMenuContent>
                   <DropdownMenuItem
                     onClick={() => deleteReview(review.id)}
-                    className={"text-destructive hover:bg-destructive/50"}
+                    className="text-destructive focus:bg-destructive/15 focus:text-destructive"
                   >
                     <Trash className="text-destructive" />
                     <span>Delete</span>

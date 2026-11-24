@@ -82,7 +82,7 @@ function FeedCommentsSection({ selectedReview, onClose }: Props) {
     <aside className="fixed inset-y-0 right-0 z-50 flex h-dvh w-full max-w-full flex-col justify-between border-l border-border bg-background sm:max-w-md md:sticky md:inset-auto md:top-15 md:z-20 md:h-[calc(100dvh-60px)] md:w-80 md:shrink-0 lg:w-96 xl:w-105">
       <div className="flex shrink-0 flex-col gap-3 border-b border-border p-4">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+          <span className="font-mono text-xs font-semibold tracking-[0.2em] text-primary uppercase">
             Conversation / {String(totalComments).padStart(2, "0")}
           </span>
           {onClose && (

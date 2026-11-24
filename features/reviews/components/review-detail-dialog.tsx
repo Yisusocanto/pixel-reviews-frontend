@@ -138,17 +138,19 @@ function ReviewDetailDialog({ review }: Props) {
                   className="object-cover"
                   sizes="(max-width: 640px) 100vw, 600px"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent" />
-                <div className="absolute right-3 bottom-2 left-3 flex items-end justify-between gap-2">
-                  <h3 className="truncate font-heading text-base font-extrabold tracking-tight text-foreground uppercase drop-shadow-md sm:text-xl">
+                <div className="absolute inset-0 bg-linear-to-t from-zinc-950/95 via-zinc-950/55 to-zinc-950/15" />
+                <div className="absolute right-3 bottom-3 left-3 flex items-end justify-between gap-3">
+                  <h3 className="truncate font-heading text-base font-extrabold tracking-tight text-white uppercase drop-shadow-md sm:text-xl">
                     {review.game?.title}
                   </h3>
-                  <StarRating
-                    readOnly
-                    showValue
-                    value={review.score}
-                    size="sm"
-                  />
+                  <div className="shrink-0 rounded-md border border-white/15 bg-zinc-950/85 px-2.5 py-1 text-white shadow-sm backdrop-blur-sm">
+                    <StarRating
+                      readOnly
+                      showValue
+                      value={review.score}
+                      size="sm"
+                    />
+                  </div>
                 </div>
               </div>
             )}

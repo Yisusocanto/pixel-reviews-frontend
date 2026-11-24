@@ -20,7 +20,7 @@ function NavBar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-15 items-center justify-between gap-3 border-b border-b-border bg-secondary/95 px-3 backdrop-blur-sm sm:px-4">
+    <header className="sticky top-0 z-30 flex h-15 items-center justify-between gap-3 border-b border-border/80 bg-background/85 px-3 backdrop-blur-md sm:px-5">
       <div className="flex shrink-0 items-center gap-2">
         <SidebarTrigger />
         <Link
@@ -41,11 +41,11 @@ function NavBar() {
       <SearchNavbar />
 
       {!session ? (
-        <div className="flex shrink-0 gap-1 sm:gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <Button variant="ghost" onClick={() => handleOpenAuth("sign-in")}>
             Sign in
           </Button>
-          <Button variant="outline" onClick={() => handleOpenAuth("sign-up")}>
+          <Button variant="primary" onClick={() => handleOpenAuth("sign-up")}>
             <span className="sm:hidden">Join</span>
             <span className="hidden sm:inline">Create account</span>
           </Button>
