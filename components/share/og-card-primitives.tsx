@@ -1357,11 +1357,13 @@ export function ProfileShareCardTemplate({
                             width: "100%",
                             height: `${barHeight}px`,
                             borderRadius: "12px",
-                            backgroundImage: isPeak
-                              ? "linear-gradient(180deg, #FF7A29 0%, #FF4D00 100%)"
-                              : count > 0
-                                ? "linear-gradient(180deg, rgba(255,77,0,0.82) 0%, rgba(255,77,0,0.45) 100%)"
-                                : "none",
+                            ...(count > 0
+                              ? {
+                                  backgroundImage: isPeak
+                                    ? "linear-gradient(180deg, #FF7A29 0%, #FF4D00 100%)"
+                                    : "linear-gradient(180deg, rgba(255,77,0,0.82) 0%, rgba(255,77,0,0.45) 100%)",
+                                }
+                              : {}),
                             backgroundColor:
                               count > 0 ? "#FF4D00" : "rgba(63,63,70,0.55)",
                           }}
