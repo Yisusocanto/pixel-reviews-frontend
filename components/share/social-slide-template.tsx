@@ -157,8 +157,7 @@ export function SocialSlideTemplate({
               fontWeight: 800,
             }}
           >
-            {String(slideIndex + 1).padStart(2, "0")} /{" "}
-            {String(totalSlides).padStart(2, "0")}
+            {`${String(slideIndex + 1).padStart(2, "0")} / ${String(totalSlides).padStart(2, "0")}`}
           </div>
         </div>
       </div>
@@ -298,7 +297,7 @@ export function SocialSlideTemplate({
                   {criticLabel}
                 </span>
                 <span style={{ color: "#FAFAFA", fontSize: "28px" }}>
-                  {slide.criticScore} / 100
+                  {`${slide.criticScore} / 100`}
                 </span>
               </div>
               <div
@@ -341,7 +340,7 @@ export function SocialSlideTemplate({
                   {communityLabel}
                 </span>
                 <span style={{ color: "#FF4D00", fontSize: "28px" }}>
-                  {slide.communityScore?.toFixed(1)}★ / 5.0
+                  {`${slide.communityScore?.toFixed(1)}★ / 5.0`}
                 </span>
               </div>
               <div
@@ -400,7 +399,7 @@ export function SocialSlideTemplate({
                 color: "#FF4D00",
               }}
             >
-              — {slide.quoteAuthor}
+              {`— ${slide.quoteAuthor}`}
             </span>
           )}
         </div>

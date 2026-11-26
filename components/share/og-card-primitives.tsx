@@ -368,7 +368,7 @@ export function GameOgTemplate({
             color: "#A1A1AA",
           }}
         >
-          <span>www.pixelreviews.app/games/{game.slug}</span>
+          <span>{`www.pixelreviews.app/games/${game.slug}`}</span>
           <span style={{ color: "#FAFAFA", fontWeight: 700 }}>
             {gameStats.totalReviews > 0
               ? `${gameStats.totalReviews} player ${gameStats.totalReviews === 1 ? "rating" : "ratings"}`
@@ -467,7 +467,7 @@ export function ReviewOgTemplate({ review }: { review: Review }) {
               color: "#FAFAFA",
             }}
           >
-            <span style={{ color: "#FF4D00" }}>@{username}</span>
+            <span style={{ color: "#FF4D00" }}>{`@${username}`}</span>
             <span style={{ color: "#71717A" }}>reviewed</span>
           </div>
         </div>
@@ -517,7 +517,7 @@ export function ReviewOgTemplate({ review }: { review: Review }) {
                   color: "#FAFAFA",
                 }}
               >
-                {review.score}.0 / 5
+                {`${review.score}.0 / 5`}
               </span>
             </div>
 
@@ -781,7 +781,7 @@ export function ReviewShareCardTemplate({
                   color: "#FAFAFA",
                 }}
               >
-                {review.score}.0 / 5.0
+                {`${review.score}.0 / 5.0`}
               </span>
             </div>
           </div>
@@ -852,7 +852,7 @@ export function ReviewShareCardTemplate({
                     color: "#FAFAFA",
                   }}
                 >
-                  @{username}
+                  {`@${username}`}
                 </span>
                 <span style={{ fontSize: "20px", color: "#A1A1AA" }}>
                   Verified Player Log
@@ -1030,7 +1030,7 @@ export function ProfileShareCardTemplate({
                   letterSpacing: "-0.03em",
                 }}
               >
-                @{user.username}
+                {`@${user.username}`}
               </span>
               {user.bio && (
                 <span
@@ -1286,7 +1286,7 @@ export function ProfileShareCardTemplate({
                         color: "#D4D4D8",
                       }}
                     >
-                      {star}★
+                      {`${star}★`}
                     </span>
                   </div>
                 )
@@ -1308,7 +1308,7 @@ export function ProfileShareCardTemplate({
         }}
       >
         <span style={{ color: "#A1A1AA", fontWeight: 600 }}>
-          pixelreviews.app/users/{user.username}
+          {`pixelreviews.app/users/${user.username}`}
         </span>
         <span style={{ color: "#FF4D00", fontWeight: 800 }}>
           Build your Top 4 →
