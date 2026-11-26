@@ -15,6 +15,8 @@ export interface Game {
   backgroundImage?: string | null
   description: string
   storyline?: string | null
+  descriptionEs?: string | null
+  storylineEs?: string | null
   criticScore?: number | null
   criticScoreCount?: number | null
   igdbUrl?: string | null
@@ -43,6 +45,13 @@ export interface GameSearch {
 
 export interface GameSearchPagination {
   items: GameSearch[]
+  total: number
+  totalPages: number
+  page: number
+}
+
+export interface GamePagination {
+  items: Game[]
   total: number
   totalPages: number
   page: number

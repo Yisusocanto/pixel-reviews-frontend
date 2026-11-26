@@ -20,7 +20,7 @@ export function GameGenresList({ genres, className }: Props) {
         return (
           <Link
             key={genre.slug || genre.id}
-            href={`/search?q=${encodeURIComponent(genre.name)}`}
+            href={`/games/genre/${genre.slug}`}
             className={cn(
               "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-heading text-xs font-bold tracking-wider uppercase backdrop-blur-xs transition-all duration-200",
               theme.badgeClass

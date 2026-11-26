@@ -1,6 +1,8 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useLocale } from "@/components/providers/locale-provider"
+import { buildLocalizedPath, stripLocalePrefix } from "@/lib/i18n/dictionaries"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,31 +46,33 @@ import { usePathname, useRouter } from "next/navigation"
 
 function AppSidebar() {
   const { data: session } = useSession()
+  const { locale, dict } = useLocale()
   const { isMobile, setOpenMobile } = useSidebar()
   const router = useRouter()
   const pathname = usePathname()
+  const cleanPathname = stripLocalePrefix(pathname)
   const isAdmin = session?.user.role === "admin"
 
   const links: NavLink[] = [
-    { label: "Feed", href: "/feed", icon: Home },
-    { label: "Search", href: "/search", icon: Search },
-    { label: "Charts", href: "/charts", icon: ChartArea },
+    { label: dict.nav.feed, href: buildLocalizedPath("/feed", locale), icon: Home },
+    { label: dict.nav.search, href: buildLocalizedPath("/search", locale), icon: Search },
+    { label: dict.nav.charts, href: buildLocalizedPath("/charts", locale), icon: ChartArea },
   ]
   const authLinks: NavLink[] = [
     {
-      label: "Profile",
-      href: `/users/${session?.user.username}`,
+      label: dict.nav.profile,
+      href: buildLocalizedPath(`/users/${session?.user.username}`, locale),
       icon: User,
     },
   ]
   const adminLinks: NavLink[] = [
     {
-      label: "Moderation",
+      label: dict.nav.moderation,
       href: "/admin/moderation",
       icon: ShieldCheck,
     },
     {
-      label: "Social Studio",
+      label: dict.nav.socialStudio,
       href: "/admin/social-studio",
       icon: Sparkles,
     },
@@ -101,7 +105,7 @@ function AppSidebar() {
                   <span className="text-foreground">Reviews</span>
                 </div>
                 <span className="mt-1 font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
-                  For those who play
+                  {dict.nav.tagline}
                 </span>
               </div>
             </Link>
@@ -112,12 +116,12 @@ function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground/80 uppercase">
-            Explore
+            {dict.nav.explore}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="gap-1">
               {links.map((link) => {
-                const isActive = pathname === link.href
+                const isActive = cleanPathname === stripLocalePrefix(link.href)
                 return (
                   <SidebarMenuItem key={link.label}>
                     <SidebarMenuButton
@@ -144,12 +148,12 @@ function AppSidebar() {
         {session && (
           <SidebarGroup>
             <SidebarGroupLabel className="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground/80 uppercase">
-              Library
+              {dict.nav.library}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="gap-1">
                 {authLinks.map((link) => {
-                  const isActive = pathname === link.href
+                  const isActive = cleanPathname === stripLocalePrefix(link.href)
                   return (
                     <SidebarMenuItem key={link.label}>
                       <SidebarMenuButton

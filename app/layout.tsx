@@ -1,13 +1,18 @@
 import type { Metadata, Viewport } from "next"
-import { Geist_Mono, Outfit, Merriweather } from "next/font/google"
+import { Geist_Mono, Merriweather, Outfit } from "next/font/google"
 
 import "./globals.css"
-import { cn } from "@/lib/utils"
 import Providers from "@/components/providers/providers"
 import { Toaster } from "@/components/ui/toast"
+import {
+  buildLanguageAlternates,
+  getDictionary,
+} from "@/lib/i18n/dictionaries"
+import { getServerLocale } from "@/lib/i18n/server"
+import { cn } from "@/lib/utils"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 const merriweatherHeading = Merriweather({
   subsets: ["latin"],
@@ -31,45 +36,47 @@ const fontMono = Geist_Mono({
 const SITE_URL =
   process.env.NEXT_PUBLIC_APP_URL || "https://www.pixelreviews.app"
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: "Pixel Reviews: Community Video Game Reviews & Ratings",
-    template: "%s | Pixel Reviews",
-  },
-  description:
-    "Rate the games you finish, read unfiltered player reviews, track your gaming wishlist, and see real community rating distributions on Pixel Reviews.",
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    siteName: "Pixel Reviews",
-    title: "Pixel Reviews: Community Video Game Reviews & Ratings",
-    description:
-      "Rate the games you finish, read unfiltered player reviews, track your gaming wishlist, and see real community rating distributions on Pixel Reviews.",
-    url: "/",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Pixel Reviews: Community Video Game Reviews & Ratings",
-    description:
-      "Rate the games you finish, read unfiltered player reviews, track your gaming wishlist, and see real community rating distributions on Pixel Reviews.",
-  },
-  icons: {
-    icon: [
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "any" },
-    ],
-    shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
-  manifest: "/site.webmanifest",
-  verification: {
-    google: "Bke7j_wArV8Sfx2SLNvQGpIGyr1b0kt5dgiiTW73ms0",
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale()
+  const dict = getDictionary(locale)
+  const alternates = buildLanguageAlternates("/", locale)
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: dict.meta.siteTitle,
+      template: "%s | Pixel Reviews",
+    },
+    description: dict.meta.siteDescription,
+    alternates,
+    openGraph: {
+      type: "website",
+      siteName: "Pixel Reviews",
+      locale: locale === "es" ? "es_ES" : "en_US",
+      title: dict.meta.siteTitle,
+      description: dict.meta.siteDescription,
+      url: alternates.canonical,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dict.meta.siteTitle,
+      description: dict.meta.siteDescription,
+    },
+    icons: {
+      icon: [
+        { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+        { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+        { url: "/icon.svg", type: "image/svg+xml" },
+        { url: "/favicon.ico", sizes: "any" },
+      ],
+      shortcut: "/favicon.ico",
+      apple: "/apple-touch-icon.png",
+    },
+    manifest: "/site.webmanifest",
+    verification: {
+      google: "Bke7j_wArV8Sfx2SLNvQGpIGyr1b0kt5dgiiTW73ms0",
+    },
+  }
 }
 
 export const viewport: Viewport = {
@@ -83,14 +90,16 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await getServerLocale()
+
   return (
     <html
-      lang="en"
+      lang={locale}
       suppressHydrationWarning
       className={cn(
         "antialiased",
@@ -101,7 +110,7 @@ export default function RootLayout({
       )}
     >
       <body className="bg-secondary">
-        <Providers>
+        <Providers initialLocale={locale}>
           <Toaster />
           {process.env.NODE_ENV === "development" && (
             <ReactQueryDevtools initialIsOpen={false} />

@@ -16,7 +16,7 @@ export function GamePlatformsList({ platforms, className }: Props) {
       {platforms.map((platform) => (
         <Link
           key={platform.slug || platform.id}
-          href={`/search?q=${encodeURIComponent(platform.name)}`}
+          href={`/games/platform/${platform.slug}`}
           className="group inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-secondary/60 px-2.5 py-1 text-xs font-medium text-foreground transition-all duration-200 hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
         >
           <span className="flex size-3.5 shrink-0 items-center justify-center text-muted-foreground transition-colors group-hover:text-primary">

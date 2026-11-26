@@ -1,6 +1,9 @@
 "use client"
 
+import LanguageSwitcher from "@/components/i18n/language-switcher"
+import { useLocale } from "@/components/providers/locale-provider"
 import { PixelGamepadIcon } from "@/components/ui/pixel-gamepad-icon"
+import { buildLocalizedPath } from "@/lib/i18n/dictionaries"
 import { motion, type Variants } from "framer-motion"
 import Link from "next/link"
 import { useLanding } from "./landing-shell"
@@ -21,6 +24,8 @@ const line: Variants = {
 
 export default function Hero() {
   const { openAuth } = useLanding()
+  const { locale, dict } = useLocale()
+  const isEs = locale === "es"
 
   return (
     <section className="relative isolate flex min-h-svh flex-col overflow-hidden">
@@ -28,31 +33,35 @@ export default function Hero() {
       <div className="pointer-events-none absolute top-1/2 right-[-10%] -z-10 size-[60vw] -translate-y-1/2 rounded-full bg-primary/15 blur-[120px]" />
 
       <header className="flex items-center justify-between px-5 py-5 sm:px-8">
-        <Link href="/" className="flex items-center gap-3">
+        <Link
+          href={buildLocalizedPath("/", locale)}
+          className="flex items-center gap-3"
+        >
           <PixelGamepadIcon className="h-5 w-10 text-primary" />
           <span className="text-lg font-black tracking-tight">
             <span className="text-primary">Pixel</span> Reviews
           </span>
         </Link>
-        <nav className="flex items-center gap-1 sm:gap-2">
+        <nav className="flex items-center gap-1.5 sm:gap-2.5">
           <Link
-            href="/feed"
+            href={buildLocalizedPath("/feed", locale)}
             className="hidden px-3 py-2 font-mono text-xs tracking-wider text-muted-foreground uppercase transition-colors hover:text-foreground sm:block"
           >
-            Feed
+            {dict.nav.feed}
           </Link>
           <Link
-            href="/search"
+            href={buildLocalizedPath("/search", locale)}
             className="hidden px-3 py-2 font-mono text-xs tracking-wider text-muted-foreground uppercase transition-colors hover:text-foreground sm:block"
           >
-            Find a game
+            {isEs ? "Buscar juego" : "Find a game"}
           </Link>
+          <LanguageSwitcher />
           <button
             type="button"
             onClick={() => openAuth("sign-in")}
             className="px-3 py-2 font-mono text-xs tracking-wider uppercase transition-colors hover:text-primary"
           >
-            Sign in
+            {dict.nav.signIn}
           </button>
         </nav>
       </header>
@@ -65,7 +74,7 @@ export default function Hero() {
             transition={{ delay: 0.1, duration: 0.6 }}
             className="mb-6 inline-block font-mono text-xs font-semibold tracking-[0.25em] text-primary uppercase"
           >
-            For those who play
+            {dict.nav.tagline}
           </motion.span>
 
           <h1 className="font-heading text-[clamp(3rem,6.4vw,6.5rem)] leading-[0.95] font-black tracking-tight">
@@ -77,7 +86,7 @@ export default function Hero() {
                 initial="hidden"
                 animate="show"
               >
-                Your circle.
+                {isEs ? "Tu círculo." : "Your circle."}
               </motion.span>
             </span>
             <span className="block overflow-hidden pb-[0.08em]">
@@ -88,7 +97,7 @@ export default function Hero() {
                 initial="hidden"
                 animate="show"
               >
-                No filters
+                {isEs ? "Sin filtros" : "No filters"}
                 <span className="ml-[0.04em] inline-block size-[0.14em] bg-foreground align-baseline" />
               </motion.span>
             </span>
@@ -100,9 +109,9 @@ export default function Hero() {
             transition={{ delay: 0.7, duration: 0.7 }}
             className="mt-8 max-w-md text-lg leading-relaxed text-muted-foreground"
           >
-            Rate the games you finish. Say what you really thought. Read the
-            players who actually sat through the credits, not a critic on a
-            press trip.
+            {isEs
+              ? "Califica los juegos que terminas. Di lo que realmente pensaste. Lee a quienes sí llegaron a los créditos, no a un crítico en viaje de prensa."
+              : "Rate the games you finish. Say what you really thought. Read the players who actually sat through the credits, not a critic on a press trip."}
           </motion.p>
 
           <motion.div
@@ -112,10 +121,13 @@ export default function Hero() {
             className="mt-10 flex flex-wrap items-center gap-4"
           >
             <PixelButton onClick={() => openAuth("sign-up")}>
-              Create account
+              {dict.nav.createAccount}
             </PixelButton>
-            <PixelButton href="/feed" variant="outline">
-              Read the feed
+            <PixelButton
+              href={buildLocalizedPath("/feed", locale)}
+              variant="outline"
+            >
+              {isEs ? "Ver la comunidad" : "Read the feed"}
             </PixelButton>
           </motion.div>
         </div>

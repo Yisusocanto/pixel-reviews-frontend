@@ -23,6 +23,13 @@ import { Review, ReviewPagination } from "@/features/reviews/types"
 import { getUserGameWishlistAction } from "@/features/wishlists/actions"
 import WishlistButton from "@/features/wishlists/components/wishlist-button"
 import { InUserWishlist } from "@/features/wishlists/types"
+import {
+  AppLocale,
+  Dictionary,
+  buildLanguageAlternates,
+  getDictionary,
+} from "@/lib/i18n/dictionaries"
+import { getServerLocale } from "@/lib/i18n/server"
 import { getIgdbImageUrl } from "@/lib/igdb-image"
 import dayjs from "dayjs"
 import {
@@ -48,14 +55,15 @@ const SITE_URL =
 
 const getCachedGameData = cache(
   async (
-    slug: string
+    slug: string,
+    locale: AppLocale
   ): Promise<{
     game: Game
     gameStats: GameStats
     initialReviews?: ReviewPagination
   }> => {
     const [game, gameStats, initialReviews] = await Promise.all([
-      getGameAction(slug),
+      getGameAction(slug, locale),
       getGameStatsAction(slug),
       getGameReviewsAction(slug, 1, 10).catch(() => undefined),
     ])
@@ -78,39 +86,55 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
+  const locale = await getServerLocale()
 
   try {
-    const { game, gameStats } = await getCachedGameData(slug)
+    const { game, gameStats } = await getCachedGameData(slug, locale)
     const releaseYear =
       game.releaseDate && dayjs(game.releaseDate).isValid()
         ? dayjs(game.releaseDate).format("YYYY")
         : null
 
-    const pageTitle = releaseYear
-      ? `${game.title} (${releaseYear}) Reviews & Ratings`
-      : `${game.title} Reviews & Ratings`
+    const pageTitle =
+      locale === "es"
+        ? releaseYear
+          ? `${game.title} (${releaseYear}) Reseñas, Notas y Opiniones`
+          : `${game.title} Reseñas, Notas y Opiniones`
+        : releaseYear
+          ? `${game.title} (${releaseYear}) Reviews & Ratings`
+          : `${game.title} Reviews & Ratings`
+
+    const localizedDesc =
+      locale === "es"
+        ? game.descriptionEs || game.description || ""
+        : game.description || ""
 
     const ratingSummary =
-      gameStats.totalReviews > 0
-        ? `Read ${gameStats.totalReviews} community ${gameStats.totalReviews === 1 ? "review" : "reviews"} (${gameStats.avgRatings.toFixed(1)}/5★) for ${game.title}. `
-        : `Read community reviews, player ratings, and specs for ${game.title}. `
+      locale === "es"
+        ? gameStats.totalReviews > 0
+          ? `Lee ${gameStats.totalReviews} ${gameStats.totalReviews === 1 ? "reseña" : "reseñas"} de jugadores (${gameStats.avgRatings.toFixed(1)}/5★) sobre ${game.title}. `
+          : `Lee opiniones sin filtro, notas de jugadores y ficha técnica de ${game.title}. `
+        : gameStats.totalReviews > 0
+          ? `Read ${gameStats.totalReviews} community ${gameStats.totalReviews === 1 ? "review" : "reviews"} (${gameStats.avgRatings.toFixed(1)}/5★) for ${game.title}. `
+          : `Read community reviews, player ratings, and specs for ${game.title}. `
 
     const description = truncateDescription(
-      `${ratingSummary}${game.description || ""}`,
+      `${ratingSummary}${localizedDesc}`,
       158
     )
+
+    const alternates = buildLanguageAlternates(`/games/${game.slug}`, locale)
 
     return {
       title: pageTitle,
       description,
-      alternates: {
-        canonical: `/games/${game.slug}`,
-      },
+      alternates,
       openGraph: {
         type: "website",
+        locale: locale === "es" ? "es_ES" : "en_US",
         title: `${pageTitle} | Pixel Reviews`,
         description,
-        url: `/games/${game.slug}`,
+        url: alternates.canonical,
       },
       twitter: {
         card: "summary_large_image",
@@ -131,9 +155,11 @@ export async function generateMetadata({
 function TechnicalSpecificationsSection({
   game,
   website,
+  labels,
 }: {
   game: Game
   website?: string
+  labels: Dictionary["game"]
 }) {
   const formattedRelease =
     game.releaseDate && dayjs(game.releaseDate).isValid()
@@ -143,13 +169,13 @@ function TechnicalSpecificationsSection({
   return (
     <section>
       <h2 className="mb-4 font-mono text-xs font-semibold tracking-[0.22em] text-primary uppercase">
-        Technical Specifications
+        {labels.technicalSpecs}
       </h2>
       <div className="divide-y divide-border/70 rounded-xl border border-border bg-card p-5 shadow-sm">
         <div className="flex items-center justify-between gap-6 py-3 first:pt-0 last:pb-0">
           <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             <Calendar className="size-3.5 shrink-0 text-primary" />
-            <span>Release Date</span>
+            <span>{labels.releaseDate}</span>
           </span>
           <span className="text-sm font-semibold text-foreground">
             {formattedRelease}
@@ -160,7 +186,7 @@ function TechnicalSpecificationsSection({
           <div className="flex items-center justify-between gap-6 py-3 first:pt-0 last:pb-0">
             <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               <Globe className="size-3.5 shrink-0 text-primary" />
-              <span>Website</span>
+              <span>{labels.website}</span>
             </span>
             <a
               href={website.startsWith("http") ? website : `https://${website}`}
@@ -168,7 +194,7 @@ function TechnicalSpecificationsSection({
               rel="noopener noreferrer"
               className="inline-flex max-w-52 items-center gap-1.5 truncate text-end text-sm font-semibold text-primary hover:underline"
             >
-              <span className="truncate">Official site</span>
+              <span className="truncate">{labels.officialSite}</span>
               <ExternalLink className="size-3 shrink-0" />
             </a>
           </div>
@@ -178,7 +204,7 @@ function TechnicalSpecificationsSection({
           <div className="flex items-start justify-between gap-6 py-3 first:pt-0 last:pb-0">
             <span className="inline-flex items-center gap-2 pt-0.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               <Code2 className="size-3.5 shrink-0 text-primary" />
-              <span>Developers</span>
+              <span>{labels.developers}</span>
             </span>
             <div className="flex flex-col gap-0.5 text-end">
               {game.developers.map((dev) => (
@@ -197,7 +223,7 @@ function TechnicalSpecificationsSection({
           <div className="flex items-start justify-between gap-6 py-3 first:pt-0 last:pb-0">
             <span className="inline-flex items-center gap-2 pt-0.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               <Building2 className="size-3.5 shrink-0 text-primary" />
-              <span>Publishers</span>
+              <span>{labels.publishers}</span>
             </span>
             <div className="flex flex-col gap-0.5 text-end">
               {game.publishers.map((pub) => (
@@ -216,7 +242,7 @@ function TechnicalSpecificationsSection({
           <div className="flex items-center justify-between gap-6 py-3 first:pt-0 last:pb-0">
             <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               <Eye className="size-3.5 shrink-0 text-primary" />
-              <span>Perspective</span>
+              <span>{labels.perspective}</span>
             </span>
             <span className="text-end text-sm font-semibold text-foreground">
               {game.playerPerspectives.join(", ")}
@@ -228,7 +254,7 @@ function TechnicalSpecificationsSection({
           <div className="flex flex-col gap-2.5 py-3.5 first:pt-0 last:pb-0">
             <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               <Gamepad2 className="size-3.5 shrink-0 text-primary" />
-              <span>Game Modes</span>
+              <span>{labels.gameModes}</span>
             </span>
             <div className="flex flex-wrap gap-1.5">
               {game.gameModes.map((mode) => (
@@ -247,7 +273,7 @@ function TechnicalSpecificationsSection({
           <div className="flex flex-col gap-2.5 py-3.5 first:pt-0 last:pb-0">
             <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               <Sparkles className="size-3.5 shrink-0 text-primary" />
-              <span>Themes</span>
+              <span>{labels.themes}</span>
             </span>
             <div className="flex flex-wrap gap-1.5">
               {game.themes.map((theme) => (
@@ -266,7 +292,7 @@ function TechnicalSpecificationsSection({
           <div className="flex flex-col gap-2.5 py-3.5 first:pt-0 last:pb-0">
             <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               <Cpu className="size-3.5 shrink-0 text-primary" />
-              <span>Available Platforms</span>
+              <span>{labels.platforms}</span>
             </span>
             <GamePlatformsList platforms={game.platforms} />
           </div>
@@ -282,13 +308,18 @@ async function GameDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
+  const locale = await getServerLocale()
+  const dict = getDictionary(locale)
   const session = await auth()
   let game: Game
   let gameStats: GameStats
   let initialReviews: ReviewPagination | undefined
   let review: Review | undefined = undefined
   try {
-    ;({ game, gameStats, initialReviews } = await getCachedGameData(slug))
+    ;({ game, gameStats, initialReviews } = await getCachedGameData(
+      slug,
+      locale
+    ))
   } catch {
     notFound()
   }
@@ -314,6 +345,14 @@ async function GameDetailPage({
 
   const backgroundImage = game.backgroundImage || game.imageUrl
   const website = game.website?.trim()
+  const displayDescription =
+    locale === "es"
+      ? game.descriptionEs || game.description
+      : game.description
+  const displayStoryline =
+    locale === "es"
+      ? game.storylineEs || game.storyline
+      : game.storyline
 
   const writtenReviews = (initialReviews?.items ?? []).filter((r) =>
     Boolean(r.title?.trim() && r.content?.trim())
@@ -459,12 +498,14 @@ async function GameDetailPage({
                     <span className="h-3.5 w-px bg-white/15" aria-hidden="true" />
                     <span className="font-mono text-xs text-zinc-300 transition-colors group-hover:text-white">
                       {gameStats.totalReviews.toLocaleString()}{" "}
-                      {gameStats.totalReviews === 1 ? "review" : "reviews"}
+                      {gameStats.totalReviews === 1
+                        ? dict.game.reviewSingular
+                        : dict.game.reviewPlural}
                     </span>
                   </>
                 ) : (
                   <span className="font-mono text-xs text-zinc-300">
-                    No community ratings yet
+                    {dict.game.noCommunityRatings}
                   </span>
                 )}
               </a>
@@ -482,7 +523,7 @@ async function GameDetailPage({
               ) : (
                 <>
                   <LoginModal
-                    trigger={<Button>Sign in to write a review</Button>}
+                    trigger={<Button>{dict.game.signInToReview}</Button>}
                   />
                   <WishlistButton gameId={game.id} />
                 </>
@@ -496,23 +537,23 @@ async function GameDetailPage({
         <div className="flex flex-col gap-12 sm:gap-14 lg:col-span-2">
           <section>
             <h2 className="mb-4 font-mono text-xs font-semibold tracking-[0.22em] text-primary uppercase">
-              Description
+              {dict.game.description}
             </h2>
             <p className="leading-relaxed whitespace-pre-line text-foreground/90">
-              {game.description}
+              {displayDescription}
             </p>
           </section>
 
-          {game.storyline && (
+          {displayStoryline && (
             <section className="rounded-xl border border-primary/25 bg-card p-5 shadow-sm sm:p-6">
               <div className="mb-3 flex items-center gap-2">
                 <BookOpen className="size-4 text-primary" />
                 <h2 className="font-mono text-xs font-semibold tracking-[0.22em] text-primary uppercase">
-                  Storyline
+                  {dict.game.storyline}
                 </h2>
               </div>
               <ExpandableText
-                content={game.storyline}
+                content={displayStoryline}
                 className="text-sm leading-relaxed text-muted-foreground italic sm:text-base"
               />
             </section>
@@ -538,7 +579,11 @@ async function GameDetailPage({
             count={game.criticScoreCount}
             url={game.igdbUrl}
           />
-          <TechnicalSpecificationsSection game={game} website={website} />
+          <TechnicalSpecificationsSection
+            game={game}
+            website={website}
+            labels={dict.game}
+          />
           <GameStoresSection stores={game.stores} />
         </aside>
 
