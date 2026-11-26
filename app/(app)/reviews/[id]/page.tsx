@@ -115,13 +115,13 @@ export default async function ReviewPermalinkPage({
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative flex flex-1 flex-col">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewJsonLd) }}
       />
 
-      <div className="relative overflow-hidden border-b border-border bg-zinc-950 py-10 sm:py-14">
+      <div className="relative flex-1 overflow-hidden bg-zinc-950 py-10 sm:py-14">
         {backdrop && (
           <Image
             src={getIgdbImageUrl(backdrop, "t_720p")}
@@ -137,7 +137,7 @@ export default async function ReviewPermalinkPage({
         <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 sm:px-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Avatar className="size-10 border border-border">
+              <Avatar className="size-10">
                 <AvatarImage
                   src={review.user?.profilePhotoUrl}
                   alt={`@${username}`}
