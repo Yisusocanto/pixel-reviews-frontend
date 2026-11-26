@@ -23,6 +23,11 @@ export async function getAllReviewsAction(
   return res
 }
 
+export async function getReviewByIdAction(reviewId: string): Promise<Review> {
+  const res = await apiClient.get<Review>(`/reviews/${reviewId}`)
+  return res
+}
+
 export async function createReviewAction(data: CreateReview): Promise<Review> {
   const res = await apiClient.post<Review>("/reviews", data)
   return res

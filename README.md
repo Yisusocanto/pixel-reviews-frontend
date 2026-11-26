@@ -16,7 +16,14 @@ Web client for **Pixel Reviews**, an open-source social platform for discovering
 
 ## Architecture & Engineering Highlights
 
-- **Feature-Based Modular Architecture:** Domain logic, UI components, Server Actions, React Query hooks, and TypeScript interfaces are colocated by feature under `features/` (`games`, `reviews`, `comments`, `likes`, `wishlists`, `users`, `settings`, `genres`, `platforms`).
+- **Feature-Based Modular Architecture:** Domain logic, UI components, Server Actions, React Query hooks, and TypeScript interfaces are colocated by feature under `features/` (`games`, `reviews`, `comments`, `likes`, `wishlists`, `users`, `settings`, `genres`, `platforms`, `charts`, `moderation`, `reports`, `social-studio`).
+- **Viral Share Cards & Dynamic OpenGraph (`next/og`):**
+  - Dedicated public review permalinks (`/reviews/[id]`) with `Review` JSON-LD and branded dynamic `1200×630` OpenGraph images for games and reviews.
+  - Downloadable `1080×1920` (Story/TikTok) and `1080×1350` (Feed/X) PNG cards for reviews (`/api/share/review/[id]`) and Player Gamer DNA / Top 4 profiles (`/api/share/profile/[username]`), including post-publish celebration modals and native mobile sharing.
+- **Admin Pixel Social Studio (`/admin/social-studio`):**
+  - Admin-protected workspace to generate AI carousels (`1080×1350` PNG slides rendered via `/api/admin/social-slide`), synthesize studio voiceovers via Gemini TTS, copy platform-tailored captions, and export Remotion video bundles (`tools/pixel-shorts`).
+- **Bilingual ES/EN Routing & Programmatic SEO:**
+  - Transparent `/es/...` localization via Next.js 16 `proxy.ts`, `ES | EN` switcher, `hreflang` alternates, programmatic landing pages for `/games/genre/[slug]` and `/games/platform/[slug]` with `ItemList` JSON-LD, expanded bilingual `/sitemap.xml`, and `/api/indexnow` search engine notifications.
 - **Hybrid Rendering & Server Actions:** Combines Next.js App Router Server Components for SEO-friendly game and profile pages with Server Actions and client-side infinite queries (`@tanstack/react-query`) for interactive feeds and mutations.
 - **Session & Token Rotation (Auth.js v5):** Implements stateless JWT sessions supporting both email/password credentials and Google OAuth 2.0, with automatic background access-token refresh against the FastAPI backend before expiration.
 - **Typed HTTP Client (`apiClient`):** Centralized wrapper around native `fetch` that automatically injects active server session bearer tokens, serializes query parameters and payloads, and transforms FastAPI error responses into structured `ApiError` instances.
@@ -96,10 +103,12 @@ cp .env.example .env
 | Variable              | Description                                        | Default / Example                           |
 | :-------------------- | :------------------------------------------------- | :------------------------------------------ |
 | `AUTH_SECRET`         | Secret key used by Auth.js to encrypt session JWTs | Generate with `npx auth secret`             |
+| `NEXT_PUBLIC_APP_URL` | Canonical public URL for metadata, OG & sitemaps   | `https://www.pixelreviews.app`              |
 | `API_URL`             | Backend FastAPI base URL for server-side requests  | `http://localhost:8000`                     |
 | `NEXT_PUBLIC_API_URL` | Backend FastAPI base URL for client-side requests  | `http://localhost:8000`                     |
 | `AUTH_GOOGLE_ID`      | Google OAuth 2.0 Client ID                         | `your_client_id.apps.googleusercontent.com` |
 | `AUTH_GOOGLE_SECRET`  | Google OAuth 2.0 Client Secret                     | `your_google_client_secret`                 |
+| `INDEXNOW_KEY`        | Optional 32-char hex key for `/api/indexnow` pings | `your_32_char_hex_indexnow_key`             |
 
 ### 4. Start the development server
 

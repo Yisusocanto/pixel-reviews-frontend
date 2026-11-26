@@ -1,11 +1,32 @@
 "use server"
 
-import { Game, GameSearchPagination, GameStats } from "@/features/games/types"
+import {
+  Game,
+  GamePagination,
+  GameSearchPagination,
+  GameStats,
+} from "@/features/games/types"
 import { ReviewPagination } from "@/features/reviews/types"
 import { apiClient } from "@/lib/api/client"
+import { AppLocale } from "@/lib/i18n/dictionaries"
 
-export async function getGameAction(slug: string): Promise<Game> {
-  const res = await apiClient<Game>(`/games/${slug}`)
+export async function getGameAction(
+  slug: string,
+  lang: AppLocale = "en"
+): Promise<Game> {
+  const res = await apiClient<Game>(`/games/${slug}`, {
+    params: { lang },
+  })
+  return res
+}
+
+export async function getAllGamesAction(
+  page: number = 1,
+  limit: number = 50
+): Promise<GamePagination> {
+  const res = await apiClient.get<GamePagination>("/games", {
+    params: { page, limit },
+  })
   return res
 }
 

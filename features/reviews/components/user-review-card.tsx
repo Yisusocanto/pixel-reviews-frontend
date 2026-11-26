@@ -1,6 +1,7 @@
 "use client"
 
 import ExpandableText from "@/components/expandable-text"
+import ShareDialog from "@/components/share/share-dialog"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -99,19 +100,34 @@ function UserReviewCard({ review, className, ownReview = false }: Props) {
           </div>
           <div className="mt-2 flex flex-col gap-1">
             <h3 className="text-xl font-bold wrap-break-word text-primary sm:text-2xl">
-              {review.title}
+              <Link
+                href={`/reviews/${review.id}`}
+                className="transition-opacity hover:opacity-85"
+              >
+                {review.title}
+              </Link>
             </h3>
             <ExpandableText content={review.content} />
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <LikeButton
               reviewId={review.id}
               likesCount={review.likesCount ?? 0}
               likedByUser={Boolean(review.likedByUser)}
             />
             <ReviewDetailDialog review={review} />
+            <ShareDialog
+              target={{
+                kind: "review",
+                reviewId: review.id,
+                gameTitle: review.game?.title || "Game",
+                score: review.score,
+                username: review.user?.username,
+                reviewTitle: review.title,
+              }}
+            />
             {!ownReview && (
               <ReportButton
                 targetId={review.id}
