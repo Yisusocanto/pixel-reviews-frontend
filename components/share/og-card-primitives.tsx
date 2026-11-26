@@ -51,21 +51,36 @@ function BrandHeader({ scale = 1 }: { scale?: number }) {
   )
 }
 
+function StarIcon({
+  size = 24,
+  color = "#FF4D00",
+}: {
+  size?: number
+  color?: string
+}) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill={color}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d={STAR_PATH} />
+    </svg>
+  )
+}
+
 function StarRow({ score, size = 32 }: { score: number; size?: number }) {
   const rounded = Math.max(0, Math.min(5, Math.round(score)))
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
       {[1, 2, 3, 4, 5].map((index) => (
-        <svg
+        <StarIcon
           key={index}
-          width={size}
-          height={size}
-          viewBox="0 0 24 24"
-          fill={index <= rounded ? "#FF4D00" : "#27272A"}
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d={STAR_PATH} />
-        </svg>
+          size={size}
+          color={index <= rounded ? "#FF4D00" : "#27272A"}
+        />
       ))}
     </div>
   )
@@ -1138,16 +1153,27 @@ export function ProfileShareCardTemplate({
             >
               Avg Score
             </span>
-            <span
+            <div
               style={{
-                fontSize: isStory ? "52px" : "42px",
-                fontWeight: 900,
-                color: "#FAFAFA",
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
                 marginTop: "6px",
               }}
             >
-              {userStats?.avgRating ? `${userStats.avgRating.toFixed(1)}★` : "—"}
-            </span>
+              <span
+                style={{
+                  fontSize: isStory ? "52px" : "42px",
+                  fontWeight: 900,
+                  color: "#FAFAFA",
+                }}
+              >
+                {userStats?.avgRating ? userStats.avgRating.toFixed(1) : "—"}
+              </span>
+              {Boolean(userStats?.avgRating) && (
+                <StarIcon size={isStory ? 42 : 34} color="#FF4D00" />
+              )}
+            </div>
           </div>
         </div>
 
@@ -1223,77 +1249,152 @@ export function ProfileShareCardTemplate({
           </div>
         </div>
 
-        {isStory && distribution.length > 0 && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-              padding: "32px 36px",
-              borderRadius: "24px",
-              backgroundColor: "rgba(24,24,27,0.88)",
-              border: "1px solid #27272A",
-            }}
-          >
-            <span
-              style={{
-                fontSize: "19px",
-                fontWeight: 800,
-                letterSpacing: "0.2em",
-                color: "#A1A1AA",
-                textTransform: "uppercase",
-              }}
-            >
-              Rating Distribution
-            </span>
+        {isStory && distribution.length > 0 && (() => {
+          const maxCount = Math.max(
+            1,
+            ...[1, 2, 3, 4, 5].map(
+              (star) => distribution.find((d) => d.stars === star)?.count ?? 0
+            )
+          )
+          return (
             <div
               style={{
                 display: "flex",
-                alignItems: "flex-end",
-                gap: "18px",
-                height: "120px",
+                flexDirection: "column",
+                gap: "24px",
+                padding: "36px 40px",
+                borderRadius: "28px",
+                backgroundColor: "rgba(24,24,27,0.92)",
+                border: "1px solid #27272A",
               }}
             >
-              {[1, 2, 3, 4, 5].map((star) => {
-                const entry = distribution.find((d) => d.stars === star)
-                const pct = Math.max(8, Math.round(entry?.percentage ?? 0))
-                return (
-                  <div
-                    key={star}
-                    style={{
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      height: "120px",
-                      gap: "10px",
-                    }}
-                  >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: 800,
+                    letterSpacing: "0.22em",
+                    color: "#FF4D00",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Rating Distribution
+                </span>
+                <span
+                  style={{
+                    fontSize: "19px",
+                    fontWeight: 700,
+                    color: "#A1A1AA",
+                  }}
+                >
+                  {`${userStats?.totalRatings ?? 0} total`}
+                </span>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                  gap: "22px",
+                  height: "248px",
+                }}
+              >
+                {[1, 2, 3, 4, 5].map((star) => {
+                  const entry = distribution.find((d) => d.stars === star)
+                  const count = entry?.count ?? 0
+                  const isPeak = count > 0 && count === maxCount
+                  const barHeight =
+                    count > 0
+                      ? Math.max(28, Math.round((count / maxCount) * 168))
+                      : 10
+
+                  return (
                     <div
+                      key={star}
                       style={{
-                        width: "100%",
-                        height: `${Math.round((pct / 100) * 84)}px`,
-                        borderRadius: "10px",
-                        backgroundColor:
-                          (entry?.count ?? 0) > 0 ? "#FF4D00" : "#27272A",
-                      }}
-                    />
-                    <span
-                      style={{
-                        fontSize: "20px",
-                        fontWeight: 800,
-                        color: "#D4D4D8",
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        height: "248px",
+                        gap: "12px",
                       }}
                     >
-                      {`${star}★`}
-                    </span>
-                  </div>
-                )
-              })}
+                      <span
+                        style={{
+                          fontSize: "22px",
+                          fontWeight: 900,
+                          color: isPeak
+                            ? "#FF4D00"
+                            : count > 0
+                              ? "#E4E4E7"
+                              : "#52525B",
+                        }}
+                      >
+                        {String(count)}
+                      </span>
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "168px",
+                          borderRadius: "16px",
+                          backgroundColor: "rgba(39,39,42,0.45)",
+                          display: "flex",
+                          alignItems: "flex-end",
+                          overflow: "hidden",
+                          padding: "4px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "100%",
+                            height: `${barHeight}px`,
+                            borderRadius: "12px",
+                            backgroundImage: isPeak
+                              ? "linear-gradient(180deg, #FF7A29 0%, #FF4D00 100%)"
+                              : count > 0
+                                ? "linear-gradient(180deg, rgba(255,77,0,0.82) 0%, rgba(255,77,0,0.45) 100%)"
+                                : "none",
+                            backgroundColor:
+                              count > 0 ? "#FF4D00" : "rgba(63,63,70,0.55)",
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: "22px",
+                            fontWeight: 800,
+                            color: count > 0 ? "#FAFAFA" : "#71717A",
+                          }}
+                        >
+                          {String(star)}
+                        </span>
+                        <StarIcon
+                          size={18}
+                          color={count > 0 ? "#FF4D00" : "#52525B"}
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
       </div>
 
       <div
