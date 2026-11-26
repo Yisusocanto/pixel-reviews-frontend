@@ -35,6 +35,7 @@ import {
   Search,
   Settings,
   ShieldCheck,
+  Sparkles,
   User,
 } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
@@ -65,6 +66,11 @@ function AppSidebar() {
       label: "Moderation",
       href: "/admin/moderation",
       icon: ShieldCheck,
+    },
+    {
+      label: "Social Studio",
+      href: "/admin/social-studio",
+      icon: Sparkles,
     },
   ]
 
