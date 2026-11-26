@@ -100,8 +100,6 @@ export async function generateMetadata({
       158
     )
 
-    const ogImage = game.backgroundImage || game.imageUrl
-
     return {
       title: pageTitle,
       description,
@@ -113,20 +111,11 @@ export async function generateMetadata({
         title: `${pageTitle} | Pixel Reviews`,
         description,
         url: `/games/${game.slug}`,
-        images: ogImage
-          ? [
-              {
-                url: ogImage,
-                alt: `${game.title} cover art`,
-              },
-            ]
-          : undefined,
       },
       twitter: {
         card: "summary_large_image",
         title: `${pageTitle} | Pixel Reviews`,
         description,
-        images: ogImage ? [ogImage] : undefined,
       },
     }
   } catch {

@@ -1,5 +1,7 @@
 import { auth } from "@/auth"
+import ShareDialog from "@/components/share/share-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import RatingDistributionCard from "@/components/ui/rating-distribution-card"
 import { Game } from "@/features/games/types"
 import { ReviewPagination } from "@/features/reviews/types"
@@ -16,6 +18,7 @@ import UserReviewSection from "@/features/users/components/users-reviews-section
 import UsersWishlistSection from "@/features/users/components/users-wishlist-section"
 import { User, UserStats } from "@/features/users/types"
 import dayjs from "dayjs"
+import { Share2 } from "lucide-react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { cache } from "react"
@@ -177,7 +180,19 @@ async function UserPage({ params }: { params: Promise<{ username: string }> }) {
                 </span>
               </div>
             </div>
-            <div className="self-start sm:self-auto">
+            <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
+              <ShareDialog
+                target={{
+                  kind: "profile",
+                  username: user.username,
+                }}
+                trigger={
+                  <Button variant="secondary" size="sm" className="gap-2">
+                    <Share2 className="size-4 text-primary" />
+                    <span>Share Top 4 Card</span>
+                  </Button>
+                }
+              />
               {ownProfile && <UpdateUserDialog user={user} />}
             </div>
           </div>

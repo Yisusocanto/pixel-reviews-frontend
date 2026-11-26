@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
+import ShareDialog from "@/components/share/share-dialog"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -89,6 +90,9 @@ function ReviewDialog({
   trigger,
 }: Props) {
   const [internalOpen, setInternalOpen] = useState(false)
+  const [celebrationReview, setCelebrationReview] = useState<Review | null>(
+    null
+  )
   const isControlled = externalOpen !== undefined
   const open = isControlled ? externalOpen : internalOpen
 
@@ -133,8 +137,11 @@ function ReviewDialog({
   const { mutate: updateReview, isPending: isUpdating } = useUpdateReview()
   const isPending = isCreating || isUpdating
 
-  const handleMutationSuccess = () => {
+  const handleMutationSuccess = (savedReview?: Review, openShare?: boolean) => {
     setOpen(false)
+    if (openShare && savedReview?.id) {
+      setCelebrationReview(savedReview)
+    }
     window.setTimeout(() => {
       router.refresh()
     }, 150)
@@ -152,7 +159,7 @@ function ReviewDialog({
           },
         },
         {
-          onSuccess: handleMutationSuccess,
+          onSuccess: (updated) => handleMutationSuccess(updated, false),
         }
       )
     } else {
@@ -164,14 +171,36 @@ function ReviewDialog({
           gameId: game.id,
         },
         {
-          onSuccess: handleMutationSuccess,
+          onSuccess: (created) =>
+            handleMutationSuccess(created, Boolean(data.title && data.content)),
         }
       )
     }
   })
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      {celebrationReview && (
+        <ShareDialog
+          target={{
+            kind: "review",
+            reviewId: celebrationReview.id,
+            gameTitle: game.title,
+            score: celebrationReview.score,
+            username: celebrationReview.user?.username,
+            reviewTitle: celebrationReview.title,
+          }}
+          trigger={null}
+          open={Boolean(celebrationReview)}
+          onOpenChange={(nextOpen) => {
+            if (!nextOpen) {
+              setCelebrationReview(null)
+            }
+          }}
+          celebrationTitle="Review Published! Share Your Verdict"
+        />
+      )}
+      <Dialog open={open} onOpenChange={setOpen}>
       {trigger !== null && (
         <DialogTrigger
           render={
@@ -274,7 +303,8 @@ function ReviewDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   )
 }
 

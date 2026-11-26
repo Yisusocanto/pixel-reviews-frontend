@@ -1,4 +1,5 @@
 import ExpandableText from "@/components/expandable-text"
+import ShareDialog from "@/components/share/share-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import StarRating from "@/components/ui/star-rating"
@@ -106,7 +107,12 @@ function ReviewCard({
           <StarRating value={review.score} showValue readOnly size="md" />
           <div className="space-y-1.5 pt-0.5">
             <h2 className="text-lg font-bold wrap-break-word text-foreground sm:text-xl">
-              {review.title}
+              <Link
+                href={`/reviews/${review.id}`}
+                className="transition-colors hover:text-primary"
+              >
+                {review.title}
+              </Link>
             </h2>
             <ExpandableText content={review.content} />
           </div>
@@ -128,6 +134,16 @@ function ReviewCard({
               <MessageSquare className="h-4 w-4 transition-transform duration-200 active:scale-125" />
               {review.commentsCount} comments
             </Button>
+            <ShareDialog
+              target={{
+                kind: "review",
+                reviewId: review.id,
+                gameTitle: review.game?.title || "Game",
+                score: review.score,
+                username: review.user?.username,
+                reviewTitle: review.title,
+              }}
+            />
             <ReportButton
               targetId={review.id}
               targetType="review"

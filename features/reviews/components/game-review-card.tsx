@@ -1,6 +1,7 @@
 "use client"
 
 import ExpandableText from "@/components/expandable-text"
+import ShareDialog from "@/components/share/share-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge-2"
 import { Button } from "@/components/ui/button"
@@ -102,7 +103,12 @@ function GameReviewCard({ review, ownReview = false }: Props) {
         <div className="space-y-1">
           {review.title && (
             <h3 className="text-xl font-bold wrap-break-word sm:text-2xl md:text-3xl">
-              {review.title}
+              <Link
+                href={`/reviews/${review.id}`}
+                className="transition-colors hover:text-primary"
+              >
+                {review.title}
+              </Link>
             </h3>
           )}
           {review.content && <ExpandableText content={review.content} />}
@@ -116,6 +122,16 @@ function GameReviewCard({ review, ownReview = false }: Props) {
             likedByUser={Boolean(review.likedByUser)}
           />
           <ReviewDetailDialog review={review} />
+          <ShareDialog
+            target={{
+              kind: "review",
+              reviewId: review.id,
+              gameTitle: review.game?.title || "Game",
+              score: review.score,
+              username: review.user?.username,
+              reviewTitle: review.title,
+            }}
+          />
           {!ownReview && (
             <ReportButton
               targetId={review.id}
