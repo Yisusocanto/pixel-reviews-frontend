@@ -3,6 +3,8 @@ import SocialStudioWorkspace from "@/features/social-studio/components/social-st
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 
+export const maxDuration = 60
+
 export const metadata: Metadata = {
   title: "Social Studio",
   description:

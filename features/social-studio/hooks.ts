@@ -14,16 +14,28 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 export function useSocialCandidates(angle: SocialAngle) {
   return useQuery({
     queryKey: ["socialCandidates", angle],
-    queryFn: () => getSocialCandidatesAction(angle, 12),
+    queryFn: async () => {
+      const result = await getSocialCandidatesAction(angle, 12)
+      if (!result.ok) {
+        throw new Error(result.error)
+      }
+      return result.data
+    },
   })
 }
 
 export function useGenerateSocialPack() {
   return useMutation({
-    mutationFn: (data: SocialGenerateRequest) => generateSocialPackAction(data),
+    mutationFn: async (data: SocialGenerateRequest) => {
+      const result = await generateSocialPackAction(data)
+      if (!result.ok) {
+        throw new Error(result.error)
+      }
+      return result.data
+    },
     onSuccess: () => {
       toast.add({
-        description: "Gemini Pro content pack generated!",
+        description: "Content pack generated!",
         type: "success",
       })
     },
@@ -38,10 +50,16 @@ export function useGenerateSocialPack() {
 
 export function useGenerateStudioTts() {
   return useMutation({
-    mutationFn: (data: StudioTtsRequest) => generateStudioTtsAction(data),
+    mutationFn: async (data: StudioTtsRequest) => {
+      const result = await generateStudioTtsAction(data)
+      if (!result.ok) {
+        throw new Error(result.error)
+      }
+      return result.data
+    },
     onSuccess: () => {
       toast.add({
-        description: "Studio voiceover synthesized with Gemini Pro TTS!",
+        description: "Studio voiceover synthesized!",
         type: "success",
       })
     },

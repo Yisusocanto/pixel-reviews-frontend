@@ -23,7 +23,6 @@ import { cn } from "@/lib/utils"
 import {
   Copy,
   Download,
-  Film,
   Layers,
   Mic,
   RefreshCw,
@@ -231,35 +230,14 @@ export default function SocialStudioWorkspace() {
     )
   }
 
-  const handleExportRemotionBundle = () => {
-    if (!pack) return
-    const bundle = {
-      ...pack,
-      voiceover: ttsResult
-        ? {
-            audioUrl: ttsResult.audioUrl,
-            audioDataUrl: ttsResult.audioDataUrl,
-            durationSeconds: ttsResult.durationSeconds,
-            voiceName: ttsResult.voiceName,
-          }
-        : null,
-    }
-    const blob = new Blob([JSON.stringify(bundle, null, 2)], {
-      type: "application/json",
-    })
-    const url = URL.createObjectURL(blob)
+  const handleDownloadVoiceover = () => {
+    if (!ttsResult) return
     const anchor = document.createElement("a")
-    anchor.href = url
-    anchor.download = `pixel-short-pack-${Date.now()}.json`
+    anchor.href = ttsResult.audioDataUrl
+    anchor.download = `pixel-voiceover-${ttsResult.voiceName.toLowerCase()}-${Date.now()}.wav`
     document.body.appendChild(anchor)
     anchor.click()
     document.body.removeChild(anchor)
-    URL.revokeObjectURL(url)
-    toast.add({
-      description:
-        "Exported Remotion video bundle! Run pnpm render in tools/pixel-shorts.",
-      type: "success",
-    })
   }
 
   const handleCopyText = async (label: string, value: string) => {
@@ -276,15 +254,14 @@ export default function SocialStudioWorkspace() {
         <div className="space-y-1.5">
           <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold tracking-[0.22em] text-primary uppercase">
             <Sparkles className="size-3.5" />
-            <span>Gemini Pro + Studio TTS + Remotion</span>
+            <span>Gemini AI + Studio TTS + Carousels</span>
           </span>
           <h1 className="font-heading text-3xl font-black tracking-tight sm:text-4xl">
             Pixel Social Studio
           </h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
             Generate ready-to-publish 1080×1350 carousels, studio voiceovers,
-            and 60fps vertical video bundles powered by real IGDB &amp;
-            community data.
+            and short-video scripts powered by real IGDB &amp; community data.
           </p>
         </div>
 
@@ -565,17 +542,19 @@ export default function SocialStudioWorkspace() {
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold tracking-[0.2em] text-primary uppercase">
                     <Mic className="size-3.5" />
-                    <span>Gemini Pro Studio Voiceover &amp; 60fps Short</span>
+                    <span>Short Narration Script &amp; Studio Voiceover</span>
                   </span>
                   <Button
                     type="button"
                     variant="secondary"
                     size="sm"
-                    onClick={handleExportRemotionBundle}
+                    onClick={() =>
+                      handleCopyText("Narration script", pack.fullNarration)
+                    }
                     className="gap-1.5"
                   >
-                    <Film className="size-3.5 text-primary" />
-                    <span>Export Remotion Bundle (.json)</span>
+                    <Copy className="size-3.5 text-primary" />
+                    <span>Copy Script</span>
                   </Button>
                 </div>
 
@@ -646,11 +625,23 @@ export default function SocialStudioWorkspace() {
                   </Button>
 
                   {ttsResult && (
-                    <audio
-                      controls
-                      src={ttsResult.audioDataUrl}
-                      className="h-9 flex-1"
-                    />
+                    <>
+                      <audio
+                        controls
+                        src={ttsResult.audioDataUrl}
+                        className="h-9 flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleDownloadVoiceover}
+                        className="gap-1.5"
+                      >
+                        <Download className="size-3.5" />
+                        <span>Download WAV</span>
+                      </Button>
+                    </>
                   )}
                 </div>
               </div>
