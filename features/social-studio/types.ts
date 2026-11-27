@@ -103,3 +103,7 @@ export interface StudioTtsResponse {
   voiceName: string
   model: string
 }
+
+export type SocialActionResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; error: string; status?: number }

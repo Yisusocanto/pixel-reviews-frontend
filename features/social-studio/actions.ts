@@ -1,6 +1,7 @@
 "use server"
 
 import {
+  SocialActionResult,
   SocialAngle,
   SocialCandidatesResponse,
   SocialContentPack,
@@ -8,25 +9,66 @@ import {
   StudioTtsRequest,
   StudioTtsResponse,
 } from "@/features/social-studio/types"
-import { apiClient } from "@/lib/api/client"
+import { ApiError, apiClient } from "@/lib/api/client"
+
+function toActionError(
+  error: unknown,
+  fallbackMessage: string
+): { ok: false; error: string; status?: number } {
+  if (error instanceof ApiError) {
+    return {
+      ok: false,
+      error: error.message || fallbackMessage,
+      status: error.status,
+    }
+  }
+  if (error instanceof Error && error.message) {
+    return { ok: false, error: error.message }
+  }
+  return { ok: false, error: fallbackMessage }
+}
 
 export async function getSocialCandidatesAction(
   angle: SocialAngle,
   limit: number = 12
-): Promise<SocialCandidatesResponse> {
-  return apiClient.get<SocialCandidatesResponse>("/admin/social/candidates", {
-    params: { angle, limit },
-  })
+): Promise<SocialActionResult<SocialCandidatesResponse>> {
+  try {
+    const data = await apiClient.get<SocialCandidatesResponse>(
+      "/admin/social/candidates",
+      {
+        params: { angle, limit },
+      }
+    )
+    return { ok: true, data }
+  } catch (error) {
+    return toActionError(error, "Could not load social candidates")
+  }
 }
 
 export async function generateSocialPackAction(
   data: SocialGenerateRequest
-): Promise<SocialContentPack> {
-  return apiClient.post<SocialContentPack>("/admin/social/generate", data)
+): Promise<SocialActionResult<SocialContentPack>> {
+  try {
+    const result = await apiClient.post<SocialContentPack>(
+      "/admin/social/generate",
+      data
+    )
+    return { ok: true, data: result }
+  } catch (error) {
+    return toActionError(error, "Could not generate social content pack")
+  }
 }
 
 export async function generateStudioTtsAction(
   data: StudioTtsRequest
-): Promise<StudioTtsResponse> {
-  return apiClient.post<StudioTtsResponse>("/admin/social/tts", data)
+): Promise<SocialActionResult<StudioTtsResponse>> {
+  try {
+    const result = await apiClient.post<StudioTtsResponse>(
+      "/admin/social/tts",
+      data
+    )
+    return { ok: true, data: result }
+  } catch (error) {
+    return toActionError(error, "Could not synthesize studio voiceover")
+  }
 }
